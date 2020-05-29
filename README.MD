@@ -1,11 +1,11 @@
 ## MCLib
 Minecraft, as a dependency.
 
-![Issues](https://img.shields.io/github/issues/Zerite/MCLib?style=flat&label=Issues)
-![Forks](https://img.shields.io/github/forks/Zerite/MCLib?style=flat&label=Forks)
-![Stars](https://img.shields.io/github/stars/Zerite/MCLib?style=flat&label=Stars)
-![License](https://img.shields.io/github/license/Zerite/MCLib?style=flat&label=License)
-![JitPack](https://img.shields.io/jitpack/v/github/Zerite/MCLib?style=flat&label=JitPack)
+[![Issues](https://img.shields.io/github/issues/Zerite/MCLib?style=flat-square&label=Issues)](https://github.com/Zerite/MCLib/issues)
+[![Forks](https://img.shields.io/github/forks/Zerite/MCLib?style=flat-square&label=Forks)](https://github.com/Zerite/MCLib/network/members)
+[![Stars](https://img.shields.io/github/stars/Zerite/MCLib?style=flat-square&label=Stars)](https://github.com/Zerite/MCLib/stargazers)
+[![License](https://img.shields.io/github/license/Zerite/MCLib?style=flat-square&label=License)](https://github.com/Zerite/MCLib/blob/master/LICENSE)
+[![](https://jitpack.io/v/Zerite/MCLib.svg)](https://jitpack.io/#Zerite/MCLib)
 
 #### Contents
 1. [What IS MCLib?](#1-what-is-mclib)

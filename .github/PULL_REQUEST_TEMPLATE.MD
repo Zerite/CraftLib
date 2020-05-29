@@ -1,6 +1,4 @@
-[contributing]: https://github.com/Zerite/MCLib/blob/master/.github/PULL_REQUEST_TEMPLATE.MD
-
-## Pull Request Template
+[contributing]: https://github.com/Zerite/MCLib/blob/master/.github/CONTRIBUTING.MD
 
 #### Description
 Provide a full detailed description about what your changes are and

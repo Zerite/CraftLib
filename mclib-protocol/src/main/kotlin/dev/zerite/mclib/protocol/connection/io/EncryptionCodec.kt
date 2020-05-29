@@ -43,25 +43,16 @@ class EncryptionCodec(private val connection: NettyConnection, key: Key) :
      * @since  0.1.0-SNAPSHOT
      */
     override fun encode(ctx: ChannelHandlerContext, buf: ByteBuf, out: ByteBuf) {
-        // Wrap the buffer
         val buffer = buf.wrap(connection)
-
-        // Get the size
         val size = buffer.readableBytes
-
-        // Convert the bytes to a buffer
         val bytes = buffer.toBytes()
-
-        // Get the output size
         val outSize = encryptionCipher.getOutputSize(size)
 
-        // Check if the size is large enough
+        // Resize the output buffer if necessary
         if (heapOutput.size < outSize) {
-            // Resize the output buffer
             heapOutput = ByteArray(outSize)
         }
 
-        // Write the bytes
         out.writeBytes(heapOutput, 0, encryptionCipher.update(bytes, 0, size, heapOutput))
     }
 
@@ -77,22 +68,16 @@ class EncryptionCodec(private val connection: NettyConnection, key: Key) :
      * @since  0.1.0-SNAPSHOT
      */
     override fun decode(ctx: ChannelHandlerContext, buf: ByteBuf, out: MutableList<Any>) {
-        // Wrap the buffer
         val buffer = buf.wrap(connection)
-
-        // Find the readable bytes
         val size = buffer.readableBytes
-
-        // Convert the buffer into bytes
         val bytes = buffer.toBytes()
 
-        // Allocate a new buffer for the output
+        // Create a new buffer with enough space
         val output = ctx.alloc().heapBuffer(decryptionCipher.getOutputSize(size))
 
-        // Set the writer index
+        // Add decrypted bytes to the output buffer and update its internal writer index
         output.writerIndex(decryptionCipher.update(bytes, 0, size, output.array(), output.arrayOffset()))
 
-        // Add to the output
         out.add(output)
     }
 
@@ -103,19 +88,14 @@ class EncryptionCodec(private val connection: NettyConnection, key: Key) :
      * @since  0.1.0-SNAPSHOT
      */
     private fun ProtocolBuffer.toBytes(): ByteArray {
-        // Get the amount of bytes we can read
         val readable = readableBytes
 
-        // Check if the heap is too large
+        // Resize output buffer if necessary
         if (heapInput.size < readable) {
-            // Create a new input
             heapInput = ByteArray(readable)
         }
 
-        // Read the bytes
         readBytes(heapInput, 0, readable)
-
-        // Return the heap input
         return heapInput
     }
 }

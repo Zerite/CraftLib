@@ -84,13 +84,10 @@ object MinecraftProtocol {
      * @since  0.1.0-SNAPSHOT
      */
     fun connect(address: InetAddress, port: Int, build: ConnectConfig.() -> Unit = {}): NettyConnection {
-        // Create the config
         val config = ConnectConfig(address, port).apply(build)
-
-        // Create a connection
         val connection = config.connectionFactory().apply { handler = config.handler }
 
-        // Create the bootstrap
+        // Configure and connect
         Bootstrap()
             .group(config.eventLoopGroup)
             .channel(config.channel)
@@ -103,17 +100,11 @@ object MinecraftProtocol {
                  * @since  0.1.0-SNAPSHOT
                  */
                 override fun initChannel(ch: SocketChannel) {
-                    // Build the additional logic
                     config.build(ch)
-
-                    // Set TCP No Delay
                     ch.config().isTcpNoDelay = config.noDelay
-
-                    // Check if there's a timeout
                     config.timeout.takeIf { it > 0 }
                         ?.let { ch.pipeline().addLast("readTimeout", ReadTimeoutHandler(it)) }
 
-                    // Add to the pipeline
                     ch.pipeline()
                         .addLast("length", LengthCodec(connection))
                         .addLast("packet", PacketCodec(connection))
@@ -124,7 +115,6 @@ object MinecraftProtocol {
             .connect(config.address, config.port)
             .let { if (config.connectSync) it.syncUninterruptibly() }
 
-        // Return the connection
         return connection
     }
 
@@ -227,7 +217,6 @@ object MinecraftProtocol {
          */
         @Suppress("UNUSED")
         fun build(build: SocketChannel.() -> Unit) {
-            // Set the build value
             this.build = build
         }
     }

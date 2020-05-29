@@ -61,29 +61,21 @@ data class ProtocolState(val name: String, val id: Int) {
                 handler: (ProtocolVersion, T) -> Unit
             ) = ids.takeIf { it.isNotEmpty() }
                 ?.let {
-                    // Store the ID index & first ID
                     var idIndex = 0
                     var id = ids[idIndex]
 
-                    // Loop through all the versions
                     for (protocol in ProtocolVersion.values()) {
-                        // Skip if we're not at the lowest supported protocol version
                         if (protocol < id.first) continue
 
-                        // Check if this index is under the target protocol version
                         if (id.first < protocol && idIndex + 1 < it.size) {
-                            // Get the next ID
                             val next = it[idIndex + 1]
 
-                            // Check if the mapping matches this current version
                             if (next.first == protocol) {
-                                // Set the IDs
                                 id = next
                                 idIndex++
                             }
                         }
 
-                        // Run the handler
                         handler(protocol, id.second)
                     }
                 }
@@ -143,11 +135,9 @@ data class ProtocolState(val name: String, val id: Int) {
                 IdListBuilder()
                     .apply(block).ids.toTypedArray()
             ) { version, id ->
-                // Create the data
                 val data = PacketData(id, this)
                 val type = javaClass.kotlin.typeParameter ?: return@runForAllProtocols
 
-                // Set the mappings
                 classToData.getOrPut(version) { hashMapOf() }[type] = data
                 idToData.getOrPut(version) { hashMapOf() }[id] = data
             }
@@ -157,16 +147,13 @@ data class ProtocolState(val name: String, val id: Int) {
          */
         private val KClass<*>.typeParameter: Class<*>?
             get() = try {
-                // Get the type
                 supertypes.firstOrNull()
                     ?.arguments?.firstOrNull()
                     ?.type?.javaType?.typeName
                     ?.let {
-                        // Find a class with the name
                         Class.forName(it)
                     }
             } catch (e: Throwable) {
-                // Throw an error
                 error("Failed to get packet class!")
             }
 

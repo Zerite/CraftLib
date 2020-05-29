@@ -17,7 +17,6 @@ open class Cancellable(var cancelled: Boolean = false) {
      */
     @Suppress("UNUSED")
     fun cancel() {
-        // Set cancelled to true
         cancelled = true
     }
 

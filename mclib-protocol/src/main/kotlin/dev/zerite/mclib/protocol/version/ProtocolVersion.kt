@@ -1,7 +1,7 @@
 package dev.zerite.mclib.protocol.version
 
 /**
- * Maps the Minecraft release to their protocol version.
+ * An enum of all Minecraft protocol versions supported by MCLib.
  *
  * @author Koding
  * @since  0.1.0-SNAPSHOT
@@ -9,9 +9,6 @@ package dev.zerite.mclib.protocol.version
 @Suppress("UNUSED")
 enum class ProtocolVersion(val id: Int) {
 
-    /**
-     * The values for these protocol version mappings.
-     */
     UNKNOWN(-1),
     MC1_7_2(4),
     MC1_7_6(5),
@@ -60,16 +57,8 @@ enum class ProtocolVersion(val id: Int) {
          * @since  0.1.0-SNAPSHOT
          */
         init {
-            // Loop through all the versions
-            for (i in 4..578) {
-                // Find a version by the ID
-                values().maxBy {
-                    // Check the version
-                    it.id.compareTo(i - 1)
-                }?.let {
-                    // Set the version
-                    mapped[i] = it
-                }
+            for (version in values()) {
+                mapped[version.id] = version
             }
         }
     }

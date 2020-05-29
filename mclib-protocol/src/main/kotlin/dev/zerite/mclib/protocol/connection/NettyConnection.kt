@@ -48,10 +48,7 @@ open class NettyConnection(val direction: PacketDirection) : SimpleChannelInboun
     @Suppress("UNUSED")
     var handler: PacketHandler? = null
         set(value) {
-            // Fire the assigned function
             handler?.assigned(this)
-
-            // Assign this value
             field = value
         }
 
@@ -80,22 +77,13 @@ open class NettyConnection(val direction: PacketDirection) : SimpleChannelInboun
      */
     fun <T : Any> send(packet: T, listener: T.() -> Unit = {}) =
         PacketSendingEvent(this, packet).let {
-            // Run the handler
             handler?.sending(this, it)
-
-            // Check if it's cancelled
             if (it.cancelled) return@let null
-
-            // Check if we can write the packet
             if (!this::channel.isInitialized) return@let null
 
-            // Write the packet
             channel.writeAndFlush(it.packet)
                 ?.addListener { _ ->
-                    // Run the sent listener
                     handler?.sent(this, it.packet)
-
-                    // Run the listener
                     @Suppress("UNCHECKED_CAST")
                     listener(it.packet as T)
                 }
@@ -126,7 +114,6 @@ open class NettyConnection(val direction: PacketDirection) : SimpleChannelInboun
             ?.apply { disconnected = true }
             ?.close()
             ?.addListener {
-                // Fire the disconnection listener
                 handler?.disconnected(this, reason)
             }
 
@@ -137,13 +124,8 @@ open class NettyConnection(val direction: PacketDirection) : SimpleChannelInboun
      * @author Netty
      */
     override fun channelActive(ctx: ChannelHandlerContext) {
-        // Define the channel
         channel = ctx.channel()
-
-        // Configure the channel
         channel.attr(attribute).set(this)
-
-        // Run the connection handler
         handler?.connected(this)
     }
 
@@ -166,7 +148,6 @@ open class NettyConnection(val direction: PacketDirection) : SimpleChannelInboun
      * @author Netty
      */
     override fun channelRead0(ctx: ChannelHandlerContext, packet: Any) {
-        // Run the handler
         handler?.received(this, packet)
     }
 
@@ -178,7 +159,6 @@ open class NettyConnection(val direction: PacketDirection) : SimpleChannelInboun
      * @author Netty
      */
     override fun exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable) {
-        // Run the handler
         handler?.exception(this, cause)
     }
 }

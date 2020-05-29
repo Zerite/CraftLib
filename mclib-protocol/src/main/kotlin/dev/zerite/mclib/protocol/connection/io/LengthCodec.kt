@@ -27,10 +27,8 @@ class LengthCodec(private val connection: NettyConnection) : ByteToMessageCodec<
      * @since  0.1.0-SNAPSHOT
      */
     override fun encode(ctx: ChannelHandlerContext, msg: ByteBuf, out: ByteBuf) {
-        // Wrap the buffer
         val buffer = out.wrap(connection)
 
-        // Write the length prefix
         buffer.writeVarInt(msg.readableBytes())
         buffer.writeBytes(msg)
     }
@@ -47,49 +45,35 @@ class LengthCodec(private val connection: NettyConnection) : ByteToMessageCodec<
      * @since  0.1.0-SNAPSHOT
      */
     override fun decode(ctx: ChannelHandlerContext, buf: ByteBuf, out: MutableList<Any>) {
-        // Wrap the buffer
         val buffer = buf.wrap(connection)
-
-        // Mark the reader index so we can reset back to it later
         buf.markReaderIndex()
-
-        // Create a buffer to store the length in
         val lengthBuffer = ByteArray(5)
 
-        // Loop through every byte we could read in the buffer
         repeat(lengthBuffer.size) { i ->
-            // Check if we can't read anymore
             if (!buffer.isReadable) {
-                // Reset back to the original reader index and ignore it
                 buffer.resetReaderIndex()
                 return
             }
 
-            // Read the next byte
             lengthBuffer[i] = buf.readByte()
 
-            // Check if we've reached the end of this VarInt
+            // Check if we have all bytes in the length varint
             if (lengthBuffer[i] >= 0) {
-                // Create a buffer for the length bytes
                 val wrappedLength = lengthBuffer.wrap(connection)
 
-                // Read the buffer as a VarInt
                 val length = wrappedLength.readVarInt().takeIf { it > 0 }
                     ?: throw CorruptedFrameException("Empty packet")
 
-                // Check if the length is larger than what we can read
+                // Check if we have all packet bytes
                 if (length >= buffer.readableBytes) {
-                    // Reset the index
                     buffer.resetReaderIndex()
                 } else {
-                    // Read the output
+                    // Create a new buffer containing only this packet and not any others which may come after it
                     out.add(buffer.slice(buffer.readerIndex, length).retain())
-
-                    // Skip over the length bytes
+                    // Remove the packet from the original buffer
                     buffer.skipBytes(length)
                 }
 
-                // Break out of the loop
                 return
             }
         }

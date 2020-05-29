@@ -39,27 +39,22 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
      * @since  0.1.0-SNAPSHOT
      */
     fun readVarInt(): Int {
-        // Store the base storage values
         var amount = 0
         var result = 0
         var read: Int
 
-        // Loop whilst we should read
         do {
-            // Read the next byte
             read = readByte().toInt()
 
-            // Read the value
+            // Discard most significant bit as it's not part of the value
             val value = read and 0b01111111
 
-            // Modify the result
+            // Create space for this part of the value and add it
             result = result or (value shl (7 * amount++))
 
-            // Check if the amount is too large
             if (amount > 5) error("VarInt has too many bytes (only 5 allowed)")
-        } while ((read and 0b10000000) != 0)
+        } while ((read and 0b10000000) != 0) // If the most significant bit is set we have to read another byte
 
-        // Return the result
         return result
     }
 
@@ -71,24 +66,20 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
      * @since  0.1.0-SNAPSHOT
      */
     fun writeVarInt(value: Int) {
-        // Store the current value
         var current = value
 
-        // Loop whilst we still have a remaining value to write
         do {
-            // Get the current masked value
+            // Get the value we're supposed to write
             var temp = current and 0b01111111
 
-            // Set the new current value
+            // Discard the part of the value we're writing now
             current = current ushr 7
 
-            // Check if we need to write any more values
+            // Set the most significant bit if we need to write any more bytes
             if (current != 0) {
-                // Modify the temp variable
                 temp = temp or 0b10000000
             }
 
-            // Write the masked value as a byte
             writeByte(temp)
         } while (current != 0)
     }
@@ -115,10 +106,7 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
      */
     @Suppress("UNUSED")
     inline fun writeByteArray(bytes: ByteArray, length: ProtocolBuffer.(Int) -> Unit = { writeVarInt(it) }) {
-        // Write the length
         length(bytes.size)
-
-        // Write the bytes
         writeBytes(bytes)
     }
 

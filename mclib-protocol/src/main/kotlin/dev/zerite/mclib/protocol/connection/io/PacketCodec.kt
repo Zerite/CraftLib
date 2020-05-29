@@ -31,13 +31,10 @@ class PacketCodec(private val connection: NettyConnection) : ByteToMessageCodec<
      * @since  0.1.0-SNAPSHOT
      */
     override fun encode(ctx: ChannelHandlerContext, packet: Any, buf: ByteBuf) {
-        // Get the data
+        // Get the packet registry data
         val data = connection.state[connection.direction][connection.version, packet]
 
-        // Wrap the buffer
         val buffer = buf.wrap(connection)
-
-        // Write the packet ID
         buffer.writeVarInt(data.id)
 
         // Write the packet data
@@ -57,19 +54,20 @@ class PacketCodec(private val connection: NettyConnection) : ByteToMessageCodec<
      * @since  0.1.0-SNAPSHOT
      */
     override fun decode(ctx: ChannelHandlerContext, buf: ByteBuf, out: MutableList<Any>) {
-        // Wrap the buffer
         val buffer = buf.wrap(connection)
-
-        // Read the ID
         val id = buffer.readVarInt()
 
-        // Get the packet IO
+        // Get the packet registry data
         val io = connection.state[decodeDirection][connection.version, id].io
 
         // Read the data fully
         out.add(io.read(buffer, connection.version, connection))
 
-        // Check if there are still remaining bytes
+        /*
+        Check if the packet didn't read all of its bytes.
+        If we don't do this the next packet will have some old data from this packet in its buffer and mess up
+        the entire packet reading pipeline
+         */
         if (buffer.readableBytes > 0)
             error("Packet ${io::class.java.simpleName} wasn't fully read (${buffer.readableBytes} bytes left)")
     }

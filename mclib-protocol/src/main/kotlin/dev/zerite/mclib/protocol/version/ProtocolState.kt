@@ -145,14 +145,14 @@ data class ProtocolState(val name: String, val id: Int) {
         /**
          * Finds the first type parameter for a class.
          */
-        private val KClass<*>.typeParameter: Class<*>?
+        val KClass<*>.typeParameter: Class<*>?
             get() = try {
                 supertypes.firstOrNull()
                     ?.arguments?.firstOrNull()
                     ?.type?.javaType?.typeName
                     ?.let {
                         Class.forName(it)
-                    }
+                    } ?: error("Failed to get packet class!")
             } catch (e: Throwable) {
                 error("Failed to get packet class!")
             }

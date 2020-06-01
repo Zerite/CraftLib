@@ -20,6 +20,11 @@ data class ClientHandshakePacket(
     var port: Int,
     var nextState: ProtocolState
 ) {
+
+    init {
+        if (nextState.id.let { it != 1 && it != 2 }) error("Invalid protocol state")
+    }
+
     companion object : PacketIO<ClientHandshakePacket> {
         override fun read(
             buffer: ProtocolBuffer,

@@ -253,6 +253,40 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
      * @since  0.1.0-SNAPSHOT
      */
     fun readBytes(bytes: ByteArray, start: Int, length: Int): ByteBuf = buf.readBytes(bytes, start, length)
+
+    /**
+     * Marks the index of the writer so we can reset
+     * back to it later.
+     *
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    fun markWriterIndex(): ByteBuf = buf.markWriterIndex()
+
+    /**
+     * Resets the writer back to the last marked index.
+     *
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    fun resetWriterIndex(): ByteBuf = buf.resetWriterIndex()
+
+    /**
+     * Converts the buffer into an array and returns null
+     * if this buffer doesn't support this conversion.
+     *
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    fun array() = if (buf.hasArray()) buf.array() else null
+
+    /**
+     * Releases the byte buffer from memory.
+     *
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    fun release() = buf.release()
 }
 
 /**

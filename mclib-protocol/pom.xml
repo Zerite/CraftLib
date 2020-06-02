@@ -37,6 +37,11 @@
             <version>${netty.version}</version>
         </dependency>
         <dependency>
+            <groupId>dev.zerite.mclib</groupId>
+            <artifactId>mclib-chat</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-test-junit</artifactId>
             <version>${kotlin.version}</version>

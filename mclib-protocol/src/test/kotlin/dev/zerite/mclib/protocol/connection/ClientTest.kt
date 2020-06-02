@@ -2,6 +2,7 @@ package dev.zerite.mclib.protocol.connection
 
 import dev.zerite.mclib.protocol.packet.handshake.client.ClientHandshakePacket
 import dev.zerite.mclib.protocol.packet.login.client.ClientLoginStartPacket
+import dev.zerite.mclib.protocol.packet.login.server.ServerLoginSuccessPacket
 import dev.zerite.mclib.protocol.version.MinecraftProtocol
 import dev.zerite.mclib.protocol.version.ProtocolVersion
 import java.net.InetAddress
@@ -64,7 +65,11 @@ fun main() {
 
             override fun received(connection: NettyConnection, packet: Any) {
                 // Check if we're in debug logging & print
-                if (debugLogging) println("[S->C] $packet")
+                if (debugLogging) println("[S->C]: $packet")
+
+                when (packet) {
+                    is ServerLoginSuccessPacket -> connection.state = MinecraftProtocol.INGAME
+                }
             }
 
             override fun exception(connection: NettyConnection, cause: Throwable) {

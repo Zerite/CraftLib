@@ -1,8 +1,13 @@
 package dev.zerite.mclib.protocol
 
+import dev.zerite.mclib.chat.component.BaseChatComponent
+import dev.zerite.mclib.chat.component.chatComponent
+import dev.zerite.mclib.chat.component.json
 import dev.zerite.mclib.protocol.connection.NettyConnection
+import dev.zerite.mclib.protocol.util.ext.toUuid
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.Unpooled
+import java.util.*
 
 /**
  * Wraps a byte buffer and adds additional methods to easily read
@@ -92,7 +97,7 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
      * @since  0.1.0-SNAPSHOT
      */
     @Suppress("UNUSED")
-    fun readByteArray(length: () -> Int = { readVarInt() }) =
+    fun readByteArray(length: ProtocolBuffer.() -> Int = { readVarInt() }) =
         ByteArray(length()).apply { readBytes(this) }
 
     /**
@@ -287,6 +292,97 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
      * @since  0.1.0-SNAPSHOT
      */
     fun release() = buf.release()
+
+    /**
+     * Reads a string from the buffer and parses the JSON into a
+     * chat component object.
+     *
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    fun readChat() = readString().chatComponent
+
+    /**
+     * Writes a chat component to the buffer by converting it
+     * into its JSON representation.
+     *
+     * @param  value        The component to write.
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    fun writeChat(value: BaseChatComponent) = writeString(value.json)
+
+    /**
+     * Reads a long from the buffer and returns it.
+     *
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    @Suppress("UNUSED")
+    fun readLong() = buf.readLong()
+
+    /**
+     * Writes a long into the buffer from the provided value.
+     *
+     * @param  value        The value we're writing.
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    @Suppress("UNUSED")
+    fun writeLong(value: Long): ByteBuf = buf.writeLong(value)
+
+    /**
+     * Reads a UUID from the buffer in a specific mode specified by
+     * the provided mode.
+     *
+     * @param  mode         The mode to use to read this UUID.
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    fun readUUID(mode: UUIDMode = UUIDMode.STRING) = when (mode) {
+        UUIDMode.DASHES -> readString().toUuid(dashes = true)
+        UUIDMode.STRING -> readString().toUuid()
+        UUIDMode.RAW -> UUID(readLong(), readLong())
+    }
+
+    /**
+     * Writes a UUID to the buffer with the given mode.
+     *
+     * @param  value       The UUID to write.
+     * @param  mode        The mode of writing to use for this UUID.
+     *
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    fun writeUUID(value: UUID, mode: UUIDMode = UUIDMode.STRING): Any =
+        when (mode) {
+            UUIDMode.DASHES -> writeString(value.toString().replace("-", ""))
+            UUIDMode.STRING -> writeString(value.toString())
+            UUIDMode.RAW -> {
+                writeLong(value.mostSignificantBits)
+                writeLong(value.leastSignificantBits)
+            }
+        }
+
+    /**
+     * Reads a short from the buffer and returns it.
+     *
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    fun readShort() = buf.readShort()
+
+    /**
+     * Set of modes which the UUIDs should be written using.
+     *
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    enum class UUIDMode {
+        DASHES,
+        STRING,
+        RAW
+    }
 }
 
 /**

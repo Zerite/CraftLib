@@ -1,5 +1,6 @@
 package dev.zerite.mclib.protocol.connection
 
+import dev.zerite.mclib.chat.component.chatComponent
 import dev.zerite.mclib.protocol.connection.io.EncryptionCodec
 import dev.zerite.mclib.protocol.version.MinecraftProtocol
 import dev.zerite.mclib.protocol.version.PacketDirection
@@ -114,7 +115,7 @@ open class NettyConnection(val direction: PacketDirection) : SimpleChannelInboun
             ?.apply { disconnected = true }
             ?.close()
             ?.addListener {
-                handler?.disconnected(this, reason)
+                handler?.disconnected(this, reason.chatComponent)
             }
 
     /**

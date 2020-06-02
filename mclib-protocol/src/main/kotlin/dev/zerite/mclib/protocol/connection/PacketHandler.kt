@@ -1,5 +1,6 @@
 package dev.zerite.mclib.protocol.connection
 
+import dev.zerite.mclib.chat.component.BaseChatComponent
 import dev.zerite.mclib.protocol.util.Cancellable
 
 @Suppress("UNUSED")
@@ -59,15 +60,13 @@ interface PacketHandler {
     /**
      * Called when this connection has disconnected from the host.
      *
-     * TODO: Port reason to chat component
-     *
      * @param  connection    Reference to the connection which was disconnected.
      * @param  reason        The reason for disconnecting.
      *
      * @author Koding
      * @since  0.1.0-SNAPSHOT
      */
-    fun disconnected(connection: NettyConnection, reason: String) {}
+    fun disconnected(connection: NettyConnection, reason: BaseChatComponent) {}
 
     /**
      * Fired when this connection encounters an error.

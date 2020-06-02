@@ -5,7 +5,11 @@ import dev.zerite.mclib.protocol.connection.PacketHandler
 import dev.zerite.mclib.protocol.connection.io.LengthCodec
 import dev.zerite.mclib.protocol.connection.io.PacketCodec
 import dev.zerite.mclib.protocol.packet.handshake.client.ClientHandshakePacket
+import dev.zerite.mclib.protocol.packet.login.client.ClientLoginEncryptionResponsePacket
 import dev.zerite.mclib.protocol.packet.login.client.ClientLoginStartPacket
+import dev.zerite.mclib.protocol.packet.login.server.ServerLoginDisconnectPacket
+import dev.zerite.mclib.protocol.packet.login.server.ServerLoginEncryptionRequestPacket
+import dev.zerite.mclib.protocol.packet.login.server.ServerLoginSuccessPacket
 import io.netty.bootstrap.Bootstrap
 import io.netty.channel.ChannelInitializer
 import io.netty.channel.epoll.Epoll
@@ -69,6 +73,20 @@ object MinecraftProtocol {
         serverbound {
             ClientLoginStartPacket {
                 ProtocolVersion.MC1_7_2 to 0x00
+            }
+            ClientLoginEncryptionResponsePacket {
+                ProtocolVersion.MC1_7_2 to 0x01
+            }
+        }
+        clientbound {
+            ServerLoginDisconnectPacket {
+                ProtocolVersion.MC1_7_2 to 0x00
+            }
+            ServerLoginEncryptionRequestPacket {
+                ProtocolVersion.MC1_7_2 to 0x01
+            }
+            ServerLoginSuccessPacket {
+                ProtocolVersion.MC1_7_2 to 0x02
             }
         }
     }

@@ -64,7 +64,7 @@ subprojects {
                 artifact sourceJar
 
                 pom {
-                    name = beta ? "${project.name}-beta" : project.name
+                    artifactId = beta ? "${project.name}-beta" : project.name
                     url = "https://zerite.dev"
                 }
             }

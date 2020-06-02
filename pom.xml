@@ -13,6 +13,7 @@
     <description>Rewriting Minecraft as a library</description>
 
     <modules>
+        <module>mclib-chat</module>
         <module>mclib-protocol</module>
     </modules>
 

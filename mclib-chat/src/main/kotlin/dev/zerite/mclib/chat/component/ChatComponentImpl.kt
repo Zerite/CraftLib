@@ -56,7 +56,7 @@ data class StringChatComponent(val text: String) : BaseChatComponent() {
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-data class TranslationChatComponent(val key: String, val with: Array<out BaseChatComponent>) : BaseChatComponent() {
+data class TranslationChatComponent(val key: String, val with: Array<out BaseChatComponent> = emptyArray()) : BaseChatComponent() {
     override val localUnformattedText =
         Internationalization.instance.format(key, *with.map { it.unformattedText }.toTypedArray())
     override val localFormattedText =

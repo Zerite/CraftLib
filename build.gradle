@@ -16,7 +16,7 @@ ext {
     beta = System.getenv("BETA") == "true"
 }
 
-group 'dev.zerite.mclib'
+group 'dev.zerite.craftlib'
 version = beta ? getGitHash() : '0.1.0-SNAPSHOT'
 
 subprojects {
@@ -50,7 +50,7 @@ subprojects {
         repositories {
             maven {
                 name = "GitHubPackages"
-                url = uri("https://maven.pkg.github.com/Zerite/MCLib")
+                url = uri("https://maven.pkg.github.com/Zerite/CraftLib")
                 credentials {
                     username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
                     password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")

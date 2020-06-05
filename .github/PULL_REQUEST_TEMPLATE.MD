@@ -1,4 +1,4 @@
-[contributing]: https://github.com/Zerite/MCLib/blob/master/.github/CONTRIBUTING.MD
+[contributing]: https://github.com/Zerite/CraftLib/blob/master/.github/CONTRIBUTING.MD
 
 #### Description
 Provide a full detailed description about what your changes are and

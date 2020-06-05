@@ -1,7 +1,0 @@
-description = 'Full Minecraft protocol wrapper'
-
-dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
-    implementation 'io.netty:netty-all:4.1.49.Final'
-    implementation project(':mclib-chat')
-}

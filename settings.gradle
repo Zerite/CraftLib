@@ -1,2 +1,2 @@
-rootProject.name = 'MCLib'
-include ':mclib-chat', ':mclib-protocol'
+rootProject.name = 'CraftLib'
+include ':craftlib-chat', ':craftlib-protocol'

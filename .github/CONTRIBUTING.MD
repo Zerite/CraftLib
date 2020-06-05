@@ -1,5 +1,5 @@
 ## Contributing
-When contributing to **MCLib**, there are certain guidelines to be
+When contributing to **CraftLib**, there are certain guidelines to be
 followed for a pull request to be **approved**.
 
 **Note:** It is recommended to create a new branch on your fork for each pull request you submit.

@@ -97,7 +97,7 @@ data class ProtocolState(val name: String, val id: Int) {
          * @since  0.1.0-SNAPSHOT
          */
         operator fun get(version: ProtocolVersion, id: Int) =
-            idToData[version]?.get(id) ?: error("Invalid packet ID ($id): [$direction]")
+            idToData[version]?.get(id) ?: error("Invalid packet ID ($id / 0x${id.toString(16)}): [$direction]")
 
         /**
          * Get packet data from the packet specified.
@@ -131,10 +131,7 @@ data class ProtocolState(val name: String, val id: Int) {
          */
         @ProtocolStateDSL
         operator fun PacketIO<*>.invoke(block: IdListBuilder.() -> Unit) =
-            runForAllProtocols(
-                IdListBuilder()
-                    .apply(block).ids.toTypedArray()
-            ) { version, id ->
+            runForAllProtocols(IdListBuilder().apply(block).ids.toTypedArray()) { version, id ->
                 val data = PacketData(id, this)
                 val type = javaClass.kotlin.typeParameter ?: return@runForAllProtocols
 

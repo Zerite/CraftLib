@@ -373,6 +373,115 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
     fun readShort() = buf.readShort()
 
     /**
+     * Reads an int from the buffer.
+     *
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    fun readInt() = buf.readInt()
+
+    /**
+     * Writes an int to the buffer.
+     *
+     * @param  value      The int value to write.
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    fun writeInt(value: Int): ByteBuf = buf.writeInt(value)
+
+    /**
+     * Reads an unsigned byte from the buffer and returns it.
+     *
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    fun readUnsignedByte() = buf.readUnsignedByte()
+
+    /**
+     * Reads a float from the buffer and returns it.
+     *
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    fun readFloat() = buf.readFloat()
+
+    /**
+     * Writes the float value to the buffer.
+     *
+     * @param  value       The float value to write.
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    fun writeFloat(value: Float): ByteBuf = buf.writeFloat(value)
+
+    /**
+     * Reads an array from the buffer using the provided process method.
+     *
+     * @param  length      Reads the length from the buffer.
+     * @param  process     Reads a value from the array for each item.
+     *
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    inline fun <reified T> readArray(
+        length: ProtocolBuffer.() -> Int = { readVarInt() },
+        process: ProtocolBuffer.() -> T
+    ) = (0 until length()).map { process() }.toTypedArray()
+
+    /**
+     * Writes an array to the buffer using the provided process method.
+     *
+     * @param  items       The items to write into the array.
+     * @param  length      Writes the length to the buffer.
+     * @param  process     Writes a value from the array into the buffer.
+     *
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    inline fun <reified T> writeArray(
+        items: Array<T>,
+        length: ProtocolBuffer.(Int) -> Unit = { writeVarInt(it) },
+        process: ProtocolBuffer.(T) -> Unit
+    ) {
+        this.length(items.size)
+        items.forEach { this.process(it) }
+    }
+
+    /**
+     * Reads a boolean value from the buffer and returns it.
+     *
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    fun readBoolean() = buf.readBoolean()
+
+    /**
+     * Writes a boolean value into the buffer.
+     *
+     * @param  value      The value to write.
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    fun writeBoolean(value: Boolean): ByteBuf = buf.writeBoolean(value)
+
+    /**
+     * Reads a double from the buffer and returns it.
+     *
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    fun readDouble() = buf.readDouble()
+
+    /**
+     * Writes a double into the buffer.
+     *
+     * @param  value    The double value to write.
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    fun writeDouble(value: Double): ByteBuf = buf.writeDouble(value)
+
+    /**
      * Set of modes which the UUIDs should be written using.
      *
      * @author Koding

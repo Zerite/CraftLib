@@ -18,8 +18,10 @@ fun main() {
     // Get the parameters
     val host = System.getProperty("client.host") ?: "127.0.0.1"
     val port = System.getProperty("client.port")?.toIntOrNull() ?: 25566
+    val username = System.getProperty("client.username") ?: "ExampleUser"
     val debugNetty = System.getProperty("client.nettyDebug")?.toBoolean() ?: true
     val debugLogging = System.getProperty("client.loggingDebug")?.toBoolean() ?: true
+    val errorInterval = System.getProperty("client.errorInterval")?.toLong() ?: 1000L
 
     // Connect to localhost
     MinecraftProtocol.connect(InetAddress.getByName(host), port) {
@@ -28,6 +30,11 @@ fun main() {
 
         // Build a handler
         handler = object : PacketHandler {
+
+            /**
+             * Stores the last logged exception time.
+             */
+            private var nextLog = -1L
 
             /**
              * Initializes the connection by sending the handshake and
@@ -54,7 +61,7 @@ fun main() {
                     connection.state = MinecraftProtocol.LOGIN
 
                     // Send the login start packet
-                    connection.send(ClientLoginStartPacket("ExampleUser"))
+                    connection.send(ClientLoginStartPacket(username))
                 }
             }
 
@@ -68,13 +75,18 @@ fun main() {
                 if (debugLogging) println("[S->C]: $packet")
 
                 when (packet) {
-                    is ServerLoginSuccessPacket -> connection.state = MinecraftProtocol.INGAME
+                    is ServerLoginSuccessPacket -> connection.state = MinecraftProtocol.PLAY
                 }
             }
 
             override fun exception(connection: NettyConnection, cause: Throwable) {
                 // Print the error
-                if (!debugNetty && debugLogging) cause.printStackTrace()
+                if (!debugNetty && debugLogging && nextLog < System.currentTimeMillis()) {
+                    // Set the next log
+                    cause.printStackTrace()
+
+                    nextLog = System.currentTimeMillis() + errorInterval
+                }
             }
         }
     }

@@ -8,7 +8,7 @@ import java.util.*
 
 /**
  * Sent from the server to the client to indicate that a login was successful,
- * also indicating a protocol state change from {@code LOGIN} to {@code INGAME}.
+ * also indicating a protocol state change from {@code LOGIN} to {@code PLAY}.
  *
  * @author Koding
  * @since  0.1.0-SNAPSHOT

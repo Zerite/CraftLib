@@ -10,6 +10,16 @@ import dev.zerite.mclib.protocol.packet.login.client.ClientLoginStartPacket
 import dev.zerite.mclib.protocol.packet.login.server.ServerLoginDisconnectPacket
 import dev.zerite.mclib.protocol.packet.login.server.ServerLoginEncryptionRequestPacket
 import dev.zerite.mclib.protocol.packet.login.server.ServerLoginSuccessPacket
+import dev.zerite.mclib.protocol.packet.play.server.display.ServerPlayChatMessagePacket
+import dev.zerite.mclib.protocol.packet.play.server.display.ServerPlayPlayerListItemPacket
+import dev.zerite.mclib.protocol.packet.play.server.inventory.ServerPlayHeldItemChangePacket
+import dev.zerite.mclib.protocol.packet.play.server.join.ServerPlayJoinGamePacket
+import dev.zerite.mclib.protocol.packet.play.server.other.ServerPlayPluginMessagePacket
+import dev.zerite.mclib.protocol.packet.play.server.player.ServerPlayPlayerAbilitiesPacket
+import dev.zerite.mclib.protocol.packet.play.server.join.ServerPlaySpawnPositionPacket
+import dev.zerite.mclib.protocol.packet.play.server.join.ServerPlayStatisticsPacket
+import dev.zerite.mclib.protocol.packet.play.server.player.ServerPlayPlayerPositionLookPacket
+import dev.zerite.mclib.protocol.packet.play.server.world.ServerPlayTimeUpdatePacket
 import io.netty.bootstrap.Bootstrap
 import io.netty.channel.ChannelInitializer
 import io.netty.channel.epoll.Epoll
@@ -52,9 +62,40 @@ object MinecraftProtocol {
      * State for when the player is successfully authenticated and should
      * be receiving game updates.
      */
-    val INGAME = protocol("In-game", 0) {
+    val PLAY = protocol("Play", 0) {
         serverbound {}
-        clientbound {}
+        clientbound {
+            ServerPlayJoinGamePacket {
+                ProtocolVersion.MC1_7_2 to 0x01
+            }
+            ServerPlayChatMessagePacket {
+                ProtocolVersion.MC1_7_2 to 0x02
+            }
+            ServerPlayTimeUpdatePacket {
+                ProtocolVersion.MC1_7_2 to 0x03
+            }
+            ServerPlaySpawnPositionPacket {
+                ProtocolVersion.MC1_7_2 to 0x05
+            }
+            ServerPlayPlayerPositionLookPacket {
+                ProtocolVersion.MC1_7_2 to 0x08
+            }
+            ServerPlayHeldItemChangePacket {
+                ProtocolVersion.MC1_7_2 to 0x09
+            }
+            ServerPlayStatisticsPacket {
+                ProtocolVersion.MC1_7_2 to 0x37
+            }
+            ServerPlayPlayerListItemPacket {
+                ProtocolVersion.MC1_7_2 to 0x38
+            }
+            ServerPlayPlayerAbilitiesPacket {
+                ProtocolVersion.MC1_7_2 to 0x39
+            }
+            ServerPlayPluginMessagePacket {
+                ProtocolVersion.MC1_7_2 to 0x3F
+            }
+        }
     }
 
     /**

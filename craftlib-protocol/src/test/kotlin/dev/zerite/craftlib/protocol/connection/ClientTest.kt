@@ -3,6 +3,7 @@ package dev.zerite.craftlib.protocol.connection
 import dev.zerite.craftlib.protocol.packet.handshake.client.ClientHandshakePacket
 import dev.zerite.craftlib.protocol.packet.login.client.ClientLoginStartPacket
 import dev.zerite.craftlib.protocol.packet.login.server.ServerLoginSuccessPacket
+import dev.zerite.craftlib.protocol.packet.play.server.world.ServerPlayMapChunkBulkPacket
 import dev.zerite.craftlib.protocol.version.MinecraftProtocol
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 import java.net.InetAddress
@@ -72,7 +73,7 @@ fun main() {
 
             override fun received(connection: NettyConnection, packet: Any) {
                 // Check if we're in debug logging & print
-                if (debugLogging) println("[S->C]: $packet")
+                if (debugLogging && packet !is ServerPlayMapChunkBulkPacket) println("[S->C]: $packet")
 
                 when (packet) {
                     is ServerLoginSuccessPacket -> connection.state = MinecraftProtocol.PLAY

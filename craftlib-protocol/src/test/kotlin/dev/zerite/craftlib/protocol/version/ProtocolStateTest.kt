@@ -39,8 +39,6 @@ class ProtocolStateTest {
     }
 
     @Test
-    fun `Test Packet toString`() {
-        assertEquals("Example (1)", ProtocolState("Example", 1).toString())
-    }
+    fun `Test Packet toString`() = assertEquals("Example (1)", ProtocolState("Example", 1).toString())
 
 }

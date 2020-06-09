@@ -49,7 +49,7 @@ object NBTIO {
      * @author Koding
      * @since  0.1.0-SNAPSHOT
      */
-    fun read(input: DataInput): NamedTag<NBTTag> {
+    fun read(input: DataInput): NamedTag<CompoundTag> {
         assert(input.readByte().toInt() == 10) { "Root tag must be a compound tag" }
         return NamedTag(input.readUTF(), readTag(10, input))
     }

@@ -13,12 +13,15 @@ import dev.zerite.craftlib.protocol.packet.login.server.ServerLoginSuccessPacket
 import dev.zerite.craftlib.protocol.packet.play.server.display.ServerPlayChatMessagePacket
 import dev.zerite.craftlib.protocol.packet.play.server.display.ServerPlayPlayerListItemPacket
 import dev.zerite.craftlib.protocol.packet.play.server.inventory.ServerPlayHeldItemChangePacket
+import dev.zerite.craftlib.protocol.packet.play.server.inventory.ServerPlaySetSlotPacket
+import dev.zerite.craftlib.protocol.packet.play.server.inventory.ServerPlayWindowItemsPacket
 import dev.zerite.craftlib.protocol.packet.play.server.join.ServerPlayJoinGamePacket
 import dev.zerite.craftlib.protocol.packet.play.server.other.ServerPlayPluginMessagePacket
 import dev.zerite.craftlib.protocol.packet.play.server.player.ServerPlayPlayerAbilitiesPacket
 import dev.zerite.craftlib.protocol.packet.play.server.join.ServerPlaySpawnPositionPacket
 import dev.zerite.craftlib.protocol.packet.play.server.join.ServerPlayStatisticsPacket
 import dev.zerite.craftlib.protocol.packet.play.server.player.ServerPlayPlayerPositionLookPacket
+import dev.zerite.craftlib.protocol.packet.play.server.world.ServerPlayMapChunkBulkPacket
 import dev.zerite.craftlib.protocol.packet.play.server.world.ServerPlayTimeUpdatePacket
 import io.netty.bootstrap.Bootstrap
 import io.netty.channel.ChannelInitializer
@@ -82,6 +85,15 @@ object MinecraftProtocol {
             }
             ServerPlayHeldItemChangePacket {
                 ProtocolVersion.MC1_7_2 to 0x09
+            }
+            ServerPlayMapChunkBulkPacket {
+                ProtocolVersion.MC1_7_2 to 0x26
+            }
+            ServerPlaySetSlotPacket {
+                ProtocolVersion.MC1_7_2 to 0x2F
+            }
+            ServerPlayWindowItemsPacket {
+                ProtocolVersion.MC1_7_2 to 0x30
             }
             ServerPlayStatisticsPacket {
                 ProtocolVersion.MC1_7_2 to 0x37

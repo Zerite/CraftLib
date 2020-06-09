@@ -3,10 +3,15 @@ package dev.zerite.craftlib.protocol
 import dev.zerite.craftlib.chat.component.BaseChatComponent
 import dev.zerite.craftlib.chat.component.chatComponent
 import dev.zerite.craftlib.chat.component.json
+import dev.zerite.craftlib.nbt.NBTIO
+import dev.zerite.craftlib.nbt.impl.CompoundTag
+import dev.zerite.craftlib.nbt.impl.NamedTag
 import dev.zerite.craftlib.protocol.connection.NettyConnection
 import dev.zerite.craftlib.protocol.util.ext.toUuid
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.Unpooled
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.util.*
 
 /**
@@ -99,6 +104,17 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
     @Suppress("UNUSED")
     fun readByteArray(length: ProtocolBuffer.() -> Int = { readVarInt() }) =
         ByteArray(length()).apply { readBytes(this) }
+
+    /**
+     * Reads a byte array from the buffer.
+     *
+     * @param  length    The length of the byte array to read.
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    @Suppress("UNUSED")
+    fun readByteArray(length: Int) =
+        ByteArray(length).apply { readBytes(this) }
 
     /**
      * Writes a byte array to the buffer.
@@ -482,6 +498,82 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
     fun writeDouble(value: Double): ByteBuf = buf.writeDouble(value)
 
     /**
+     * Reads a NBT tag from the buffer.
+     *
+     * @param  compressed    Whether this compound is compressed with GZIP.
+     * @param  length        Reads the length from the buffer.
+     *
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    @Suppress("UNUSED")
+    fun readNBT(
+        compressed: Boolean = false,
+        length: ProtocolBuffer.() -> Int = { readShort().toInt() }
+    ) = length().let { len ->
+        if (len < 0) null
+        else ByteArrayInputStream(readByteArray(len)).let {
+            if (compressed) NBTIO.readCompressed(it)
+            else NBTIO.read(it)
+        }
+    }
+
+    /**
+     * Writes a NBT tag compound into the buffer.
+     *
+     * @param  tag           The tag we need to write into the buffer.
+     * @param  compressed    Whether this tag should be compressed with GZIP.
+     * @param  length        Writes the length of the NBT to the buffer.
+     *
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    @Suppress("UNUSED")
+    fun writeNBT(
+        tag: CompoundTag?,
+        compressed: Boolean = false,
+        length: ProtocolBuffer.(Int) -> Unit = { writeShort(it) }
+    ) = if (tag == null) length(-1)
+    else {
+        val out = ByteArrayOutputStream()
+        NamedTag("", tag).let {
+            if (compressed) NBTIO.writeCompressed(it, out)
+            else NBTIO.write(it, out)
+        }
+        writeByteArray(out.toByteArray()) { length(it) }
+    }
+
+    /**
+     * Reads slot data from the buffer and returns it.
+     *
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    fun readSlot() = Slot(readShort()).apply {
+        if (id >= 0) {
+            count = readByte()
+            damage = readShort()
+            data = readNBT(compressed = true)?.tag
+        }
+    }
+
+    /**
+     * Writes a slot into the buffer.
+     *
+     * @param  slot       The slot we are writing to the buffer.
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    fun writeSlot(slot: Slot) = slot.apply {
+        writeShort(id.toInt())
+        if (id >= 0) {
+            writeByte(count.toInt())
+            writeShort(damage.toInt())
+            writeNBT(data, compressed = true)
+        }
+    }
+
+    /**
      * Set of modes which the UUIDs should be written using.
      *
      * @author Koding
@@ -493,6 +585,14 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
         RAW
     }
 }
+
+/**
+ * Contains data about a single slot in an inventory.
+ *
+ * @author Koding
+ * @since  0.1.0-SNAPSHOT
+ */
+data class Slot(var id: Short, var count: Byte = 0, var damage: Short = 0, var data: CompoundTag? = null)
 
 /**
  * Wrap a byte buffer into a wrapped version whilst including

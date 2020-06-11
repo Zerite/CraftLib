@@ -40,7 +40,7 @@ class MinecraftRegistry<T : RegistryEntry> : IMinecraftRegistry<T> {
      * @since  0.1.0-SNAPSHOT
      */
     fun rebuild() = ProtocolState.SideData.runForAllProtocols(
-        rawVersions.map { it.key to it.value }.toTypedArray()
+        rawVersions.map { it.key to it.value }.sortedBy { it.first }.toTypedArray()
     ) { version, map ->
         versions[version] = map
         versionsInt[version] = HashMap(map.map { it.value to it.key }.toMap())

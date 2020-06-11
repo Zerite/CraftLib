@@ -12,8 +12,7 @@ import dev.zerite.craftlib.protocol.packet.login.server.ServerLoginEncryptionReq
 import dev.zerite.craftlib.protocol.packet.login.server.ServerLoginSuccessPacket
 import dev.zerite.craftlib.protocol.packet.play.server.display.ServerPlayChatMessagePacket
 import dev.zerite.craftlib.protocol.packet.play.server.display.ServerPlayPlayerListItemPacket
-import dev.zerite.craftlib.protocol.packet.play.server.entity.ServerPlayEntityMetadataPacket
-import dev.zerite.craftlib.protocol.packet.play.server.entity.ServerPlayEntityPropertiesPacket
+import dev.zerite.craftlib.protocol.packet.play.server.entity.*
 import dev.zerite.craftlib.protocol.packet.play.server.inventory.ServerPlayHeldItemChangePacket
 import dev.zerite.craftlib.protocol.packet.play.server.inventory.ServerPlaySetSlotPacket
 import dev.zerite.craftlib.protocol.packet.play.server.inventory.ServerPlayWindowItemsPacket
@@ -79,6 +78,9 @@ object MinecraftProtocol {
             ServerPlayTimeUpdatePacket {
                 ProtocolVersion.MC1_7_2 to 0x03
             }
+            ServerPlayEntityEquipmentPacket {
+                ProtocolVersion.MC1_7_2 to 0x04
+            }
             ServerPlaySpawnPositionPacket {
                 ProtocolVersion.MC1_7_2 to 0x05
             }
@@ -87,6 +89,15 @@ object MinecraftProtocol {
             }
             ServerPlayHeldItemChangePacket {
                 ProtocolVersion.MC1_7_2 to 0x09
+            }
+            ServerPlaySpawnMobPacket {
+                ProtocolVersion.MC1_7_2 to 0x0F
+            }
+            ServerPlayEntityLookPacket {
+                ProtocolVersion.MC1_7_2 to 0x16
+            }
+            ServerPlayEntityHeadLookPacket {
+                ProtocolVersion.MC1_7_2 to 0x19
             }
             ServerPlayEntityMetadataPacket {
                 ProtocolVersion.MC1_7_2 to 0x1C

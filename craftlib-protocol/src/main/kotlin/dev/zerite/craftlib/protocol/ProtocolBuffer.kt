@@ -15,6 +15,8 @@ import io.netty.buffer.Unpooled
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.util.*
+import kotlin.math.ceil
+import kotlin.math.roundToInt
 
 /**
  * Wraps a byte buffer and adds additional methods to easily read
@@ -638,6 +640,65 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
         }
         writeByte(0x7F)
     }
+
+    /**
+     * Reads a fixed point number from the buffer.
+     *
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    fun readFixedPoint() = readInt() / 32.0
+
+    /**
+     * Writes a fixed point number to the buffer.
+     *
+     * @param  value        The fixed point number to write.
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    fun writeFixedPoint(value: Double) = writeInt((value * 32.0).roundToInt())
+
+    /**
+     * Reads a stepped rotation value from the buffer, using a
+     * byte as the default format.
+     *
+     * @param  read         Reads the float value from the buffer.
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    fun readStepRotation(read: ProtocolBuffer.() -> Float = { readByte().toFloat() }) =
+        ((read() * 360.0f) / 256.0f).toInt().toFloat()
+
+    /**
+     * Writes a stepped rotation value to the buffer.
+     *
+     * @param  value        The rotation value to write.
+     * @param  write        Writes the value to the buffer.
+     *
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    fun writeStepRotation(
+        value: Float,
+        write: ProtocolBuffer.(Int) -> Unit = { writeByte(it) }
+    ) = write(ceil((value * 256.0F) / 360.0F).toInt())
+
+    /**
+     * Reads a velocity value from the buffer.
+     *
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    fun readVelocity() = readShort() / 8000.0
+
+    /**
+     * Writes a velocity value into the buffer.
+     *
+     * @param  value        The velocity to write.
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    fun writeVelocity(value: Double) = writeShort((value * 8000.0).roundToInt())
 
     /**
      * Set of modes which the UUIDs should be written using.

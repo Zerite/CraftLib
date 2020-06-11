@@ -8,6 +8,7 @@ Minecraft, as a dependency.
 #### Contents
 1. [What IS CraftLib?](#1-what-is-craftlib)
 2. [Using it](#2-using-it)
+3. [Special Thanks](#3-special-thanks)
 
 #### 1. What IS CraftLib?
 CraftLib is a simple Kotlin library which aims to *completely recreate* many of
@@ -47,3 +48,12 @@ They are versioned by the latest short commit hash on the master branch.
     <version>a4bca49</version>
 </dependency>
 ```
+
+#### 3. Special Thanks
+[![YourKit Java Profiler](https://www.yourkit.com/images/yklogo.png)](https://www.yourkit.com)
+
+YourKit supports open source projects with innovative and intelligent tools
+for monitoring and profiling Java and .NET applications.
+YourKit is the creator of [YourKit Java Profiler](https://www.yourkit.com/java/profiler/),
+[YourKit .NET Profiler](https://www.yourkit.com/.net/profiler/),
+and [YourKit YouMonitor](https://www.yourkit.com/youmonitor/).

@@ -12,6 +12,8 @@ import dev.zerite.craftlib.protocol.packet.login.server.ServerLoginEncryptionReq
 import dev.zerite.craftlib.protocol.packet.login.server.ServerLoginSuccessPacket
 import dev.zerite.craftlib.protocol.packet.play.server.display.ServerPlayChatMessagePacket
 import dev.zerite.craftlib.protocol.packet.play.server.display.ServerPlayPlayerListItemPacket
+import dev.zerite.craftlib.protocol.packet.play.server.entity.ServerPlayEntityMetadataPacket
+import dev.zerite.craftlib.protocol.packet.play.server.entity.ServerPlayEntityPropertiesPacket
 import dev.zerite.craftlib.protocol.packet.play.server.inventory.ServerPlayHeldItemChangePacket
 import dev.zerite.craftlib.protocol.packet.play.server.inventory.ServerPlaySetSlotPacket
 import dev.zerite.craftlib.protocol.packet.play.server.inventory.ServerPlayWindowItemsPacket
@@ -85,6 +87,12 @@ object MinecraftProtocol {
             }
             ServerPlayHeldItemChangePacket {
                 ProtocolVersion.MC1_7_2 to 0x09
+            }
+            ServerPlayEntityMetadataPacket {
+                ProtocolVersion.MC1_7_2 to 0x1C
+            }
+            ServerPlayEntityPropertiesPacket {
+                ProtocolVersion.MC1_7_2 to 0x20
             }
             ServerPlayMapChunkBulkPacket {
                 ProtocolVersion.MC1_7_2 to 0x26

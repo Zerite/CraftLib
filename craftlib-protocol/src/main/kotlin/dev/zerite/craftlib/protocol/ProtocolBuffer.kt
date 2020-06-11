@@ -7,6 +7,8 @@ import dev.zerite.craftlib.nbt.NBTIO
 import dev.zerite.craftlib.nbt.impl.CompoundTag
 import dev.zerite.craftlib.nbt.impl.NamedTag
 import dev.zerite.craftlib.protocol.connection.NettyConnection
+import dev.zerite.craftlib.protocol.data.entity.EntityMetadata
+import dev.zerite.craftlib.protocol.data.entity.MetadataValue
 import dev.zerite.craftlib.protocol.util.ext.toUuid
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.Unpooled
@@ -442,7 +444,7 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
     inline fun <reified T> readArray(
         length: ProtocolBuffer.() -> Int = { readVarInt() },
         process: ProtocolBuffer.() -> T
-    ) = (0 until length()).map { process() }.toTypedArray()
+    ) = Array(length()) { process() }
 
     /**
      * Writes an array to the buffer using the provided process method.
@@ -574,6 +576,70 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
     }
 
     /**
+     * Reads entity metadata from the buffer.
+     *
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    fun readMetadata(): EntityMetadata {
+        val meta = hashMapOf<Int, MetadataValue<out Any>>()
+        loop@ while (true) {
+            val item = readByte().toInt()
+            if (item == 0x7F) break@loop
+            val type = item and 0xE0 shr 5
+            val index = item and 0x1F
+
+            meta[index] = MetadataValue(
+                index,
+                when (type) {
+                    0 -> readByte()
+                    1 -> readShort()
+                    2 -> readInt()
+                    3 -> readFloat()
+                    4 -> readString()
+                    5 -> readSlot()
+                    6 -> Vector3(
+                        readInt(),
+                        readInt(),
+                        readInt()
+                    )
+                    else -> continue@loop
+                }
+            )
+        }
+        return EntityMetadata(meta)
+    }
+
+    /**
+     * Writes a metadata value into the buffer.
+     *
+     * @param  metadata          The metadata value to write.
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    fun writeMetadata(metadata: EntityMetadata) {
+        metadata.entries.forEach { (index, value) ->
+            val type = value.type ?: return@forEach
+            writeByte((type shl 5) or (index and 0x1F) and 0xFF)
+            when (type) {
+                0 -> writeByte((value.value as Byte).toInt())
+                1 -> writeShort((value.value as Short).toInt())
+                2 -> writeInt(value.value as Int)
+                3 -> writeFloat(value.value as Float)
+                4 -> writeString(value.value as String)
+                5 -> writeSlot(value.value as Slot)
+                6 -> {
+                    val vec = value.value as Vector3
+                    writeInt(vec.x)
+                    writeInt(vec.y)
+                    writeInt(vec.z)
+                }
+            }
+        }
+        writeByte(0x7F)
+    }
+
+    /**
      * Set of modes which the UUIDs should be written using.
      *
      * @author Koding
@@ -593,6 +659,18 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
  * @since  0.1.0-SNAPSHOT
  */
 data class Slot(var id: Short, var count: Byte = 0, var damage: Short = 0, var data: CompoundTag? = null)
+
+/**
+ * Stores 3 integer values which represent world coordinates.
+ *
+ * @author Koding
+ * @since  0.1.0-SNAPSHOT
+ */
+data class Vector3(
+    var x: Int,
+    var y: Int,
+    var z: Int
+)
 
 /**
  * Wrap a byte buffer into a wrapped version whilst including

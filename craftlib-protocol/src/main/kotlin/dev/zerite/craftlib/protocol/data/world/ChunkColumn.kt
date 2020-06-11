@@ -40,48 +40,46 @@ data class ChunkColumn(val x: Int, val z: Int, private val chunks: Array<Chunk>,
             metadata.chunkX,
             metadata.chunkZ,
             Array(16) { ChunkArrays() }.apply {
-                readIf(metadata.primaryBitmap, { blockTypes = ByteArray(0) }) {
+                readIf(metadata.primaryBitmap, {
+                    blockTypes = ByteArray(0)
+                    this.metadata = ByteNibbleArray(ByteArray(0))
+                    blockLight = ByteNibbleArray(ByteArray(0))
+                    skyLight = ByteNibbleArray(ByteArray(0))
+                }) {
                     blockTypes = ByteArray(FULL_BYTE_SIZE).apply { data.readFully(this) }
-                }
-                readIf(metadata.primaryBitmap, { this.metadata = ByteNibbleArray(ByteArray(0)) }) {
                     this.metadata = ByteNibbleArray(ByteArray(HALF_BYTE_SIZE).apply { data.readFully(this) })
-                }
-                readIf(metadata.primaryBitmap, { blockLight = ByteNibbleArray(ByteArray(0)) }) {
                     blockLight = ByteNibbleArray(ByteArray(HALF_BYTE_SIZE).apply { data.readFully(this) })
+                    skyLight =
+                        if (hasSkyLight) ByteNibbleArray(ByteArray(HALF_BYTE_SIZE).apply { data.readFully(this) })
+                        else ByteNibbleArray(ByteArray(0))
                 }
-                readIf(
-                    metadata.primaryBitmap,
-                    { skyLight = ByteNibbleArray(ByteArray(0)) },
-                    { hasSkyLight })
-                { skyLight = ByteNibbleArray(ByteArray(HALF_BYTE_SIZE).apply { data.readFully(this) }) }
                 readIf(metadata.addBitmap, { addArray = ByteNibbleArray(ByteArray(0)) }) {
                     addArray = ByteNibbleArray(ByteArray(HALF_BYTE_SIZE).apply { data.readFully(this) })
                 }
             }.map {
-                var blockData = arrayOf<Block?>()
-                var lastBlock = 0
+                var blockData = arrayOfNulls<Block?>(16 * 16 * 16)
 
                 for (y in 0 until 16) {
                     for (z in 0 until 16) {
                         for (x in 0 until 16) {
                             val index = Chunk.index(x, y, z)
-                            blockData += try {
-                                Block(
-                                    it.blockTypes[index].toInt() + it.addArray[index],
-                                    it.metadata[index],
-                                    it.blockLight[index],
-                                    it.skyLight[index],
-                                    BlockLocation(x, y, z)
-                                ).apply { lastBlock++ }
-                            } catch (e: Throwable) {
-                                null
-                            }
+                            if (index > it.blockTypes.size || it.blockTypes.isEmpty()) break
+
+                            blockData[index] = Block(
+                                it.blockTypes[index].toInt() + it.addArray[index, 0],
+                                it.metadata[index, 0],
+                                it.blockLight[index, 0],
+                                it.skyLight[index, 0],
+                                BlockLocation(x, y, z)
+                            )
                         }
                     }
                 }
 
-                if (lastBlock < blockData.size)
-                    blockData = Array(lastBlock) { i -> blockData.getOrNull(i) }
+                blockData.indexOfFirst { v -> v != null }.let { index ->
+                    if (index != blockData.size)
+                        blockData = blockData.take(index + 1).toTypedArray()
+                }
 
                 Chunk(blockData)
             }.toTypedArray(),
@@ -125,7 +123,7 @@ data class ChunkColumn(val x: Int, val z: Int, private val chunks: Array<Chunk>,
                             for (x in 0 until 16) {
                                 val index = Chunk.index(x, y, z)
                                 val block = it[x, y, z] ?: continue
-                                val add = block.id and 3840 shr 8
+                                val add = block.id and 0xF00 shr 8
 
                                 blockTypes[index] = block.id.toByte()
                                 metadata[index] = block.metadata

@@ -19,6 +19,18 @@ data class ByteNibbleArray(var data: ByteArray, private val desired: Int = 16 * 
     operator fun get(index: Int) = data[index / 2].toInt() ushr (if (index % 2 == 0) 0 else 4) and 0x0F
 
     /**
+     * Gets a nibble byte from the array, otherwise falling back
+     * to the provided default.
+     *
+     * @param  index       The index of the nibble byte to lookup.
+     * @param  default     The fallback value if the index is out of bounds.
+     *
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    operator fun get(index: Int, default: Int) = if (index < 0 || (index / 2) >= data.size - 1 || data.isEmpty()) default else this[index]
+
+    /**
      * Sets the data at the given index to the provided value.
      *
      * @param  index       The index of the nibble byte we are changing.

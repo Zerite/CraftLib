@@ -7,7 +7,7 @@ package dev.zerite.craftlib.protocol.packet.base
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-interface EntityIDPacket {
+interface EntityIdPacket {
     /**
      * The entity ID which was read from the packet.
      */

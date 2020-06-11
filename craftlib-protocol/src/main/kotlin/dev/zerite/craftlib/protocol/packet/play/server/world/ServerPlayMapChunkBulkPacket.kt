@@ -34,25 +34,38 @@ data class ServerPlayMapChunkBulkPacket(
             val columns = buffer.readShort()
             val length = buffer.readInt()
             val skyLight = buffer.readBoolean()
-            val data = buffer.readByteArray(length = length)
+            val rawChunkData = buffer.readByteArray(length = length)
 
-            val out = ByteArray(196864 * columns)
-            Inflater().apply { setInput(data, 0, length) }.inflate(out)
-            val input = DataInputStream(ByteArrayInputStream(out))
+            val data = ByteArray(196864 * columns)
+            Inflater().apply { setInput(rawChunkData, 0, length) }.inflate(data)
 
+            var readerIndex = 0
             return ServerPlayMapChunkBulkPacket(
                 skyLight,
                 Array(columns.toInt()) {
-                    ChunkColumn.read(
-                        input,
-                        ChunkMetadata(
-                            buffer.readInt(),
-                            buffer.readInt(),
-                            buffer.readShort().toInt(),
-                            buffer.readShort().toInt()
-                        ),
-                        hasSkyLight = skyLight
+                    val meta = ChunkMetadata(
+                        buffer.readInt(),
+                        buffer.readInt(),
+                        buffer.readShort().toInt(),
+                        buffer.readShort().toInt()
                     )
+
+                    var primarySize = 0
+                    var secondarySize = 0
+                    for (chunkIndex in 0..15) {
+                        primarySize += meta.primaryBitmap shr chunkIndex and 1
+                        secondarySize += meta.addBitmap shr chunkIndex and 1
+                    }
+
+                    var dataLength = 2048 * 4 * primarySize + 256
+                    dataLength += 2048 * secondarySize
+
+                    if (skyLight) dataLength += 2048 * primarySize
+                    readerIndex += dataLength
+
+                    val chunkBytes = ByteArray(dataLength)
+                    System.arraycopy(data, readerIndex, chunkBytes, 0, dataLength)
+                    ChunkColumn.read(DataInputStream(ByteArrayInputStream(chunkBytes)), meta, hasSkyLight = skyLight)
                 }
             )
         }
@@ -65,7 +78,8 @@ data class ServerPlayMapChunkBulkPacket(
         ) {
             val byteOutput = ByteArrayOutputStream()
             val output = DataOutputStream(byteOutput)
-            val meta = packet.columns.map { it to ChunkColumn.write(output, it, hasSkyLight = packet.skyLight) }.toTypedArray()
+            val meta =
+                packet.columns.map { it to ChunkColumn.write(output, it, hasSkyLight = packet.skyLight) }.toTypedArray()
 
             val bytes = byteOutput.toByteArray()
             val compressed = ByteArray(bytes.size)

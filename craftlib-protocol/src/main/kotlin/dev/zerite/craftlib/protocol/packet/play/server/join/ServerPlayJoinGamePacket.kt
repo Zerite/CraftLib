@@ -6,7 +6,7 @@ import dev.zerite.craftlib.protocol.connection.NettyConnection
 import dev.zerite.craftlib.protocol.data.enum.Difficulty
 import dev.zerite.craftlib.protocol.data.enum.Dimension
 import dev.zerite.craftlib.protocol.data.enum.Gamemode
-import dev.zerite.craftlib.protocol.packet.base.EntityIDPacket
+import dev.zerite.craftlib.protocol.packet.base.EntityIdPacket
 import dev.zerite.craftlib.protocol.util.delegate.bitBoolean
 import dev.zerite.craftlib.protocol.util.delegate.mapEnum
 import dev.zerite.craftlib.protocol.util.ext.clearBit
@@ -29,7 +29,7 @@ data class ServerPlayJoinGamePacket(
     var rawDifficulty: Int,
     var maxPlayers: Int,
     var levelType: String
-) : EntityIDPacket {
+) : EntityIdPacket {
 
     companion object : PacketIO<ServerPlayJoinGamePacket> {
         override fun read(

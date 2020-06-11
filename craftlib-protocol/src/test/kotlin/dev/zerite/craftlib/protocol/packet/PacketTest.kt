@@ -1,5 +1,6 @@
 package dev.zerite.craftlib.protocol.packet
 
+import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
@@ -20,7 +21,7 @@ import kotlin.test.assertEquals
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-abstract class PacketTest<T : Any>(val io: PacketIO<T>) {
+abstract class PacketTest<T : Packet>(val io: PacketIO<T>) {
 
     companion object {
         /**
@@ -69,7 +70,7 @@ abstract class PacketTest<T : Any>(val io: PacketIO<T>) {
         examples.forEach { (packet, map) ->
             map.forEach { (version, output) ->
                 val dummy = NettyConnection(PacketDirection.CLIENTBOUND)
-                    .also { it.version = version }
+                dummy.version = version
                 val buf = Unpooled.buffer().wrap(dummy)
 
                 try {

@@ -1,5 +1,6 @@
 package dev.zerite.craftlib.protocol.packet.play.server.join
 
+import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
@@ -11,7 +12,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-data class ServerPlayStatisticsPacket(var statistics: Array<Statistic>) {
+data class ServerPlayStatisticsPacket(var statistics: Array<Statistic>) : Packet() {
 
     companion object : PacketIO<ServerPlayStatisticsPacket> {
         override fun read(

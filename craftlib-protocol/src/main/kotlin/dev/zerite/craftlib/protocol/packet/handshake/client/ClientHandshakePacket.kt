@@ -1,5 +1,6 @@
 package dev.zerite.craftlib.protocol.packet.handshake.client
 
+import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
@@ -19,7 +20,7 @@ data class ClientHandshakePacket(
     var address: String,
     var port: Int,
     var nextState: ProtocolState
-) {
+) : Packet() {
 
     init {
         if (nextState.id.let { it != 1 && it != 2 }) error("Invalid protocol state")

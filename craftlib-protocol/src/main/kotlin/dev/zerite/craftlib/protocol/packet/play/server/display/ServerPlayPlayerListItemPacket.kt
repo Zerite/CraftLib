@@ -1,5 +1,6 @@
 package dev.zerite.craftlib.protocol.packet.play.server.display
 
+import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
@@ -14,7 +15,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-data class ServerPlayPlayerListItemPacket(var name: String, var online: Boolean, var ping: Int) {
+data class ServerPlayPlayerListItemPacket(var name: String, var online: Boolean, var ping: Int) : Packet() {
     companion object : PacketIO<ServerPlayPlayerListItemPacket> {
         override fun read(
             buffer: ProtocolBuffer,

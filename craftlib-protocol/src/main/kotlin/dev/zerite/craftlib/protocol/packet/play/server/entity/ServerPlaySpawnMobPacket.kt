@@ -1,5 +1,6 @@
 package dev.zerite.craftlib.protocol.packet.play.server.entity
 
+import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
@@ -27,7 +28,7 @@ data class ServerPlaySpawnMobPacket(
     var velocityY: Double,
     var velocityZ: Double,
     var metadata: EntityMetadata
-) : EntityIdPacket {
+) : EntityIdPacket, Packet() {
     companion object : PacketIO<ServerPlaySpawnMobPacket> {
         override fun read(
             buffer: ProtocolBuffer,

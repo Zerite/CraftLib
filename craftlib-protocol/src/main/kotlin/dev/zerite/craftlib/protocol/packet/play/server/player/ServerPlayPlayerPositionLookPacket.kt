@@ -1,5 +1,6 @@
 package dev.zerite.craftlib.protocol.packet.play.server.player
 
+import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
@@ -20,7 +21,7 @@ data class ServerPlayPlayerPositionLookPacket(
     var yaw: Float,
     var pitch: Float,
     var onGround: Boolean
-) {
+) : Packet() {
     companion object : PacketIO<ServerPlayPlayerPositionLookPacket> {
         override fun read(
             buffer: ProtocolBuffer,

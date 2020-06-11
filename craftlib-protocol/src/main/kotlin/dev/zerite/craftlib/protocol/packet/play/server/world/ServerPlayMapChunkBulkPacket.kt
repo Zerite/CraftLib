@@ -1,5 +1,6 @@
 package dev.zerite.craftlib.protocol.packet.play.server.world
 
+import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
@@ -23,7 +24,7 @@ import java.util.zip.Inflater
 data class ServerPlayMapChunkBulkPacket(
     var skyLight: Boolean,
     var columns: Array<ChunkColumn>
-) {
+) : Packet() {
 
     companion object : PacketIO<ServerPlayMapChunkBulkPacket> {
         override fun read(

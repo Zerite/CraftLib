@@ -11,7 +11,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @since  0.1.0-SNAPSHOT
  */
 @Suppress("UNUSED")
-interface PacketIO<T : Any> {
+interface PacketIO<T : Packet> {
 
     /**
      * Reads a packet from the provided protocol buffer into an object.
@@ -40,3 +40,12 @@ interface PacketIO<T : Any> {
     fun write(buffer: ProtocolBuffer, version: ProtocolVersion, packet: T, connection: NettyConnection)
 
 }
+
+/**
+ * Base class for all packets to inherit which includes a reference
+ * to the connection this packet was read in.
+ *
+ * @author Koding
+ * @since  0.1.0-SNAPSHOT
+ */
+open class Packet

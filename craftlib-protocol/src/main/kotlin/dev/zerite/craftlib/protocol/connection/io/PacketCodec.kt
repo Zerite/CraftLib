@@ -1,5 +1,6 @@
 package dev.zerite.craftlib.protocol.connection.io
 
+import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.connection.NettyConnection
 import dev.zerite.craftlib.protocol.wrap
@@ -13,7 +14,7 @@ import io.netty.handler.codec.ByteToMessageCodec
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-class PacketCodec(private val connection: NettyConnection) : ByteToMessageCodec<Any>() {
+class PacketCodec(private val connection: NettyConnection) : ByteToMessageCodec<Packet>() {
 
     /**
      * The inverted direction used for decoding packets.
@@ -30,7 +31,7 @@ class PacketCodec(private val connection: NettyConnection) : ByteToMessageCodec<
      * @author Koding
      * @since  0.1.0-SNAPSHOT
      */
-    override fun encode(ctx: ChannelHandlerContext, packet: Any, buf: ByteBuf) {
+    override fun encode(ctx: ChannelHandlerContext, packet: Packet, buf: ByteBuf) {
         // Get the packet registry data
         val data = connection.state[connection.direction][connection.version, packet]
 
@@ -39,7 +40,7 @@ class PacketCodec(private val connection: NettyConnection) : ByteToMessageCodec<
 
         // Write the packet data
         @Suppress("UNCHECKED_CAST")
-        (data.io as? PacketIO<Any>)?.write(buffer, connection.version, packet, connection)
+        (data.io as? PacketIO<Packet>)?.write(buffer, connection.version, packet, connection)
     }
 
     /**

@@ -1,5 +1,6 @@
 package dev.zerite.craftlib.protocol.packet.play.server.player
 
+import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
@@ -18,7 +19,7 @@ data class ServerPlayPlayerAbilitiesPacket(
     var flags: Int,
     var flyingSpeed: Float,
     var walkingSpeed: Float
-) {
+) : Packet() {
     companion object : PacketIO<ServerPlayPlayerAbilitiesPacket> {
         override fun read(
             buffer: ProtocolBuffer,

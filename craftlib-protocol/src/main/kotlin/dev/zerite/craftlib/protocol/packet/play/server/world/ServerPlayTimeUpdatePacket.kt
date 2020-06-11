@@ -1,5 +1,6 @@
 package dev.zerite.craftlib.protocol.packet.play.server.world
 
+import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
@@ -12,7 +13,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-data class ServerPlayTimeUpdatePacket(var age: Long, var time: Long) {
+data class ServerPlayTimeUpdatePacket(var age: Long, var time: Long) : Packet() {
     companion object : PacketIO<ServerPlayTimeUpdatePacket> {
         override fun read(
             buffer: ProtocolBuffer,

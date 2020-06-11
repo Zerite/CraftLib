@@ -1,5 +1,6 @@
 package dev.zerite.craftlib.protocol.packet.play.server.entity
 
+import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
@@ -17,7 +18,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
 data class ServerPlayEntityMetadataPacket(
     override var entityId: Int,
     var metadata: EntityMetadata
-) : EntityIdPacket {
+) : EntityIdPacket, Packet() {
     companion object : PacketIO<ServerPlayEntityMetadataPacket> {
         override fun read(
             buffer: ProtocolBuffer,

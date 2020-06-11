@@ -1,5 +1,6 @@
 package dev.zerite.craftlib.protocol.packet.play.server.inventory
 
+import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
@@ -12,7 +13,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-data class ServerPlayHeldItemChangePacket(var slot: Int) {
+data class ServerPlayHeldItemChangePacket(var slot: Int) : Packet() {
 
     companion object : PacketIO<ServerPlayHeldItemChangePacket> {
         override fun read(

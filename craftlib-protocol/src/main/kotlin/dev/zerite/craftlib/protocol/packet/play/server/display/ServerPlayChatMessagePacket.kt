@@ -1,6 +1,7 @@
 package dev.zerite.craftlib.protocol.packet.play.server.display
 
 import dev.zerite.craftlib.chat.component.BaseChatComponent
+import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
@@ -12,7 +13,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-data class ServerPlayChatMessagePacket(var message: BaseChatComponent) {
+data class ServerPlayChatMessagePacket(var message: BaseChatComponent) : Packet() {
     companion object : PacketIO<ServerPlayChatMessagePacket> {
         override fun read(
             buffer: ProtocolBuffer,

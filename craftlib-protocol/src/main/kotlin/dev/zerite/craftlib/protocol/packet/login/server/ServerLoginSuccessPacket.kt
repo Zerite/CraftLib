@@ -1,5 +1,6 @@
 package dev.zerite.craftlib.protocol.packet.login.server
 
+import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
@@ -13,7 +14,7 @@ import java.util.*
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-data class ServerLoginSuccessPacket(var uuid: UUID, var username: String) {
+data class ServerLoginSuccessPacket(var uuid: UUID, var username: String) : Packet() {
 
     companion object : PacketIO<ServerLoginSuccessPacket> {
         override fun read(

@@ -1,5 +1,6 @@
 package dev.zerite.craftlib.protocol.packet.play.server.inventory
 
+import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.Slot
@@ -16,7 +17,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
 data class ServerPlayWindowItemsPacket(
     var windowId: Short,
     var slots: Array<Slot>
-) {
+) : Packet() {
     companion object : PacketIO<ServerPlayWindowItemsPacket> {
         override fun read(
             buffer: ProtocolBuffer,

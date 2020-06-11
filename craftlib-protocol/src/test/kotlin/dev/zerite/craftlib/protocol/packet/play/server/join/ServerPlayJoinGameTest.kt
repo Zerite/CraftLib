@@ -1,8 +1,8 @@
 package dev.zerite.craftlib.protocol.packet.play.server.join
 
-import dev.zerite.craftlib.protocol.data.enum.Difficulty
-import dev.zerite.craftlib.protocol.data.enum.Dimension
-import dev.zerite.craftlib.protocol.data.enum.Gamemode
+import dev.zerite.craftlib.protocol.data.registry.impl.MagicDifficulty
+import dev.zerite.craftlib.protocol.data.registry.impl.MagicDimension
+import dev.zerite.craftlib.protocol.data.registry.impl.MagicGamemode
 import dev.zerite.craftlib.protocol.packet.PacketTest
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
@@ -21,9 +21,10 @@ class ServerPlayJoinGameTest : PacketTest<ServerPlayJoinGamePacket>(
         example(
             ServerPlayJoinGamePacket(
                 1,
-                0,
-                0,
-                0,
+                false,
+                MagicGamemode.SURVIVAL,
+                MagicDimension.OVERWORLD,
+                MagicDifficulty.PEACEFUL,
                 20,
                 "default"
             )
@@ -31,10 +32,10 @@ class ServerPlayJoinGameTest : PacketTest<ServerPlayJoinGamePacket>(
         example(
             ServerPlayJoinGamePacket(
                 1,
-                Gamemode.SURVIVAL,
                 true,
-                Dimension.OVERWORLD,
-                Difficulty.HARD,
+                MagicGamemode.SURVIVAL,
+                MagicDimension.OVERWORLD,
+                MagicDifficulty.HARD,
                 21,
                 "default"
             )
@@ -42,18 +43,13 @@ class ServerPlayJoinGameTest : PacketTest<ServerPlayJoinGamePacket>(
         example(
             ServerPlayJoinGamePacket(
                 1,
-                0,
-                0,
-                0,
+                true,
+                MagicGamemode.ADVENTURE,
+                MagicDimension.END,
+                MagicDifficulty.NORMAL,
                 20,
                 "default"
             )
-                .apply {
-                    gamemode = Gamemode.ADVENTURE
-                    dimension = Dimension.END
-                    difficulty = Difficulty.NORMAL
-                    hardcore = true
-                }
         ) {
             ProtocolVersion.MC1_7_2 {
                 writeInt(1)

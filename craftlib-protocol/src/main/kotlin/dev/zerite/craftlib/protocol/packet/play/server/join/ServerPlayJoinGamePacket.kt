@@ -1,16 +1,14 @@
 package dev.zerite.craftlib.protocol.packet.play.server.join
 
+import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
-import dev.zerite.craftlib.protocol.data.enum.Difficulty
-import dev.zerite.craftlib.protocol.data.enum.Dimension
-import dev.zerite.craftlib.protocol.data.enum.Gamemode
+import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
+import dev.zerite.craftlib.protocol.data.registry.impl.Difficulty
+import dev.zerite.craftlib.protocol.data.registry.impl.Dimension
+import dev.zerite.craftlib.protocol.data.registry.impl.Gamemode
 import dev.zerite.craftlib.protocol.packet.base.EntityIdPacket
-import dev.zerite.craftlib.protocol.util.delegate.bitBoolean
-import dev.zerite.craftlib.protocol.util.delegate.mapEnum
-import dev.zerite.craftlib.protocol.util.ext.clearBit
-import dev.zerite.craftlib.protocol.util.ext.setBit
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
 /**
@@ -24,26 +22,32 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
 @Suppress("UNUSED")
 data class ServerPlayJoinGamePacket(
     override var entityId: Int,
-    var rawGamemode: Int,
-    var rawDimension: Int,
-    var rawDifficulty: Int,
+    var hardcore: Boolean,
+    var gamemode: RegistryEntry,
+    var dimension: RegistryEntry,
+    var difficulty: RegistryEntry,
     var maxPlayers: Int,
     var levelType: String
-) : EntityIdPacket {
+) : EntityIdPacket, Packet() {
 
     companion object : PacketIO<ServerPlayJoinGamePacket> {
         override fun read(
             buffer: ProtocolBuffer,
             version: ProtocolVersion,
             connection: NettyConnection
-        ) = ServerPlayJoinGamePacket(
-            buffer.readInt(),
-            buffer.readUnsignedByte().toInt(),
-            buffer.readByte().toInt(),
-            buffer.readUnsignedByte().toInt(),
-            buffer.readUnsignedByte().toInt(),
-            buffer.readString()
-        )
+        ): ServerPlayJoinGamePacket {
+            val entityId = buffer.readInt()
+            val gamemode = buffer.readUnsignedByte().toInt()
+            return ServerPlayJoinGamePacket(
+                entityId,
+                gamemode and 0x8 == 0x8,
+                Gamemode[version, gamemode and 0x7],
+                Dimension[version, buffer.readByte().toInt()],
+                Difficulty[version, buffer.readUnsignedByte().toInt()],
+                buffer.readUnsignedByte().toInt(),
+                buffer.readString()
+            )
+        }
 
         override fun write(
             buffer: ProtocolBuffer,
@@ -52,54 +56,15 @@ data class ServerPlayJoinGamePacket(
             connection: NettyConnection
         ) {
             buffer.writeInt(packet.entityId)
-            buffer.writeByte(packet.rawGamemode)
-            buffer.writeByte(packet.rawDimension)
-            buffer.writeByte(packet.rawDifficulty)
+            buffer.writeByte(
+                (Gamemode[version, packet.gamemode, Int::class] ?: 0) or
+                        (if (packet.hardcore) 0x8 else 0x0)
+            )
+            buffer.writeByte(Dimension[version, packet.dimension, Int::class] ?: 0)
+            buffer.writeByte(Difficulty[version, packet.difficulty, Int::class] ?: 0)
             buffer.writeByte(packet.maxPlayers)
             buffer.writeString(packet.levelType)
         }
     }
-
-    constructor(
-        entityId: Int,
-        gamemode: Gamemode,
-        hardcore: Boolean,
-        dimension: Dimension,
-        difficulty: Difficulty,
-        maxPlayers: Int,
-        levelType: String
-    ) : this(
-        entityId,
-        gamemode.id.let { if (hardcore) it.setBit(0x8) else it.clearBit(0x8) },
-        dimension.id,
-        difficulty.id,
-        maxPlayers,
-        levelType
-    )
-
-    /**
-     * Simple mapped gamemode which allows for the raw
-     * data to be easily changed.
-     *
-     * NOTE: This value MUST be changed before hardcore as it will
-     * clear the hardcore value.
-     */
-    var gamemode: Gamemode by mapEnum(this::rawGamemode, Gamemode, Gamemode.SURVIVAL)
-
-    /**
-     * Returns true if the world is in hardcore. This is taken
-     * from the raw gamemode data.
-     */
-    var hardcore by bitBoolean(this::rawGamemode, 0x8)
-
-    /**
-     * Sets the raw dimension to the mapped enum ID.
-     */
-    var dimension: Dimension by mapEnum(this::rawDimension, Dimension, Dimension.OVERWORLD)
-
-    /**
-     * Sets the raw difficulty ID to the enum's value.
-     */
-    var difficulty: Difficulty by mapEnum(this::rawDifficulty, Difficulty, Difficulty.PEACEFUL)
 
 }

@@ -1,5 +1,6 @@
 package dev.zerite.craftlib.protocol.packet.login.client
 
+import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
@@ -17,7 +18,7 @@ import javax.crypto.SecretKey
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-data class ClientLoginEncryptionResponsePacket(var secretKey: ByteArray, var verifyToken: ByteArray) {
+data class ClientLoginEncryptionResponsePacket(var secretKey: ByteArray, var verifyToken: ByteArray) : Packet() {
 
     companion object : PacketIO<ClientLoginEncryptionResponsePacket> {
         override fun read(

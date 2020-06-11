@@ -1,5 +1,6 @@
 package dev.zerite.craftlib.protocol.packet.play.server.entity
 
+import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
@@ -16,7 +17,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
 data class ServerPlayEntityHeadLookPacket(
     override var entityId: Int,
     var headYaw: Float
-) : EntityIdPacket {
+) : EntityIdPacket, Packet() {
     companion object : PacketIO<ServerPlayEntityHeadLookPacket> {
         override fun read(
             buffer: ProtocolBuffer,

@@ -1,5 +1,6 @@
 package dev.zerite.craftlib.protocol.packet.login.server
 
+import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
@@ -18,7 +19,7 @@ data class ServerLoginEncryptionRequestPacket(
     var serverId: String,
     var publicKey: PublicKey,
     var verifyToken: ByteArray
-) {
+) : Packet() {
     companion object : PacketIO<ServerLoginEncryptionRequestPacket> {
         override fun read(
             buffer: ProtocolBuffer,

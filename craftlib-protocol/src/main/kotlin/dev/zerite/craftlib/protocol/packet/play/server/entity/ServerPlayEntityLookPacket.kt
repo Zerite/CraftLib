@@ -1,5 +1,6 @@
 package dev.zerite.craftlib.protocol.packet.play.server.entity
 
+import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
@@ -17,7 +18,7 @@ data class ServerPlayEntityLookPacket(
     override var entityId: Int,
     var yaw: Float,
     var pitch: Float
-) : EntityIdPacket {
+) : EntityIdPacket, Packet() {
 
     companion object : PacketIO<ServerPlayEntityLookPacket> {
         override fun read(

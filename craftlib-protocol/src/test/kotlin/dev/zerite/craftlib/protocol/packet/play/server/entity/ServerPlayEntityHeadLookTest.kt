@@ -13,11 +13,11 @@ class ServerPlayEntityHeadLookTest : PacketTest<ServerPlayEntityHeadLookPacket>(
 
     init {
         example(ServerPlayEntityHeadLookPacket(0, 0f))
-        example(ServerPlayEntityHeadLookPacket(256, 1f))
-        example(ServerPlayEntityHeadLookPacket(42, 50f)) {
+        example(ServerPlayEntityHeadLookPacket(256, 90f))
+        example(ServerPlayEntityHeadLookPacket(42, 45f)) {
             ProtocolVersion.MC1_7_2 {
                 writeInt(42)
-                writeByte(36)
+                writeByte(32)
             }
         }
     }

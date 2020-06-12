@@ -21,7 +21,10 @@ import dev.zerite.craftlib.protocol.packet.play.server.other.ServerPlayPluginMes
 import dev.zerite.craftlib.protocol.packet.play.server.player.ServerPlayPlayerAbilitiesPacket
 import dev.zerite.craftlib.protocol.packet.play.server.join.ServerPlaySpawnPositionPacket
 import dev.zerite.craftlib.protocol.packet.play.server.join.ServerPlayStatisticsPacket
+import dev.zerite.craftlib.protocol.packet.play.server.other.ServerPlayChangeGameStatePacket
+import dev.zerite.craftlib.protocol.packet.play.server.other.ServerPlayKeepAlivePacket
 import dev.zerite.craftlib.protocol.packet.play.server.player.ServerPlayPlayerPositionLookPacket
+import dev.zerite.craftlib.protocol.packet.play.server.player.ServerPlayUpdateHealthPacket
 import dev.zerite.craftlib.protocol.packet.play.server.world.ServerPlayMapChunkBulkPacket
 import dev.zerite.craftlib.protocol.packet.play.server.world.ServerPlayTimeUpdatePacket
 import io.netty.bootstrap.Bootstrap
@@ -69,6 +72,9 @@ object MinecraftProtocol {
     val PLAY = protocol("Play", 0) {
         serverbound {}
         clientbound {
+            ServerPlayKeepAlivePacket {
+                ProtocolVersion.MC1_7_2 to 0x00
+            }
             ServerPlayJoinGamePacket {
                 ProtocolVersion.MC1_7_2 to 0x01
             }
@@ -84,6 +90,9 @@ object MinecraftProtocol {
             ServerPlaySpawnPositionPacket {
                 ProtocolVersion.MC1_7_2 to 0x05
             }
+            ServerPlayUpdateHealthPacket {
+                ProtocolVersion.MC1_7_2 to 0x06
+            }
             ServerPlayPlayerPositionLookPacket {
                 ProtocolVersion.MC1_7_2 to 0x08
             }
@@ -92,6 +101,9 @@ object MinecraftProtocol {
             }
             ServerPlaySpawnMobPacket {
                 ProtocolVersion.MC1_7_2 to 0x0F
+            }
+            ServerPlayEntityRelativeMovePacket {
+                ProtocolVersion.MC1_7_2 to 0x15
             }
             ServerPlayEntityLookPacket {
                 ProtocolVersion.MC1_7_2 to 0x16
@@ -107,6 +119,9 @@ object MinecraftProtocol {
             }
             ServerPlayMapChunkBulkPacket {
                 ProtocolVersion.MC1_7_2 to 0x26
+            }
+            ServerPlayChangeGameStatePacket {
+                ProtocolVersion.MC1_7_2 to 0x2B
             }
             ServerPlaySetSlotPacket {
                 ProtocolVersion.MC1_7_2 to 0x2F

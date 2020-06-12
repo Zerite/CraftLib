@@ -60,12 +60,12 @@ data class ServerPlayMapChunkBulkPacket(
 
                     var dataLength = 2048 * 4 * primarySize + 256
                     dataLength += 2048 * secondarySize
-
                     if (skyLight) dataLength += 2048 * primarySize
-                    readerIndex += dataLength
 
                     val chunkBytes = ByteArray(dataLength)
                     System.arraycopy(data, readerIndex, chunkBytes, 0, dataLength)
+                    readerIndex += dataLength
+
                     ChunkColumn.read(DataInputStream(ByteArrayInputStream(chunkBytes)), meta, hasSkyLight = skyLight)
                 }
             )

@@ -2,6 +2,7 @@ package dev.zerite.craftlib.protocol.data.registry
 
 import dev.zerite.craftlib.protocol.data.registry.impl.MagicDifficulty
 import dev.zerite.craftlib.protocol.data.registry.impl.MagicDimension
+import dev.zerite.craftlib.protocol.data.registry.impl.MagicGameStateReason
 import dev.zerite.craftlib.protocol.data.registry.impl.MagicGamemode
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
@@ -51,6 +52,23 @@ object MagicRegistry {
             MagicGamemode.SURVIVAL to 0
             MagicGamemode.CREATIVE to 1
             MagicGamemode.ADVENTURE to 2
+        }
+    }
+
+    /**
+     * Stores the reason for the game state update packet.
+     */
+    val gameStateReason = create<MagicGameStateReason> {
+        ProtocolVersion.MC1_7_2 {
+            MagicGameStateReason.INVALID_BED to 0
+            MagicGameStateReason.BEGIN_RAINING to 1
+            MagicGameStateReason.END_RAINING to 2
+            MagicGameStateReason.CHANGE_GAME_MODE to 3
+            MagicGameStateReason.ENTER_CREDITS to 4
+            MagicGameStateReason.DEMO_MESSAGES to 5
+            MagicGameStateReason.BOW_HIT_SOUND to 6
+            MagicGameStateReason.FADE_VALUE to 7
+            MagicGameStateReason.FADE_TIME to 8
         }
     }
 

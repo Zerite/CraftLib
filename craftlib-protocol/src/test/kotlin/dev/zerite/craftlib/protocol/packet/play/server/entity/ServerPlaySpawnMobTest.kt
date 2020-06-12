@@ -23,12 +23,12 @@ class ServerPlaySpawnMobTest : PacketTest<ServerPlaySpawnMobPacket>(ServerPlaySp
                 100.0,
                 100.0,
                 100.0,
-                1f,
-                1f,
-                1f,
-                100.0,
-                100.0,
-                100.0,
+                90f,
+                90f,
+                90f,
+                1.696,
+                1.696,
+                1.696,
                 EntityMetadata(hashMapOf(1 to MetadataValue(1, "example")))
             )
         )
@@ -39,9 +39,9 @@ class ServerPlaySpawnMobTest : PacketTest<ServerPlaySpawnMobPacket>(ServerPlaySp
                 100.0,
                 100.0,
                 100.0,
-                1f,
-                1f,
-                1f,
+                90f,
+                90f,
+                90f,
                 1.0,
                 1.0,
                 1.0,
@@ -58,9 +58,9 @@ class ServerPlaySpawnMobTest : PacketTest<ServerPlaySpawnMobPacket>(ServerPlaySp
                 writeInt(3200)
 
                 // Rotation
-                writeByte(1)
-                writeByte(1)
-                writeByte(1)
+                writeByte(64)
+                writeByte(64)
+                writeByte(64)
 
                 // Velocity
                 writeShort(8000)

@@ -16,6 +16,7 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.util.*
 import kotlin.math.ceil
+import kotlin.math.floor
 import kotlin.math.roundToInt
 
 /**
@@ -647,7 +648,7 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
      * @author Koding
      * @since  0.1.0-SNAPSHOT
      */
-    fun readFixedPoint() = readInt() / 32.0
+    fun readFixedPoint(read: ProtocolBuffer.() -> Int = { readInt() }) = read() / 32.0
 
     /**
      * Writes a fixed point number to the buffer.
@@ -656,7 +657,8 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
      * @author Koding
      * @since  0.1.0-SNAPSHOT
      */
-    fun writeFixedPoint(value: Double) = writeInt((value * 32.0).roundToInt())
+    fun writeFixedPoint(value: Double, write: ProtocolBuffer.(Int) -> Unit = { writeInt(it) }) =
+        write(floor(value * 32.0).roundToInt())
 
     /**
      * Reads a stepped rotation value from the buffer, using a
@@ -667,7 +669,7 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
      * @since  0.1.0-SNAPSHOT
      */
     fun readStepRotation(read: ProtocolBuffer.() -> Float = { readByte().toFloat() }) =
-        ((read() * 360.0f) / 256.0f).toInt().toFloat()
+        (read() * 360) / 256.0f
 
     /**
      * Writes a stepped rotation value to the buffer.
@@ -681,7 +683,7 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
     fun writeStepRotation(
         value: Float,
         write: ProtocolBuffer.(Int) -> Unit = { writeByte(it) }
-    ) = write(ceil((value * 256.0F) / 360.0F).toInt())
+    ) = write(floor((value * 256.0f) / 360.0f).toInt())
 
     /**
      * Reads a velocity value from the buffer.

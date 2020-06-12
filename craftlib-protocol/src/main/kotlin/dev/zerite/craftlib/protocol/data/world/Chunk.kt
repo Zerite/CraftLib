@@ -7,7 +7,7 @@ package dev.zerite.craftlib.protocol.data.world
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-data class Chunk(private var blocks: Array<Block?>) {
+data class Chunk(private var blocks: Array<Block?> = arrayOfNulls(DESIRED_BLOCKS)) {
     companion object {
         /**
          * The desired size which the blocks array should be.
@@ -51,8 +51,7 @@ data class Chunk(private var blocks: Array<Block?>) {
      * @since  0.1.0-SNAPSHOT
      */
     operator fun set(x: Int, y: Int, z: Int, value: Block) {
-        if (blocks.size < DESIRED_BLOCKS) blocks = Array(DESIRED_BLOCKS) { blocks.getOrNull(it) }
-        blocks[index(x, y, z)] = value
+        blocks[index(x, y, z)] = value.apply { location = BlockLocation(x, y, z) }
     }
 
     override fun equals(other: Any?): Boolean {
@@ -79,9 +78,13 @@ data class Block(
     val id: Int,
     val metadata: Int,
     val blockLight: Int,
-    val skyLight: Int,
-    val location: BlockLocation
-)
+    val skyLight: Int
+) {
+    /**
+     * The location of this block.
+     */
+    lateinit var location: BlockLocation
+}
 
 /**
  * Vector for storing a 3D block location.

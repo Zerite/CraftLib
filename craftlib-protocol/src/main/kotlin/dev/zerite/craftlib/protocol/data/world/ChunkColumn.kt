@@ -40,45 +40,49 @@ data class ChunkColumn(val x: Int, val z: Int, private val chunks: Array<Chunk>,
             metadata.chunkX,
             metadata.chunkZ,
             Array(16) { ChunkArrays() }.apply {
-                readIf(metadata.primaryBitmap, {
-                    blockTypes = ByteArray(0)
-                    this.metadata = ByteNibbleArray(ByteArray(0))
-                    blockLight = ByteNibbleArray(ByteArray(0))
-                    skyLight = ByteNibbleArray(ByteArray(0))
-                }) {
+                readIf(metadata.primaryBitmap, { blockTypes = ByteArray(0) }) {
                     blockTypes = ByteArray(FULL_BYTE_SIZE).apply { data.readFully(this) }
+                }
+                readIf(metadata.primaryBitmap, { this.metadata = ByteNibbleArray(ByteArray(0)) }) {
                     this.metadata = ByteNibbleArray(ByteArray(HALF_BYTE_SIZE).apply { data.readFully(this) })
+                }
+                readIf(metadata.primaryBitmap, { blockLight = ByteNibbleArray(ByteArray(0)) }) {
                     blockLight = ByteNibbleArray(ByteArray(HALF_BYTE_SIZE).apply { data.readFully(this) })
-                    skyLight =
-                        if (hasSkyLight) ByteNibbleArray(ByteArray(HALF_BYTE_SIZE).apply { data.readFully(this) })
-                        else ByteNibbleArray(ByteArray(0))
+                }
+                readIf(
+                    metadata.primaryBitmap,
+                    { skyLight = ByteNibbleArray(ByteArray(0)) },
+                    { hasSkyLight }
+                ) {
+                    skyLight = ByteNibbleArray(ByteArray(HALF_BYTE_SIZE).apply { data.readFully(this) })
                 }
                 readIf(metadata.addBitmap, { addArray = ByteNibbleArray(ByteArray(0)) }) {
                     addArray = ByteNibbleArray(ByteArray(HALF_BYTE_SIZE).apply { data.readFully(this) })
                 }
             }.map {
-                var blockData = arrayOfNulls<Block?>(16 * 16 * 16)
+                val blockData = arrayOfNulls<Block?>(16 * 16 * 16)
 
                 for (y in 0 until 16) {
                     for (z in 0 until 16) {
                         for (x in 0 until 16) {
                             val index = Chunk.index(x, y, z)
-                            if (index > it.blockTypes.size || it.blockTypes.isEmpty()) break
+                            if (index > it.blockTypes.size || it.blockTypes.isEmpty()) continue
 
-                            blockData[index] = Block(
-                                it.blockTypes[index].toInt() + it.addArray[index, 0],
-                                it.metadata[index, 0],
-                                it.blockLight[index, 0],
-                                it.skyLight[index, 0],
-                                BlockLocation(x, y, z)
-                            )
+                            val type = it.blockTypes[index].toInt() + it.addArray[index, 0]
+                            val meta = it.metadata[index, 0]
+                            val light = it.blockLight[index, 0]
+                            val sky = it.skyLight[index, 0]
+
+                            blockData[index] =
+                                if (type == 0 && meta == 0 && light == 0 && sky == 0) null
+                                else Block(
+                                    type,
+                                    meta,
+                                    light,
+                                    sky
+                                ).apply { location = BlockLocation(x, y, z) }
                         }
                     }
-                }
-
-                blockData.indexOfFirst { v -> v != null }.let { index ->
-                    if (index != blockData.size)
-                        blockData = blockData.take(index + 1).toTypedArray()
                 }
 
                 Chunk(blockData)
@@ -131,7 +135,7 @@ data class ChunkColumn(val x: Int, val z: Int, private val chunks: Array<Chunk>,
                                 skyLight[index] = block.skyLight
                                 addArray[index] = add
 
-                                if (block.id != 0) foundBlock = true
+                                if (block.id != 0 || block.metadata != 0) foundBlock = true
                                 if (add != 0) foundAdd = true
                             }
                         }

@@ -13,7 +13,7 @@ class ServerPlayEntityLookTest : PacketTest<ServerPlayEntityLookPacket>(ServerPl
 
     init {
         example(ServerPlayEntityLookPacket(0, 0.0f, 0.0f))
-        example(ServerPlayEntityLookPacket(255, 180.0f, 180.0f))
+        example(ServerPlayEntityLookPacket(255, 178.59375f, 178.59375f))
         example(ServerPlayEntityLookPacket(127, 90f, 0f)) {
             ProtocolVersion.MC1_7_2 {
                 writeInt(127)

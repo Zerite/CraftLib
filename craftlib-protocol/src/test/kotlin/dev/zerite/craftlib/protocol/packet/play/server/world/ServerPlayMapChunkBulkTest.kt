@@ -1,7 +1,6 @@
 package dev.zerite.craftlib.protocol.packet.play.server.world
 
 import dev.zerite.craftlib.protocol.data.world.Block
-import dev.zerite.craftlib.protocol.data.world.BlockLocation
 import dev.zerite.craftlib.protocol.data.world.Chunk
 import dev.zerite.craftlib.protocol.data.world.ChunkColumn
 import dev.zerite.craftlib.protocol.packet.PacketTest
@@ -23,7 +22,7 @@ class ServerPlayMapChunkBulkTest : PacketTest<ServerPlayMapChunkBulkPacket>(Serv
         example(
             ServerPlayMapChunkBulkPacket(
                 false,
-                arrayOf(ChunkColumn(42, 42, Array(16) { Chunk(arrayOf()) }, byteArrayOf()))
+                arrayOf(ChunkColumn(42, 42, Array(16) { Chunk() }, byteArrayOf()))
             )
         )
         example(
@@ -34,9 +33,10 @@ class ServerPlayMapChunkBulkTest : PacketTest<ServerPlayMapChunkBulkPacket>(Serv
                         16,
                         16,
                         Array(16) {
-                            Chunk(Array(16 * 16 * 16) {
-                                Block(0, it / 4, 0, 0, BlockLocation(0, 0, 0))
-                            })
+                            Chunk().apply {
+                                this[0, 0, 0] = Block(0, 7, 7, 8)
+                                this[0, 1, 0] = Block(1, 2, 3, 4)
+                            }
                         },
                         ByteArray(16 * 16) { 7 }
                     )
@@ -44,7 +44,7 @@ class ServerPlayMapChunkBulkTest : PacketTest<ServerPlayMapChunkBulkPacket>(Serv
             )
         )
 
-        val column = ChunkColumn(20, 21, Array(16) { Chunk(arrayOf()) }, byteArrayOf())
+        val column = ChunkColumn(20, 21, Array(16) { Chunk() }, byteArrayOf())
         example(ServerPlayMapChunkBulkPacket(true, arrayOf(column))) {
             ProtocolVersion.MC1_7_2 {
                 val byteOutput = ByteArrayOutputStream()

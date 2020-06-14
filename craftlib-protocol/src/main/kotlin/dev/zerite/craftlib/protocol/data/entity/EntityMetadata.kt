@@ -9,7 +9,7 @@ import dev.zerite.craftlib.protocol.Vector3
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-data class EntityMetadata(private val values: HashMap<Int, MetadataValue<out Any>>) {
+data class EntityMetadata(private val values: HashMap<Int, MetadataValue<out Any>> = hashMapOf()) {
     /**
      * Gets a list of the entries in the values map.
      */

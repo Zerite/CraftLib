@@ -15,7 +15,6 @@ import io.netty.buffer.Unpooled
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.util.*
-import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.roundToInt
 
@@ -648,7 +647,7 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
      * @author Koding
      * @since  0.1.0-SNAPSHOT
      */
-    fun readFixedPoint(read: ProtocolBuffer.() -> Int = { readInt() }) = read() / 32.0
+    fun readFixedPoint(read: ProtocolBuffer.() -> Double = { readInt().toDouble() }) = read() / 32.0
 
     /**
      * Writes a fixed point number to the buffer.

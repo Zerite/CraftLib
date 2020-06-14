@@ -1,4 +1,4 @@
-package dev.zerite.craftlib.protocol.packet.play.server.entity
+package dev.zerite.craftlib.protocol.packet.play.server.interaction
 
 import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
@@ -8,40 +8,41 @@ import dev.zerite.craftlib.protocol.packet.base.EntityIdPacket
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
 /**
- * Sent by the server when an entity moves less than 4 blocks in one
- * single movement.
+ * This packet tells that a player goes to bed.
+ * The client with the matching Entity ID will go into bed mode.
+ * This Packet is sent to all nearby players including the one sent to bed.
  *
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-data class ServerPlayEntityRelativeMovePacket(
+data class ServerPlayUseBedPacket(
     override var entityId: Int,
-    var x: Double,
-    var y: Double,
-    var z: Double
+    var x: Int,
+    var y: Int,
+    var z: Int
 ) : EntityIdPacket, Packet() {
-    companion object : PacketIO<ServerPlayEntityRelativeMovePacket> {
+    companion object : PacketIO<ServerPlayUseBedPacket> {
         override fun read(
             buffer: ProtocolBuffer,
             version: ProtocolVersion,
             connection: NettyConnection
-        ) = ServerPlayEntityRelativeMovePacket(
+        ) = ServerPlayUseBedPacket(
             buffer.readInt(),
-            buffer.readFixedPoint { readByte().toDouble() },
-            buffer.readFixedPoint { readByte().toDouble() },
-            buffer.readFixedPoint { readByte().toDouble() }
+            buffer.readInt(),
+            buffer.readUnsignedByte().toInt(),
+            buffer.readInt()
         )
 
         override fun write(
             buffer: ProtocolBuffer,
             version: ProtocolVersion,
-            packet: ServerPlayEntityRelativeMovePacket,
+            packet: ServerPlayUseBedPacket,
             connection: NettyConnection
         ) {
             buffer.writeInt(packet.entityId)
-            buffer.writeFixedPoint(packet.x) { writeByte(it) }
-            buffer.writeFixedPoint(packet.y) { writeByte(it) }
-            buffer.writeFixedPoint(packet.z) { writeByte(it) }
+            buffer.writeInt(packet.x)
+            buffer.writeByte(packet.y)
+            buffer.writeInt(packet.z)
         }
     }
 }

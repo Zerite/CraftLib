@@ -4,44 +4,39 @@ import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
+import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
+import dev.zerite.craftlib.protocol.data.registry.impl.Animation
 import dev.zerite.craftlib.protocol.packet.base.EntityIdPacket
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
 /**
- * Sent by the server when an entity moves less than 4 blocks in one
- * single movement.
+ * Sent whenever an entity should change animation.
  *
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-data class ServerPlayEntityRelativeMovePacket(
+data class ServerPlayAnimationPacket(
     override var entityId: Int,
-    var x: Double,
-    var y: Double,
-    var z: Double
+    var animation: RegistryEntry
 ) : EntityIdPacket, Packet() {
-    companion object : PacketIO<ServerPlayEntityRelativeMovePacket> {
+    companion object : PacketIO<ServerPlayAnimationPacket> {
         override fun read(
             buffer: ProtocolBuffer,
             version: ProtocolVersion,
             connection: NettyConnection
-        ) = ServerPlayEntityRelativeMovePacket(
-            buffer.readInt(),
-            buffer.readFixedPoint { readByte().toDouble() },
-            buffer.readFixedPoint { readByte().toDouble() },
-            buffer.readFixedPoint { readByte().toDouble() }
+        ) = ServerPlayAnimationPacket(
+            buffer.readVarInt(),
+            Animation[version, buffer.readUnsignedByte().toInt()]
         )
 
         override fun write(
             buffer: ProtocolBuffer,
             version: ProtocolVersion,
-            packet: ServerPlayEntityRelativeMovePacket,
+            packet: ServerPlayAnimationPacket,
             connection: NettyConnection
         ) {
-            buffer.writeInt(packet.entityId)
-            buffer.writeFixedPoint(packet.x) { writeByte(it) }
-            buffer.writeFixedPoint(packet.y) { writeByte(it) }
-            buffer.writeFixedPoint(packet.z) { writeByte(it) }
+            buffer.writeVarInt(packet.entityId)
+            buffer.writeByte((Animation[version, packet.animation] as? Int) ?: 0)
         }
     }
 }

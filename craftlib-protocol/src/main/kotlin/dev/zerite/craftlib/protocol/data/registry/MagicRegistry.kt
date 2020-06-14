@@ -1,9 +1,6 @@
 package dev.zerite.craftlib.protocol.data.registry
 
-import dev.zerite.craftlib.protocol.data.registry.impl.MagicDifficulty
-import dev.zerite.craftlib.protocol.data.registry.impl.MagicDimension
-import dev.zerite.craftlib.protocol.data.registry.impl.MagicGameStateReason
-import dev.zerite.craftlib.protocol.data.registry.impl.MagicGamemode
+import dev.zerite.craftlib.protocol.data.registry.impl.*
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
 /**
@@ -69,6 +66,31 @@ object MagicRegistry {
             MagicGameStateReason.BOW_HIT_SOUND to 6
             MagicGameStateReason.FADE_VALUE to 7
             MagicGameStateReason.FADE_TIME to 8
+        }
+    }
+
+    /**
+     * Stores the possible actions for the update block entity packet.
+     */
+    val blockEntityUpdateAction = create<MagicBlockEntityUpdateAction> {
+        ProtocolVersion.MC1_7_2 {
+            MagicBlockEntityUpdateAction.SET_SPAWNER_MOB to 1
+        }
+    }
+
+    /**
+     * Stores the possible animations for the animation packet.
+     */
+    val animation = create<MagicAnimation> {
+        ProtocolVersion.MC1_7_2 {
+            MagicAnimation.SWING_ARM to 0
+            MagicAnimation.DAMAGE_ANIMATION to 1
+            MagicAnimation.LEAVE_BED to 2
+            MagicAnimation.EAT_FOOD to 3
+            MagicAnimation.CRITICAL_EFFECT to 4
+            MagicAnimation.MAGIC_CRITICAL_EFFECT to 5
+            MagicAnimation.CROUCH to 104
+            MagicAnimation.UNCROUCH to 105
         }
     }
 

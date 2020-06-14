@@ -13,6 +13,8 @@ import dev.zerite.craftlib.protocol.packet.login.server.ServerLoginSuccessPacket
 import dev.zerite.craftlib.protocol.packet.play.server.display.ServerPlayChatMessagePacket
 import dev.zerite.craftlib.protocol.packet.play.server.display.ServerPlayPlayerListItemPacket
 import dev.zerite.craftlib.protocol.packet.play.server.entity.*
+import dev.zerite.craftlib.protocol.packet.play.server.interaction.ServerPlayCollectItemPacket
+import dev.zerite.craftlib.protocol.packet.play.server.interaction.ServerPlayUseBedPacket
 import dev.zerite.craftlib.protocol.packet.play.server.inventory.ServerPlayHeldItemChangePacket
 import dev.zerite.craftlib.protocol.packet.play.server.inventory.ServerPlaySetSlotPacket
 import dev.zerite.craftlib.protocol.packet.play.server.inventory.ServerPlayWindowItemsPacket
@@ -23,10 +25,12 @@ import dev.zerite.craftlib.protocol.packet.play.server.join.ServerPlaySpawnPosit
 import dev.zerite.craftlib.protocol.packet.play.server.join.ServerPlayStatisticsPacket
 import dev.zerite.craftlib.protocol.packet.play.server.other.ServerPlayChangeGameStatePacket
 import dev.zerite.craftlib.protocol.packet.play.server.other.ServerPlayKeepAlivePacket
+import dev.zerite.craftlib.protocol.packet.play.server.other.ServerPlayRespawnPacket
 import dev.zerite.craftlib.protocol.packet.play.server.player.ServerPlayPlayerPositionLookPacket
 import dev.zerite.craftlib.protocol.packet.play.server.player.ServerPlayUpdateHealthPacket
 import dev.zerite.craftlib.protocol.packet.play.server.world.ServerPlayMapChunkBulkPacket
 import dev.zerite.craftlib.protocol.packet.play.server.world.ServerPlayTimeUpdatePacket
+import dev.zerite.craftlib.protocol.packet.play.server.world.ServerPlayUpdateBlockEntityPacket
 import io.netty.bootstrap.Bootstrap
 import io.netty.channel.ChannelInitializer
 import io.netty.channel.epoll.Epoll
@@ -93,11 +97,26 @@ object MinecraftProtocol {
             ServerPlayUpdateHealthPacket {
                 ProtocolVersion.MC1_7_2 to 0x06
             }
+            ServerPlayRespawnPacket {
+                ProtocolVersion.MC1_7_2 to 0x07
+            }
             ServerPlayPlayerPositionLookPacket {
                 ProtocolVersion.MC1_7_2 to 0x08
             }
             ServerPlayHeldItemChangePacket {
                 ProtocolVersion.MC1_7_2 to 0x09
+            }
+            ServerPlayUseBedPacket {
+                ProtocolVersion.MC1_7_2 to 0x0A
+            }
+            ServerPlayAnimationPacket {
+                ProtocolVersion.MC1_7_2 to 0x0B
+            }
+            ServerPlaySpawnPlayerPacket {
+                ProtocolVersion.MC1_7_2 to 0x0C
+            }
+            ServerPlayCollectItemPacket {
+                ProtocolVersion.MC1_7_2 to 0x0D
             }
             ServerPlaySpawnMobPacket {
                 ProtocolVersion.MC1_7_2 to 0x0F
@@ -128,6 +147,9 @@ object MinecraftProtocol {
             }
             ServerPlayWindowItemsPacket {
                 ProtocolVersion.MC1_7_2 to 0x30
+            }
+            ServerPlayUpdateBlockEntityPacket {
+                ProtocolVersion.MC1_7_2 to 0x35
             }
             ServerPlayStatisticsPacket {
                 ProtocolVersion.MC1_7_2 to 0x37

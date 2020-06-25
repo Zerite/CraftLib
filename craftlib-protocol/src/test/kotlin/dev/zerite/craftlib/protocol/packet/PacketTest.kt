@@ -123,7 +123,7 @@ abstract class PacketTest<T : Packet>(private val io: PacketIO<T>) {
     private fun runTest(
         build: (packet: T, buf: ProtocolBuffer, version: ProtocolVersion, output: ByteArray, connection: NettyConnection, index: Int) -> Unit
     ) {
-        examples.entries.forEachIndexed { index, (packet, map) ->
+        examples.entries.reversed().forEachIndexed { index, (packet, map) ->
             map.forEach { (version, output) ->
                 val dummy = NettyConnection(PacketDirection.CLIENTBOUND)
                 dummy.version = version

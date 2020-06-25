@@ -43,9 +43,9 @@ data class ServerPlayRespawnPacket(
             packet: ServerPlayRespawnPacket,
             connection: NettyConnection
         ) {
-            buffer.writeInt((Dimension[version, packet.dimension] as? Int?) ?: 0)
-            buffer.writeByte((Difficulty[version, packet.difficulty] as? Int) ?: 0)
-            buffer.writeByte((Gamemode[version, packet.gamemode] as? Int) ?: 0)
+            buffer.writeInt(Dimension[version, packet.dimension, Int::class] ?: 0)
+            buffer.writeByte(Difficulty[version, packet.difficulty, Int::class] ?: 0)
+            buffer.writeByte(Gamemode[version, packet.gamemode, Int::class] ?: 0)
             buffer.writeString(packet.levelType)
         }
     }

@@ -95,6 +95,35 @@ object MagicRegistry {
     }
 
     /**
+     * Stores the possible objects for the spawn object packet.
+     */
+    val objects = create<MagicObject> {
+        ProtocolVersion.MC1_7_2 {
+            MagicObject.BOAT to 1
+            MagicObject.ITEM_STACK to 2
+            MagicObject.MINECART to 10
+            MagicObject.MINECART_STORAGE to 11
+            MagicObject.MINECART_POWERED to 12
+            MagicObject.ACTIVATED_TNT to 50
+            MagicObject.ENDER_CRYSTAL to 51
+            MagicObject.ARROW to 60
+            MagicObject.SNOWBALL to 61
+            MagicObject.EGG to 62
+            MagicObject.FIREBALL to 63
+            MagicObject.FIRE_CHARGE to 64
+            MagicObject.THROWN_ENDER_PEARL to 65
+            MagicObject.WITHER_SKULL to 66
+            MagicObject.FALLING_OBJECT to 70
+            MagicObject.ITEM_FRAME to 71
+            MagicObject.EYE_OF_ENDER to 72
+            MagicObject.THROWN_POTION to 73
+            MagicObject.FALLING_DRAGON_EGG to 74
+            MagicObject.THROWN_EXP_BOTTLE to 75
+            MagicObject.FISHING_FLOAT to 90
+        }
+    }
+
+    /**
      * Creates a new Minecraft enum and provides a builder function
      * to initialize it.
      *
@@ -113,7 +142,7 @@ object MagicRegistry {
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-open class RegistryEntry(@Suppress("UNUSED") val name: String) {
+open class RegistryEntry(@Suppress("UNUSED") open val name: String) {
     override fun toString() = name
 }
 

@@ -702,6 +702,37 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
     fun writeVelocity(value: Double) = writeShort((value * 8000.0).roundToInt())
 
     /**
+     * Reads object data from the buffer and returns it in a data class.
+     *
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    fun readObjectData() = readInt().let {
+        ObjectData(
+            it,
+            if (it != 0) readShort().toInt() else null,
+            if (it != 0) readShort().toInt() else null,
+            if (it != 0) readShort().toInt() else null
+        )
+    }
+
+    /**
+     * Writes an object data class into the buffer.
+     *
+     * @param  data       The object data which we are writing.
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    fun writeObjectData(data: ObjectData) {
+        writeInt(data.value)
+        if (data.value != 0) {
+            writeShort(data.speedX ?: 0)
+            writeShort(data.speedY ?: 0)
+            writeShort(data.speedZ ?: 0)
+        }
+    }
+
+    /**
      * Set of modes which the UUIDs should be written using.
      *
      * @author Koding
@@ -721,6 +752,19 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
  * @since  0.1.0-SNAPSHOT
  */
 data class Slot(var id: Short, var count: Byte = 0, var damage: Short = 0, var data: CompoundTag? = null)
+
+/**
+ * Stores data about an object from the buffer.
+ *
+ * @author Koding
+ * @since  0.1.0-SNAPSHOT
+ */
+data class ObjectData(
+    var value: Int,
+    var speedX: Int? = null,
+    var speedY: Int? = null,
+    var speedZ: Int? = null
+)
 
 /**
  * Stores 3 integer values which represent world coordinates.

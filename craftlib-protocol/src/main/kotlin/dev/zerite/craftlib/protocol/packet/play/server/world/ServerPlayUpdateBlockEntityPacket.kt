@@ -38,7 +38,7 @@ data class ServerPlayUpdateBlockEntityPacket(
             buffer.writeInt(packet.x)
             buffer.writeShort(packet.y)
             buffer.writeInt(packet.z)
-            buffer.writeByte((BlockEntityUpdateAction[version, packet.action] as? Int?) ?: 1)
+            buffer.writeByte(BlockEntityUpdateAction[version, packet.action, Int::class] ?: 1)
             buffer.writeNBT(packet.nbt, compressed = true)
         }
     }

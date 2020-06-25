@@ -118,6 +118,9 @@ object MinecraftProtocol {
             ServerPlayCollectItemPacket {
                 ProtocolVersion.MC1_7_2 to 0x0D
             }
+            ServerPlaySpawnObjectPacket {
+                ProtocolVersion.MC1_7_2 to 0x0E
+            }
             ServerPlaySpawnMobPacket {
                 ProtocolVersion.MC1_7_2 to 0x0F
             }

@@ -101,24 +101,30 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
     /**
      * Reads a byte array from the buffer.
      *
+     * @param  max       The maximum length of this array.
      * @param  length    Lambda for providing the length for the byte array.
+     *
      * @author Koding
      * @since  0.1.0-SNAPSHOT
      */
     @Suppress("UNUSED")
-    fun readByteArray(length: ProtocolBuffer.() -> Int = { readVarInt() }) =
-        ByteArray(length()).apply { readBytes(this) }
+    fun readByteArray(max: Int? = null, length: ProtocolBuffer.() -> Int = { readVarInt() }) =
+        ByteArray(length().takeIf { max == null || it <= max } ?: error("Byte array is too large"))
+            .apply { readBytes(this) }
 
     /**
      * Reads a byte array from the buffer.
      *
      * @param  length    The length of the byte array to read.
+     * @param  max       The maximum length of this array.
+     *
      * @author Koding
      * @since  0.1.0-SNAPSHOT
      */
     @Suppress("UNUSED")
-    fun readByteArray(length: Int) =
-        ByteArray(length).apply { readBytes(this) }
+    fun readByteArray(length: Int, max: Int? = null) =
+        ByteArray(length.takeIf { max == null || it <= max }
+            ?: error("Byte array is too large")).apply { readBytes(this) }
 
     /**
      * Writes a byte array to the buffer.
@@ -147,11 +153,13 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
     /**
      * Reads a string from the buffer.
      *
+     * @param  max        The maximum length of this string.
      * @return The string which was read from the buffer.
+     *
      * @author Koding
      * @since  0.1.0-SNAPSHOT
      */
-    fun readString() = readByteArray().toString(Charsets.UTF_8)
+    fun readString(max: Int? = null) = readByteArray(max = max).toString(Charsets.UTF_8)
 
     /**
      * Reads a single byte from the buffer.

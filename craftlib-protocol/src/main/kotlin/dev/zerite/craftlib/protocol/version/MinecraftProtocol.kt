@@ -124,11 +124,26 @@ object MinecraftProtocol {
             ServerPlaySpawnMobPacket {
                 ProtocolVersion.MC1_7_2 to 0x0F
             }
+            ServerPlaySpawnPaintingPacket {
+                ProtocolVersion.MC1_7_2 to 0x10
+            }
+            ServerPlaySpawnExperienceOrbPacket {
+                ProtocolVersion.MC1_7_2 to 0x11
+            }
+            ServerPlayEntityVelocityPacket {
+                ProtocolVersion.MC1_7_2 to 0x12
+            }
+            ServerPlayDestroyEntitiesPacket {
+                ProtocolVersion.MC1_7_2 to 0x13
+            }
             ServerPlayEntityRelativeMovePacket {
                 ProtocolVersion.MC1_7_2 to 0x15
             }
             ServerPlayEntityLookPacket {
                 ProtocolVersion.MC1_7_2 to 0x16
+            }
+            ServerPlayEntityLookRelativeMovePacket {
+                ProtocolVersion.MC1_7_2 to 0x17
             }
             ServerPlayEntityHeadLookPacket {
                 ProtocolVersion.MC1_7_2 to 0x19

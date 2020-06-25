@@ -19,13 +19,10 @@ import dev.zerite.craftlib.protocol.packet.play.server.inventory.ServerPlayHeldI
 import dev.zerite.craftlib.protocol.packet.play.server.inventory.ServerPlaySetSlotPacket
 import dev.zerite.craftlib.protocol.packet.play.server.inventory.ServerPlayWindowItemsPacket
 import dev.zerite.craftlib.protocol.packet.play.server.join.ServerPlayJoinGamePacket
-import dev.zerite.craftlib.protocol.packet.play.server.other.ServerPlayPluginMessagePacket
 import dev.zerite.craftlib.protocol.packet.play.server.player.ServerPlayPlayerAbilitiesPacket
 import dev.zerite.craftlib.protocol.packet.play.server.join.ServerPlaySpawnPositionPacket
 import dev.zerite.craftlib.protocol.packet.play.server.join.ServerPlayStatisticsPacket
-import dev.zerite.craftlib.protocol.packet.play.server.other.ServerPlayChangeGameStatePacket
-import dev.zerite.craftlib.protocol.packet.play.server.other.ServerPlayKeepAlivePacket
-import dev.zerite.craftlib.protocol.packet.play.server.other.ServerPlayRespawnPacket
+import dev.zerite.craftlib.protocol.packet.play.server.other.*
 import dev.zerite.craftlib.protocol.packet.play.server.player.ServerPlayPlayerPositionLookPacket
 import dev.zerite.craftlib.protocol.packet.play.server.player.ServerPlayUpdateHealthPacket
 import dev.zerite.craftlib.protocol.packet.play.server.world.ServerPlayMapChunkBulkPacket
@@ -136,6 +133,9 @@ object MinecraftProtocol {
             ServerPlayDestroyEntitiesPacket {
                 ProtocolVersion.MC1_7_2 to 0x13
             }
+            ServerPlayEntityPacket {
+                ProtocolVersion.MC1_7_2 to 0x14
+            }
             ServerPlayEntityRelativeMovePacket {
                 ProtocolVersion.MC1_7_2 to 0x15
             }
@@ -144,6 +144,9 @@ object MinecraftProtocol {
             }
             ServerPlayEntityLookRelativeMovePacket {
                 ProtocolVersion.MC1_7_2 to 0x17
+            }
+            ServerPlayEntityTeleportPacket {
+                ProtocolVersion.MC1_7_2 to 0x18
             }
             ServerPlayEntityHeadLookPacket {
                 ProtocolVersion.MC1_7_2 to 0x19
@@ -180,6 +183,9 @@ object MinecraftProtocol {
             }
             ServerPlayPluginMessagePacket {
                 ProtocolVersion.MC1_7_2 to 0x3F
+            }
+            ServerPlayDisconnectPacket {
+                ProtocolVersion.MC1_7_2 to 0x40
             }
         }
     }

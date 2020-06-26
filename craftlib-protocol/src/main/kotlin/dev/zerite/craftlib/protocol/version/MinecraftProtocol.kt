@@ -206,6 +206,9 @@ object MinecraftProtocol {
             ServerPlayChangeGameStatePacket {
                 ProtocolVersion.MC1_7_2 to 0x2B
             }
+            ServerPlaySpawnGlobalEntityPacket {
+                ProtocolVersion.MC1_7_2 to 0x2C
+            }
             ServerPlaySetSlotPacket {
                 ProtocolVersion.MC1_7_2 to 0x2F
             }

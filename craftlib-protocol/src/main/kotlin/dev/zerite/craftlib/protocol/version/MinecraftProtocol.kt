@@ -191,6 +191,18 @@ object MinecraftProtocol {
             ServerPlayMapChunkBulkPacket {
                 ProtocolVersion.MC1_7_2 to 0x26
             }
+            ServerPlayExplosionPacket {
+                ProtocolVersion.MC1_7_2 to 0x27
+            }
+            ServerPlayEffectPacket {
+                ProtocolVersion.MC1_7_2 to 0x28
+            }
+            ServerPlaySoundEffectPacket {
+                ProtocolVersion.MC1_7_2 to 0x29
+            }
+            ServerPlayParticlePacket {
+                ProtocolVersion.MC1_7_2 to 0x2A
+            }
             ServerPlayChangeGameStatePacket {
                 ProtocolVersion.MC1_7_2 to 0x2B
             }

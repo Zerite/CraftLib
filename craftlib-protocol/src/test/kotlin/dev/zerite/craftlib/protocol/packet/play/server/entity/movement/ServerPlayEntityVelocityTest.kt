@@ -1,4 +1,4 @@
-package dev.zerite.craftlib.protocol.packet.play.server.entity
+package dev.zerite.craftlib.protocol.packet.play.server.entity.movement
 
 import dev.zerite.craftlib.protocol.packet.PacketTest
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
@@ -12,9 +12,18 @@ import kotlin.math.roundToInt
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-class ServerPlayEntityVelocityTest : PacketTest<ServerPlayEntityVelocityPacket>(ServerPlayEntityVelocityPacket) {
+class ServerPlayEntityVelocityTest : PacketTest<ServerPlayEntityVelocityPacket>(
+    ServerPlayEntityVelocityPacket
+) {
     init {
-        example(ServerPlayEntityVelocityPacket(300, 0.0, 1.0, 1.5)) {
+        example(
+            ServerPlayEntityVelocityPacket(
+                300,
+                0.0,
+                1.0,
+                1.5
+            )
+        ) {
             ProtocolVersion.MC1_7_2 {
                 writeInt(300)
                 writeShort(0)
@@ -22,7 +31,14 @@ class ServerPlayEntityVelocityTest : PacketTest<ServerPlayEntityVelocityPacket>(
                 writeShort((1.5 * 8000).roundToInt())
             }
         }
-        example(ServerPlayEntityVelocityPacket(150, 0.0, 0.0, 0.0)) {
+        example(
+            ServerPlayEntityVelocityPacket(
+                150,
+                0.0,
+                0.0,
+                0.0
+            )
+        ) {
             ProtocolVersion.MC1_7_2 {
                 writeInt(150)
                 writeShort(0)

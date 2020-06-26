@@ -13,15 +13,25 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-class ServerPlayEntityTest : PacketTest<ServerPlayEntityPacket>(ServerPlayEntityPacket) {
+class ServerPlayEntityTest : PacketTest<ServerPlayEntityPacket>(
+    ServerPlayEntityPacket
+) {
 
     init {
-        example(ServerPlayEntityPacket(10)) {
+        example(
+            ServerPlayEntityPacket(
+                10
+            )
+        ) {
             ProtocolVersion.MC1_7_2 {
                 writeInt(10)
             }
         }
-        example(ServerPlayEntityPacket(42)) {
+        example(
+            ServerPlayEntityPacket(
+                42
+            )
+        ) {
             ProtocolVersion.MC1_7_2 {
                 writeInt(42)
             }

@@ -15,15 +15,15 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
 open class MagicGameStateReason(name: String) : RegistryEntry(name) {
     @Suppress("UNUSED")
     companion object {
-        val INVALID_BED = MagicGameStateReason("INVALID_BED")
-        val BEGIN_RAINING = MagicGameStateReason("BEGIN_RAINING")
-        val END_RAINING = MagicGameStateReason("END_RAINING")
-        val CHANGE_GAME_MODE = MagicGameStateReason("CHANGE_GAME_MODE")
-        val ENTER_CREDITS = MagicGameStateReason("ENTER_CREDITS")
-        val DEMO_MESSAGES = MagicGameStateReason("DEMO_MESSAGES")
-        val BOW_HIT_SOUND = MagicGameStateReason("BOW_HIT_SOUND")
-        val FADE_VALUE = MagicGameStateReason("FADE_VALUE")
-        val FADE_TIME = MagicGameStateReason("FADE_TIME")
+        val INVALID_BED = MagicGameStateReason("Invalid Bed Location")
+        val BEGIN_RAINING = MagicGameStateReason("Start Raining")
+        val END_RAINING = MagicGameStateReason("Stop Raining")
+        val CHANGE_GAME_MODE = MagicGameStateReason("Change Gamemode")
+        val ENTER_CREDITS = MagicGameStateReason("Enter Credits")
+        val DEMO_MESSAGES = MagicGameStateReason("Show Demo")
+        val BOW_HIT_SOUND = MagicGameStateReason("Bow Hit Sound")
+        val FADE_VALUE = MagicGameStateReason("Fade Value")
+        val FADE_TIME = MagicGameStateReason("Fade Time")
     }
 }
 

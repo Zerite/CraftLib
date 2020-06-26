@@ -13,7 +13,7 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
 class MagicBlockEntityUpdateAction(name: String) : RegistryEntry(name) {
 
     companion object {
-        val SET_SPAWNER_MOB = MagicBlockEntityUpdateAction("SET_SPAWNER_MOB")
+        val SET_SPAWNER_MOB = MagicBlockEntityUpdateAction("Set Spawner Mob")
     }
 
 }

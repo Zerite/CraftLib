@@ -124,6 +124,59 @@ object MagicRegistry {
     }
 
     /**
+     * Stores the valid entity status values for the entity status packet.
+     */
+    val entityStatus = create<MagicEntityStatus> {
+        ProtocolVersion.MC1_7_2 {
+            MagicEntityStatus.ENTITY_HURT to 2
+            MagicEntityStatus.ENTITY_DEAD to 3
+            MagicEntityStatus.WOLF_TAMING to 6
+            MagicEntityStatus.WOLF_TAMED to 7
+            MagicEntityStatus.WOLF_SHAKING_WATER to 8
+            MagicEntityStatus.EATING_ACCEPTED to 9
+            MagicEntityStatus.SHEEP_EATING_GRASS to 10
+            MagicEntityStatus.IRON_GOLEM_ROSE to 11
+            MagicEntityStatus.VILLAGER_HEARTS to 12
+            MagicEntityStatus.VILLAGER_ANGRY to 13
+            MagicEntityStatus.VILLAGER_HAPPY to 14
+            MagicEntityStatus.WITCH_MAGIC to 15
+            MagicEntityStatus.CONVERT_ZOMBIE_VILLAGER to 16
+            MagicEntityStatus.FIREWORK_EXPLODE to 17
+        }
+    }
+
+    /**
+     * Stores the values for a potion effect.
+     */
+    val potionEffect = create<MagicPotionEffect> {
+        ProtocolVersion.MC1_7_2 {
+            MagicPotionEffect.SPEED to 1
+            MagicPotionEffect.SLOWNESS to 2
+            MagicPotionEffect.HASTE to 3
+            MagicPotionEffect.MINING_FATIGUE to 4
+            MagicPotionEffect.STRENGTH to 5
+            MagicPotionEffect.INSTANT_HEALTH to 6
+            MagicPotionEffect.INSTANT_DAMAGE to 7
+            MagicPotionEffect.JUMP_BOOST to 8
+            MagicPotionEffect.NAUSEA to 9
+            MagicPotionEffect.REGENERATION to 10
+            MagicPotionEffect.RESISTANCE to 11
+            MagicPotionEffect.FIRE_RESISTANCE to 12
+            MagicPotionEffect.WATER_BREATHING to 13
+            MagicPotionEffect.INVISIBILITY to 14
+            MagicPotionEffect.BLINDNESS to 15
+            MagicPotionEffect.NIGHT_VISION to 16
+            MagicPotionEffect.HUNGER to 17
+            MagicPotionEffect.WEAKNESS to 18
+            MagicPotionEffect.POISON to 19
+            MagicPotionEffect.WITHER to 20
+            MagicPotionEffect.HEALTH_BOOST to 21
+            MagicPotionEffect.ABSORPTION to 22
+            MagicPotionEffect.SATURATION to 23
+        }
+    }
+
+    /**
      * Creates a new Minecraft enum and provides a builder function
      * to initialize it.
      *

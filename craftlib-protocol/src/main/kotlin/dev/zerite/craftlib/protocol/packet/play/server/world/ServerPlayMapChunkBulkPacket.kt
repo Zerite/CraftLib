@@ -6,13 +6,11 @@ import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
 import dev.zerite.craftlib.protocol.data.world.ChunkColumn
 import dev.zerite.craftlib.protocol.data.world.ChunkMetadata
+import dev.zerite.craftlib.protocol.util.ext.dataInput
+import dev.zerite.craftlib.protocol.util.ext.dataOutput
+import dev.zerite.craftlib.protocol.util.ext.deflated
+import dev.zerite.craftlib.protocol.util.ext.inflated
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.io.DataInputStream
-import java.io.DataOutputStream
-import java.util.zip.Deflater
-import java.util.zip.Inflater
 
 /**
  * Reads and writes multiple chunk columns into a packet, sent from the server when
@@ -35,10 +33,7 @@ data class ServerPlayMapChunkBulkPacket(
             val columns = buffer.readShort()
             val length = buffer.readInt()
             val skyLight = buffer.readBoolean()
-            val rawChunkData = buffer.readByteArray(length = length)
-
-            val data = ByteArray(196864 * columns)
-            Inflater().apply { setInput(rawChunkData, 0, length) }.inflate(data)
+            val data = buffer.readByteArray(length = length).inflated(196864 * columns)
 
             var readerIndex = 0
             return ServerPlayMapChunkBulkPacket(
@@ -47,6 +42,7 @@ data class ServerPlayMapChunkBulkPacket(
                     val meta = ChunkMetadata(
                         buffer.readInt(),
                         buffer.readInt(),
+                        true,
                         buffer.readShort().toInt(),
                         buffer.readShort().toInt()
                     )
@@ -66,7 +62,7 @@ data class ServerPlayMapChunkBulkPacket(
                     System.arraycopy(data, readerIndex, chunkBytes, 0, dataLength)
                     readerIndex += dataLength
 
-                    ChunkColumn.read(DataInputStream(ByteArrayInputStream(chunkBytes)), meta, hasSkyLight = skyLight)
+                    chunkBytes.dataInput { ChunkColumn.read(this, meta, hasSkyLight = skyLight) }
                 }
             )
         }
@@ -77,25 +73,17 @@ data class ServerPlayMapChunkBulkPacket(
             packet: ServerPlayMapChunkBulkPacket,
             connection: NettyConnection
         ) {
-            val byteOutput = ByteArrayOutputStream()
-            val output = DataOutputStream(byteOutput)
-            val meta =
-                packet.columns.map { it to ChunkColumn.write(output, it, hasSkyLight = packet.skyLight) }.toTypedArray()
-
-            val bytes = byteOutput.toByteArray()
-            val compressed = ByteArray(bytes.size)
-
-            Deflater(-1).apply {
-                setInput(bytes, 0, bytes.size)
-                finish()
-                deflate(compressed)
-                end()
+            val (stream, meta) = dataOutput {
+                packet.columns.map {
+                    it to ChunkColumn.write(this, it, hasSkyLight = packet.skyLight)
+                }.toTypedArray()
             }
+            val bytes = stream.toByteArray().deflated()
 
             buffer.writeShort(packet.columns.size)
-            buffer.writeInt(compressed.size)
+            buffer.writeInt(bytes.size)
             buffer.writeBoolean(packet.skyLight)
-            buffer.writeBytes(compressed)
+            buffer.writeBytes(bytes)
 
             buffer.writeArray(meta, { }) { (col, out) ->
                 writeInt(col.x)

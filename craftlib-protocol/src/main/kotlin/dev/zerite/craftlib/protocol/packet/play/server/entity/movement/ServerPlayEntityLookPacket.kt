@@ -1,4 +1,4 @@
-package dev.zerite.craftlib.protocol.packet.play.server.entity
+package dev.zerite.craftlib.protocol.packet.play.server.entity.movement
 
 import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
@@ -8,34 +8,40 @@ import dev.zerite.craftlib.protocol.packet.base.EntityIdPacket
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
 /**
- * Most entity-related packets are subclasses of this packet. When sent from the server to the client,
- * it may initialize the entry.
- *
- * For player entities, either this packet or any move/look packet is sent every game tick.
- * So the meaning of this packet is basically that the entity did not move/look since the last such packet.
+ * Sent by the server to indicate that an entity is looking in a
+ * new direction.
  *
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-data class ServerPlayEntityPacket(
-    override var entityId: Int
+data class ServerPlayEntityLookPacket(
+    override var entityId: Int,
+    var yaw: Float,
+    var pitch: Float
 ) : EntityIdPacket, Packet() {
-    companion object : PacketIO<ServerPlayEntityPacket> {
+
+    companion object : PacketIO<ServerPlayEntityLookPacket> {
         override fun read(
             buffer: ProtocolBuffer,
             version: ProtocolVersion,
             connection: NettyConnection
-        ) = ServerPlayEntityPacket(
-            buffer.readInt()
-        )
+        ) =
+            ServerPlayEntityLookPacket(
+                buffer.readInt(),
+                buffer.readStepRotation(),
+                buffer.readStepRotation()
+            )
 
         override fun write(
             buffer: ProtocolBuffer,
             version: ProtocolVersion,
-            packet: ServerPlayEntityPacket,
+            packet: ServerPlayEntityLookPacket,
             connection: NettyConnection
         ) {
             buffer.writeInt(packet.entityId)
+            buffer.writeStepRotation(packet.yaw)
+            buffer.writeStepRotation(packet.pitch)
         }
     }
+
 }

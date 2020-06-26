@@ -13,9 +13,9 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
 open class MagicDimension(name: String) : RegistryEntry(name) {
 
     companion object {
-        val NETHER = MagicDimension("NETHER")
-        val OVERWORLD = MagicDimension("OVERWORLD")
-        val END = MagicDimension("END")
+        val NETHER = MagicDimension("The Nether")
+        val OVERWORLD = MagicDimension("Overworld")
+        val END = MagicDimension("The End")
     }
 
 }

@@ -10,7 +10,7 @@ import java.io.DataOutput
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-data class ChunkColumn(val x: Int, val z: Int, private val chunks: Array<Chunk>, private var biomes: ByteArray) {
+data class ChunkColumn(val x: Int, val z: Int, val chunks: Array<Chunk>, private var biomes: ByteArray) {
 
     companion object {
         /**
@@ -35,7 +35,7 @@ data class ChunkColumn(val x: Int, val z: Int, private val chunks: Array<Chunk>,
             data: DataInput,
             metadata: ChunkMetadata,
             hasSkyLight: Boolean = true,
-            readBiomes: Boolean = true
+            readBiomes: Boolean = metadata.biomes
         ) = ChunkColumn(
             metadata.chunkX,
             metadata.chunkZ,

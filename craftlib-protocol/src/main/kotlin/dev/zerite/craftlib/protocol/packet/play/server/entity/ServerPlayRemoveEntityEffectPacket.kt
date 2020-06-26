@@ -4,44 +4,39 @@ import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
+import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
+import dev.zerite.craftlib.protocol.data.registry.impl.PotionEffect
 import dev.zerite.craftlib.protocol.packet.base.EntityIdPacket
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
 /**
- * Sent by the server when an entity moves less than 4 blocks in one
- * single movement.
+ * Sent by the server to remove a potion effect from an entity.
  *
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-data class ServerPlayEntityRelativeMovePacket(
+data class ServerPlayRemoveEntityEffectPacket(
     override var entityId: Int,
-    var x: Double,
-    var y: Double,
-    var z: Double
+    var effect: RegistryEntry
 ) : EntityIdPacket, Packet() {
-    companion object : PacketIO<ServerPlayEntityRelativeMovePacket> {
+    companion object : PacketIO<ServerPlayRemoveEntityEffectPacket> {
         override fun read(
             buffer: ProtocolBuffer,
             version: ProtocolVersion,
             connection: NettyConnection
-        ) = ServerPlayEntityRelativeMovePacket(
+        ) = ServerPlayRemoveEntityEffectPacket(
             buffer.readInt(),
-            buffer.readFixedPoint { readByte().toDouble() },
-            buffer.readFixedPoint { readByte().toDouble() },
-            buffer.readFixedPoint { readByte().toDouble() }
+            PotionEffect[version, buffer.readByte().toInt()]
         )
 
         override fun write(
             buffer: ProtocolBuffer,
             version: ProtocolVersion,
-            packet: ServerPlayEntityRelativeMovePacket,
+            packet: ServerPlayRemoveEntityEffectPacket,
             connection: NettyConnection
         ) {
             buffer.writeInt(packet.entityId)
-            buffer.writeFixedPoint(packet.x) { writeByte(it) }
-            buffer.writeFixedPoint(packet.y) { writeByte(it) }
-            buffer.writeFixedPoint(packet.z) { writeByte(it) }
+            buffer.writeByte(PotionEffect[version, packet.effect, Int::class] ?: 0)
         }
     }
 }

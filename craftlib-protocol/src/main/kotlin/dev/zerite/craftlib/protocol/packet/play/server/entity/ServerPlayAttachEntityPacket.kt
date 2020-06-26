@@ -8,39 +8,36 @@ import dev.zerite.craftlib.protocol.packet.base.EntityIdPacket
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
 /**
- * Sent by the server to indicate that an entity is looking in a
- * new direction.
+ * This packet is sent when a player has been attached to an entity (e.g. Minecart)
  *
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-data class ServerPlayEntityLookPacket(
+data class ServerPlayAttachEntityPacket(
     override var entityId: Int,
-    var yaw: Float,
-    var pitch: Float
+    var vehicleId: Int,
+    var leash: Boolean
 ) : EntityIdPacket, Packet() {
-
-    companion object : PacketIO<ServerPlayEntityLookPacket> {
+    companion object : PacketIO<ServerPlayAttachEntityPacket> {
         override fun read(
             buffer: ProtocolBuffer,
             version: ProtocolVersion,
             connection: NettyConnection
-        ) = ServerPlayEntityLookPacket(
+        ) = ServerPlayAttachEntityPacket(
             buffer.readInt(),
-            buffer.readStepRotation(),
-            buffer.readStepRotation()
+            buffer.readInt(),
+            buffer.readBoolean()
         )
 
         override fun write(
             buffer: ProtocolBuffer,
             version: ProtocolVersion,
-            packet: ServerPlayEntityLookPacket,
+            packet: ServerPlayAttachEntityPacket,
             connection: NettyConnection
         ) {
             buffer.writeInt(packet.entityId)
-            buffer.writeStepRotation(packet.yaw)
-            buffer.writeStepRotation(packet.pitch)
+            buffer.writeInt(packet.vehicleId)
+            buffer.writeBoolean(packet.leash)
         }
     }
-
 }

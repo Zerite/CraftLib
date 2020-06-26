@@ -13,14 +13,14 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
 class MagicAnimation(name: String) : RegistryEntry(name) {
 
     companion object {
-        val SWING_ARM = MagicAnimation("SWING_ARM")
-        val DAMAGE_ANIMATION = MagicAnimation("DAMAGE_ANIMATION")
-        val LEAVE_BED = MagicAnimation("LEAVE_BED")
-        val EAT_FOOD = MagicAnimation("EAT_FOOD")
-        val CRITICAL_EFFECT = MagicAnimation("CRITICAL_EFFECT")
-        val MAGIC_CRITICAL_EFFECT = MagicAnimation("MAGIC_CRITICAL_EFFECT")
-        val CROUCH = MagicAnimation("CROUCH")
-        val UNCROUCH = MagicAnimation("UNCROUCH")
+        val SWING_ARM = MagicAnimation("Swing Arm")
+        val DAMAGE_ANIMATION = MagicAnimation("Damage Animation")
+        val LEAVE_BED = MagicAnimation("Leave Bed")
+        val EAT_FOOD = MagicAnimation("Eat Food")
+        val CRITICAL_EFFECT = MagicAnimation("Critical Effect")
+        val MAGIC_CRITICAL_EFFECT = MagicAnimation("Magic Critical Effect")
+        val CROUCH = MagicAnimation("Crouch")
+        val UNCROUCH = MagicAnimation("Un-crouch")
     }
 
 }

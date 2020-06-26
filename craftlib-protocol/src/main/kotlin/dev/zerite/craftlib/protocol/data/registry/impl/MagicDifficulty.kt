@@ -14,10 +14,10 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
 open class MagicDifficulty(name: String) : RegistryEntry(name) {
 
     companion object {
-        val PEACEFUL = MagicDifficulty("PEACEFUL")
-        val EASY = MagicDifficulty("EASY")
-        val NORMAL = MagicDifficulty("NORMAL")
-        val HARD = MagicDifficulty("HARD")
+        val PEACEFUL = MagicDifficulty("Peaceful")
+        val EASY = MagicDifficulty("Easy")
+        val NORMAL = MagicDifficulty("Normal")
+        val HARD = MagicDifficulty("Hard")
     }
 
 }

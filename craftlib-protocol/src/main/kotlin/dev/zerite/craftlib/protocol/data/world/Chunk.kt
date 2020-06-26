@@ -7,7 +7,7 @@ package dev.zerite.craftlib.protocol.data.world
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-data class Chunk(private var blocks: Array<Block?> = arrayOfNulls(DESIRED_BLOCKS)) {
+data class Chunk(internal var blocks: Array<Block?> = arrayOfNulls(DESIRED_BLOCKS)) {
     companion object {
         /**
          * The desired size which the blocks array should be.
@@ -107,6 +107,7 @@ data class BlockLocation(
 data class ChunkMetadata(
     val chunkX: Int,
     val chunkZ: Int,
+    val biomes: Boolean,
     val primaryBitmap: Int,
     val addBitmap: Int
 )

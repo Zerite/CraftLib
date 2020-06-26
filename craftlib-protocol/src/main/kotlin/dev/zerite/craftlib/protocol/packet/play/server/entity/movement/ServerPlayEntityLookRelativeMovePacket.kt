@@ -1,4 +1,4 @@
-package dev.zerite.craftlib.protocol.packet.play.server.entity
+package dev.zerite.craftlib.protocol.packet.play.server.entity.movement
 
 import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
@@ -28,14 +28,15 @@ data class ServerPlayEntityLookRelativeMovePacket(
             buffer: ProtocolBuffer,
             version: ProtocolVersion,
             connection: NettyConnection
-        ) = ServerPlayEntityLookRelativeMovePacket(
-            buffer.readInt(),
-            buffer.readFixedPoint { readByte().toDouble() },
-            buffer.readFixedPoint { readByte().toDouble() },
-            buffer.readFixedPoint { readByte().toDouble() },
-            buffer.readByte().toFloat(),
-            buffer.readByte().toFloat()
-        )
+        ) =
+            ServerPlayEntityLookRelativeMovePacket(
+                buffer.readInt(),
+                buffer.readFixedPoint { readByte().toDouble() },
+                buffer.readFixedPoint { readByte().toDouble() },
+                buffer.readFixedPoint { readByte().toDouble() },
+                buffer.readByte().toFloat(),
+                buffer.readByte().toFloat()
+            )
 
         override fun write(
             buffer: ProtocolBuffer,

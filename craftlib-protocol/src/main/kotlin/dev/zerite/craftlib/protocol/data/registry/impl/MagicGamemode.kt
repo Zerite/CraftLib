@@ -14,9 +14,9 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
 open class MagicGamemode(name: String) : RegistryEntry(name) {
 
     companion object {
-        val SURVIVAL = MagicGamemode("SURVIVAL")
-        val CREATIVE = MagicGamemode("CREATIVE")
-        val ADVENTURE = MagicGamemode("ADVENTURE")
+        val SURVIVAL = MagicGamemode("Survival")
+        val CREATIVE = MagicGamemode("Creative")
+        val ADVENTURE = MagicGamemode("Adventure")
     }
 
 }

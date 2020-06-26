@@ -10,9 +10,11 @@ import dev.zerite.craftlib.protocol.packet.login.client.ClientLoginStartPacket
 import dev.zerite.craftlib.protocol.packet.login.server.ServerLoginDisconnectPacket
 import dev.zerite.craftlib.protocol.packet.login.server.ServerLoginEncryptionRequestPacket
 import dev.zerite.craftlib.protocol.packet.login.server.ServerLoginSuccessPacket
+import dev.zerite.craftlib.protocol.packet.play.server.display.ServerPlayBlockBreakAnimationPacket
 import dev.zerite.craftlib.protocol.packet.play.server.display.ServerPlayChatMessagePacket
 import dev.zerite.craftlib.protocol.packet.play.server.display.ServerPlayPlayerListItemPacket
 import dev.zerite.craftlib.protocol.packet.play.server.entity.*
+import dev.zerite.craftlib.protocol.packet.play.server.entity.movement.*
 import dev.zerite.craftlib.protocol.packet.play.server.interaction.ServerPlayCollectItemPacket
 import dev.zerite.craftlib.protocol.packet.play.server.interaction.ServerPlayUseBedPacket
 import dev.zerite.craftlib.protocol.packet.play.server.inventory.ServerPlayHeldItemChangePacket
@@ -24,10 +26,9 @@ import dev.zerite.craftlib.protocol.packet.play.server.join.ServerPlaySpawnPosit
 import dev.zerite.craftlib.protocol.packet.play.server.join.ServerPlayStatisticsPacket
 import dev.zerite.craftlib.protocol.packet.play.server.other.*
 import dev.zerite.craftlib.protocol.packet.play.server.player.ServerPlayPlayerPositionLookPacket
+import dev.zerite.craftlib.protocol.packet.play.server.player.ServerPlaySetExperiencePacket
 import dev.zerite.craftlib.protocol.packet.play.server.player.ServerPlayUpdateHealthPacket
-import dev.zerite.craftlib.protocol.packet.play.server.world.ServerPlayMapChunkBulkPacket
-import dev.zerite.craftlib.protocol.packet.play.server.world.ServerPlayTimeUpdatePacket
-import dev.zerite.craftlib.protocol.packet.play.server.world.ServerPlayUpdateBlockEntityPacket
+import dev.zerite.craftlib.protocol.packet.play.server.world.*
 import io.netty.bootstrap.Bootstrap
 import io.netty.channel.ChannelInitializer
 import io.netty.channel.epoll.Epoll
@@ -151,11 +152,41 @@ object MinecraftProtocol {
             ServerPlayEntityHeadLookPacket {
                 ProtocolVersion.MC1_7_2 to 0x19
             }
+            ServerPlayEntityStatusPacket {
+                ProtocolVersion.MC1_7_2 to 0x1A
+            }
+            ServerPlayAttachEntityPacket {
+                ProtocolVersion.MC1_7_2 to 0x1B
+            }
             ServerPlayEntityMetadataPacket {
                 ProtocolVersion.MC1_7_2 to 0x1C
             }
+            ServerPlayEntityEffectPacket {
+                ProtocolVersion.MC1_7_2 to 0x1D
+            }
+            ServerPlayRemoveEntityEffectPacket {
+                ProtocolVersion.MC1_7_2 to 0x1E
+            }
+            ServerPlaySetExperiencePacket {
+                ProtocolVersion.MC1_7_2 to 0x1F
+            }
             ServerPlayEntityPropertiesPacket {
                 ProtocolVersion.MC1_7_2 to 0x20
+            }
+            ServerPlayChunkDataPacket {
+                ProtocolVersion.MC1_7_2 to 0x21
+            }
+            ServerPlayMultiBlockChangePacket {
+                ProtocolVersion.MC1_7_2 to 0x22
+            }
+            ServerPlayBlockChangePacket {
+                ProtocolVersion.MC1_7_2 to 0x23
+            }
+            ServerPlayBlockActionPacket {
+                ProtocolVersion.MC1_7_2 to 0x24
+            }
+            ServerPlayBlockBreakAnimationPacket {
+                ProtocolVersion.MC1_7_2 to 0x25
             }
             ServerPlayMapChunkBulkPacket {
                 ProtocolVersion.MC1_7_2 to 0x26

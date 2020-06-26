@@ -1,4 +1,4 @@
-package dev.zerite.craftlib.protocol.packet.play.server.entity
+package dev.zerite.craftlib.protocol.packet.play.server.entity.movement
 
 import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
@@ -26,14 +26,15 @@ data class ServerPlayEntityTeleportPacket(
             buffer: ProtocolBuffer,
             version: ProtocolVersion,
             connection: NettyConnection
-        ) = ServerPlayEntityTeleportPacket(
-            buffer.readInt(),
-            buffer.readFixedPoint(),
-            buffer.readFixedPoint(),
-            buffer.readFixedPoint(),
-            buffer.readByte().toFloat(),
-            buffer.readByte().toFloat()
-        )
+        ) =
+            ServerPlayEntityTeleportPacket(
+                buffer.readInt(),
+                buffer.readFixedPoint(),
+                buffer.readFixedPoint(),
+                buffer.readFixedPoint(),
+                buffer.readByte().toFloat(),
+                buffer.readByte().toFloat()
+            )
 
         override fun write(
             buffer: ProtocolBuffer,

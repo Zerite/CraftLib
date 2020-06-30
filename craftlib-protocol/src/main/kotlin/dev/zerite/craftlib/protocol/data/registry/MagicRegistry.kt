@@ -177,6 +177,26 @@ object MagicRegistry {
     }
 
     /**
+     * Stores the mappings for the inventory type magic value.
+     */
+    val inventoryType = create<MagicInventoryType> {
+        ProtocolVersion.MC1_7_2 {
+            MagicInventoryType.CHEST to 0
+            MagicInventoryType.WORKBENCH to 1
+            MagicInventoryType.FURNACE to 2
+            MagicInventoryType.DISPENSER to 3
+            MagicInventoryType.ENCHANTMENT_TABLE to 4
+            MagicInventoryType.BREWING_STAND to 5
+            MagicInventoryType.VILLAGER to 6
+            MagicInventoryType.BEACON to 7
+            MagicInventoryType.ANVIL to 8
+            MagicInventoryType.HOPPER to 9
+            MagicInventoryType.DROPPER to 10
+            MagicInventoryType.HORSE to 11
+        }
+    }
+
+    /**
      * Creates a new Minecraft enum and provides a builder function
      * to initialize it.
      *

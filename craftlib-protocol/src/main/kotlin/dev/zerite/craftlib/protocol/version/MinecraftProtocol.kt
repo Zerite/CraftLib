@@ -12,14 +12,14 @@ import dev.zerite.craftlib.protocol.packet.login.server.ServerLoginEncryptionReq
 import dev.zerite.craftlib.protocol.packet.login.server.ServerLoginSuccessPacket
 import dev.zerite.craftlib.protocol.packet.play.server.display.ServerPlayBlockBreakAnimationPacket
 import dev.zerite.craftlib.protocol.packet.play.server.display.ServerPlayChatMessagePacket
+import dev.zerite.craftlib.protocol.packet.play.server.display.ServerPlayMapsPacket
 import dev.zerite.craftlib.protocol.packet.play.server.display.ServerPlayPlayerListItemPacket
 import dev.zerite.craftlib.protocol.packet.play.server.entity.*
 import dev.zerite.craftlib.protocol.packet.play.server.entity.movement.*
 import dev.zerite.craftlib.protocol.packet.play.server.interaction.ServerPlayCollectItemPacket
+import dev.zerite.craftlib.protocol.packet.play.server.interaction.ServerPlayUpdateSignPacket
 import dev.zerite.craftlib.protocol.packet.play.server.interaction.ServerPlayUseBedPacket
-import dev.zerite.craftlib.protocol.packet.play.server.inventory.ServerPlayHeldItemChangePacket
-import dev.zerite.craftlib.protocol.packet.play.server.inventory.ServerPlaySetSlotPacket
-import dev.zerite.craftlib.protocol.packet.play.server.inventory.ServerPlayWindowItemsPacket
+import dev.zerite.craftlib.protocol.packet.play.server.inventory.*
 import dev.zerite.craftlib.protocol.packet.play.server.join.ServerPlayJoinGamePacket
 import dev.zerite.craftlib.protocol.packet.play.server.player.ServerPlayPlayerAbilitiesPacket
 import dev.zerite.craftlib.protocol.packet.play.server.join.ServerPlaySpawnPositionPacket
@@ -209,11 +209,29 @@ object MinecraftProtocol {
             ServerPlaySpawnGlobalEntityPacket {
                 ProtocolVersion.MC1_7_2 to 0x2C
             }
+            ServerPlayOpenWindowPacket {
+                ProtocolVersion.MC1_7_2 to 0x2D
+            }
+            ServerPlayCloseWindowPacket {
+                ProtocolVersion.MC1_7_2 to 0x2E
+            }
             ServerPlaySetSlotPacket {
                 ProtocolVersion.MC1_7_2 to 0x2F
             }
             ServerPlayWindowItemsPacket {
                 ProtocolVersion.MC1_7_2 to 0x30
+            }
+            ServerPlayWindowPropertyPacket {
+                ProtocolVersion.MC1_7_2 to 0x31
+            }
+            ServerPlayConfirmTransactionPacket {
+                ProtocolVersion.MC1_7_2 to 0x32
+            }
+            ServerPlayUpdateSignPacket {
+                ProtocolVersion.MC1_7_2 to 0x33
+            }
+            ServerPlayMapsPacket {
+                ProtocolVersion.MC1_7_2 to 0x34
             }
             ServerPlayUpdateBlockEntityPacket {
                 ProtocolVersion.MC1_7_2 to 0x35

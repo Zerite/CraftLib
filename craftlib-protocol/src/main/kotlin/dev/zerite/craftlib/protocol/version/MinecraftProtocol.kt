@@ -10,13 +10,11 @@ import dev.zerite.craftlib.protocol.packet.login.client.ClientLoginStartPacket
 import dev.zerite.craftlib.protocol.packet.login.server.ServerLoginDisconnectPacket
 import dev.zerite.craftlib.protocol.packet.login.server.ServerLoginEncryptionRequestPacket
 import dev.zerite.craftlib.protocol.packet.login.server.ServerLoginSuccessPacket
-import dev.zerite.craftlib.protocol.packet.play.server.display.ServerPlayBlockBreakAnimationPacket
-import dev.zerite.craftlib.protocol.packet.play.server.display.ServerPlayChatMessagePacket
-import dev.zerite.craftlib.protocol.packet.play.server.display.ServerPlayMapsPacket
-import dev.zerite.craftlib.protocol.packet.play.server.display.ServerPlayPlayerListItemPacket
+import dev.zerite.craftlib.protocol.packet.play.server.display.*
 import dev.zerite.craftlib.protocol.packet.play.server.entity.*
 import dev.zerite.craftlib.protocol.packet.play.server.entity.movement.*
 import dev.zerite.craftlib.protocol.packet.play.server.interaction.ServerPlayCollectItemPacket
+import dev.zerite.craftlib.protocol.packet.play.server.interaction.ServerPlaySignEditorOpenPacket
 import dev.zerite.craftlib.protocol.packet.play.server.interaction.ServerPlayUpdateSignPacket
 import dev.zerite.craftlib.protocol.packet.play.server.interaction.ServerPlayUseBedPacket
 import dev.zerite.craftlib.protocol.packet.play.server.inventory.*
@@ -236,6 +234,9 @@ object MinecraftProtocol {
             ServerPlayUpdateBlockEntityPacket {
                 ProtocolVersion.MC1_7_2 to 0x35
             }
+            ServerPlaySignEditorOpenPacket {
+                ProtocolVersion.MC1_7_2 to 0x36
+            }
             ServerPlayStatisticsPacket {
                 ProtocolVersion.MC1_7_2 to 0x37
             }
@@ -244,6 +245,18 @@ object MinecraftProtocol {
             }
             ServerPlayPlayerAbilitiesPacket {
                 ProtocolVersion.MC1_7_2 to 0x39
+            }
+            ServerPlayTabCompletePacket {
+                ProtocolVersion.MC1_7_2 to 0x3A
+            }
+            ServerPlayScoreboardObjectivePacket {
+                ProtocolVersion.MC1_7_2 to 0x3B
+            }
+            ServerPlayUpdateScorePacket {
+                ProtocolVersion.MC1_7_2 to 0x3C
+            }
+            ServerPlayDisplayScoreboardPacket {
+                ProtocolVersion.MC1_7_2 to 0x3D
             }
             ServerPlayPluginMessagePacket {
                 ProtocolVersion.MC1_7_2 to 0x3F

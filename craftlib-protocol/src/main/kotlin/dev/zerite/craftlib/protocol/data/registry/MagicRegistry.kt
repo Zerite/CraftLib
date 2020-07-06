@@ -197,6 +197,28 @@ object MagicRegistry {
     }
 
     /**
+     * Stores the mappings for the scoreboard action values in the objective packet.
+     */
+    val scoreboardAction = create<MagicScoreboardAction> {
+        ProtocolVersion.MC1_7_2 {
+            MagicScoreboardAction.CREATE_SCOREBOARD to 0
+            MagicScoreboardAction.REMOVE_SCOREBOARD to 1
+            MagicScoreboardAction.UPDATE_TEXT to 2
+        }
+    }
+
+    /**
+     * Contains version specific mappings for the scoreboard display positions.
+     */
+    val scoreboardPosition = create<MagicScoreboardPosition> {
+        ProtocolVersion.MC1_7_2 {
+            MagicScoreboardPosition.LIST to 0
+            MagicScoreboardPosition.SIDEBAR to 1
+            MagicScoreboardPosition.BELOW_NAME to 2
+        }
+    }
+
+    /**
      * Creates a new Minecraft enum and provides a builder function
      * to initialize it.
      *

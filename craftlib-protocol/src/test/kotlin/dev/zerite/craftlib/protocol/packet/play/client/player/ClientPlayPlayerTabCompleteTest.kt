@@ -6,7 +6,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
 /**
  * Sent when the user presses [tab] while writing text. The payload contains all text behind the cursor.
  *
- * @author chachy
+ * @author ChachyDev
  * @since 0.1.0-SNAPSHOT
  */
 

@@ -9,7 +9,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
 /**
  * Enchant Item
  *
- * @author chachy
+ * @author ChachyDev
  * @since 0.1.0-SNAPSHOT
  */
 

@@ -11,7 +11,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  *
  * If an item is picked up from the quick bar (item id is -1)
  *
- * @author chachy
+ * @author ChachyDev
  * @since 0.1.0-SNAPSHOT
  */
 

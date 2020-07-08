@@ -6,7 +6,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
 /**
  * Steer Vehicle
  *
- * @author chachy
+ * @author ChachyDev
  * @since 0.1.0-SNAPSHOT
  */
 

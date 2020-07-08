@@ -6,7 +6,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
 /**
  * This message is sent from the client to the server when the "Done" button is pushed after placing a sign.
  *
- * @author chachy
+ * @author ChachyDev
  * @since 0.1.0-SNAPSHOT
  */
 

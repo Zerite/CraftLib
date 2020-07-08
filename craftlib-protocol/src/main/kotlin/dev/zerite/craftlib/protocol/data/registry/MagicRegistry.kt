@@ -22,12 +22,6 @@ object MagicRegistry {
             MagicDifficulty.NORMAL to 2
             MagicDifficulty.HARD to 3
         }
-        ProtocolVersion.MC1_7_6 {
-            MagicDifficulty.PEACEFUL to "example"
-            MagicDifficulty.EASY to "easy"
-            MagicDifficulty.NORMAL to "normal"
-            MagicDifficulty.HARD to "hard"
-        }
     }
 
     /**
@@ -215,6 +209,30 @@ object MagicRegistry {
             MagicScoreboardPosition.LIST to 0
             MagicScoreboardPosition.SIDEBAR to 1
             MagicScoreboardPosition.BELOW_NAME to 2
+        }
+    }
+
+    /**
+     * Version mappings for the team mode value in the teams packet.
+     */
+    val teamMode = create<MagicTeamMode> {
+        ProtocolVersion.MC1_7_2 {
+            MagicTeamMode.CREATE_TEAM to 0
+            MagicTeamMode.REMOVE_TEAM to 1
+            MagicTeamMode.UPDATE_INFO to 2
+            MagicTeamMode.ADD_PLAYERS to 3
+            MagicTeamMode.REMOVE_PLAYERS to 4
+        }
+    }
+
+    /**
+     * Version mappings for the team friendly fire values.
+     */
+    val teamFriendlyFire = create<MagicTeamFriendlyFire> {
+        ProtocolVersion.MC1_7_2 {
+            MagicTeamFriendlyFire.OFF to 0
+            MagicTeamFriendlyFire.ON to 1
+            MagicTeamFriendlyFire.SEE_FRIENDLY_INVISIBLES to 3
         }
     }
 

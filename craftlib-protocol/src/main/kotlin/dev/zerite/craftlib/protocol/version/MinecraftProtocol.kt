@@ -10,6 +10,12 @@ import dev.zerite.craftlib.protocol.packet.login.client.ClientLoginStartPacket
 import dev.zerite.craftlib.protocol.packet.login.server.ServerLoginDisconnectPacket
 import dev.zerite.craftlib.protocol.packet.login.server.ServerLoginEncryptionRequestPacket
 import dev.zerite.craftlib.protocol.packet.login.server.ServerLoginSuccessPacket
+import dev.zerite.craftlib.protocol.packet.play.client.display.ClientPlayChatMessagePacket
+import dev.zerite.craftlib.protocol.packet.play.client.interaction.ClientPlayUseEntityPacket
+import dev.zerite.craftlib.protocol.packet.play.client.other.ClientPlayKeepAlivePacket
+import dev.zerite.craftlib.protocol.packet.play.client.player.ClientPlayPlayerLookPacket
+import dev.zerite.craftlib.protocol.packet.play.client.player.ClientPlayPlayerPacket
+import dev.zerite.craftlib.protocol.packet.play.client.player.ClientPlayPlayerPositionPacket
 import dev.zerite.craftlib.protocol.packet.play.server.display.*
 import dev.zerite.craftlib.protocol.packet.play.server.entity.*
 import dev.zerite.craftlib.protocol.packet.play.server.entity.movement.*
@@ -70,7 +76,26 @@ object MinecraftProtocol {
      * be receiving game updates.
      */
     val PLAY = protocol("Play", 0) {
-        serverbound {}
+        serverbound {
+            ClientPlayKeepAlivePacket {
+                ProtocolVersion.MC1_7_2 to 0x00
+            }
+            ClientPlayChatMessagePacket {
+                ProtocolVersion.MC1_7_2 to 0x01
+            }
+            ClientPlayUseEntityPacket {
+                ProtocolVersion.MC1_7_2 to 0x02
+            }
+            ClientPlayPlayerPacket {
+                ProtocolVersion.MC1_7_2 to 0x03
+            }
+            ClientPlayPlayerPositionPacket {
+                ProtocolVersion.MC1_7_2 to 0x04
+            }
+            ClientPlayPlayerLookPacket {
+                ProtocolVersion.MC1_7_2 to 0x05
+            }
+        }
         clientbound {
             ServerPlayKeepAlivePacket {
                 ProtocolVersion.MC1_7_2 to 0x00
@@ -257,6 +282,9 @@ object MinecraftProtocol {
             }
             ServerPlayDisplayScoreboardPacket {
                 ProtocolVersion.MC1_7_2 to 0x3D
+            }
+            ServerPlayTeamsPacket {
+                ProtocolVersion.MC1_7_2 to 0x3E
             }
             ServerPlayPluginMessagePacket {
                 ProtocolVersion.MC1_7_2 to 0x3F

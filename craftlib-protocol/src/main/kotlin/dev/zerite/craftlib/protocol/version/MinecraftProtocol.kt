@@ -13,9 +13,7 @@ import dev.zerite.craftlib.protocol.packet.login.server.ServerLoginSuccessPacket
 import dev.zerite.craftlib.protocol.packet.play.client.display.ClientPlayChatMessagePacket
 import dev.zerite.craftlib.protocol.packet.play.client.interaction.ClientPlayUseEntityPacket
 import dev.zerite.craftlib.protocol.packet.play.client.other.ClientPlayKeepAlivePacket
-import dev.zerite.craftlib.protocol.packet.play.client.player.ClientPlayPlayerLookPacket
-import dev.zerite.craftlib.protocol.packet.play.client.player.ClientPlayPlayerPacket
-import dev.zerite.craftlib.protocol.packet.play.client.player.ClientPlayPlayerPositionPacket
+import dev.zerite.craftlib.protocol.packet.play.client.player.*
 import dev.zerite.craftlib.protocol.packet.play.server.display.*
 import dev.zerite.craftlib.protocol.packet.play.server.entity.*
 import dev.zerite.craftlib.protocol.packet.play.server.entity.movement.*
@@ -94,6 +92,50 @@ object MinecraftProtocol {
             }
             ClientPlayPlayerLookPacket {
                 ProtocolVersion.MC1_7_2 to 0x05
+            }
+
+            ClientPlayPlayerPositionLookPacketPacket {
+                ProtocolVersion.MC1_7_2 to 0x06
+            }
+
+            ClientPlayPlayerHeldItemChangePacket {
+                ProtocolVersion.MC1_7_2 to 0x09
+            }
+
+            ClientPlayPlayerSteerVehiclePacket {
+                ProtocolVersion.MC1_7_2 to 0x0C
+            }
+
+            ClientPlayPlayerCloseWindowPacket {
+                ProtocolVersion.MC1_7_2 to 0x0D
+            }
+
+            ClientPlayPlayerConfirmTransactionPacket {
+                ProtocolVersion.MC1_7_2 to 0x0F
+            }
+
+            ClientPlayPlayerCreateInventoryActionPacket {
+                ProtocolVersion.MC1_7_2 to 0x10
+            }
+
+            ClientPlayPlayerEnchantItemPacket {
+                ProtocolVersion.MC1_7_2 to 0x11
+            }
+
+            ClientPlayPlayerUpdateSignPacket {
+                ProtocolVersion.MC1_7_2 to 0x12
+            }
+
+            ClientPlayPlayerAbilitiesPacket {
+                ProtocolVersion.MC1_7_2 to 0x13
+            }
+
+            ClientPlayPlayerTabCompletePacket {
+                ProtocolVersion.MC1_7_2 to 0x14
+            }
+
+            ClientPlayPlayerClientStatusPacket {
+                ProtocolVersion.MC1_7_2 to 0x16
             }
         }
         clientbound {

@@ -9,7 +9,6 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @author ChachyDev
  * @since 0.1.0-SNAPSHOT
  */
-
 class ClientPlayPlayerPositionLookTest : PacketTest<ClientPlayPlayerPositionLookPacket>(ClientPlayPlayerPositionLookPacket) {
     init {
         example(ClientPlayPlayerPositionLookPacket(50.0, 100.0, 0.2, 150.0, 90f, 180f, true)) {

@@ -9,7 +9,6 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @author ChachyDev
  * @since 0.1.0-SNAPSHOT
  */
-
 class ClientPlayPlayerUpdateSignTest : PacketTest<ClientPlayPlayerUpdateSignPacket>(ClientPlayPlayerUpdateSignPacket) {
     init {
         example(ClientPlayPlayerUpdateSignPacket(130, 90, 130, "This", "is","a", "Test")) {

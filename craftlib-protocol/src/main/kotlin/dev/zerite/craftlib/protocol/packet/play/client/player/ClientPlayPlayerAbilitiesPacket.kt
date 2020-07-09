@@ -19,7 +19,6 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @author ChachyDev
  * @since 0.1.0-SNAPSHOT
  */
-
 data class ClientPlayPlayerAbilitiesPacket(
         var flags: Int,
         var flyingSpeed: Float,

@@ -9,7 +9,6 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @author ChachyDev
  * @since 0.1.0-SNAPSHOT
  */
-
 class ClientPlayPlayerTabCompleteTest : PacketTest<ClientPlayPlayerTabCompletePacket>(ClientPlayPlayerTabCompletePacket) {
     init {
         example(ClientPlayPlayerTabCompletePacket("complete")) {

@@ -9,7 +9,6 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @author ChachyDev
  * @since 0.1.0-SNAPSHOT
  */
-
 class ClientPlayPlayerSteerVehicleTest : PacketTest<ClientPlayPlayerSteerVehiclePacket>(ClientPlayPlayerSteerVehiclePacket) {
     init {
         example(ClientPlayPlayerSteerVehiclePacket(2f, 2f, false, unMount = false)) {

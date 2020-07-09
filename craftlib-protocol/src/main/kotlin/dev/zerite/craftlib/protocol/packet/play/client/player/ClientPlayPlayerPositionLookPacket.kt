@@ -13,7 +13,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @since 0.1.0-SNAPSHOT
  */
 
-data class ClientPlayPlayerPositionLookPacketPacket(
+data class ClientPlayPlayerPositionLookPacket(
     var x: Double,
     var y: Double,
     var stance: Double,
@@ -22,12 +22,12 @@ data class ClientPlayPlayerPositionLookPacketPacket(
     var pitch: Float,
     var onGround: Boolean
 ) : Packet() {
-    companion object : PacketIO<ClientPlayPlayerPositionLookPacketPacket> {
+    companion object : PacketIO<ClientPlayPlayerPositionLookPacket> {
         override fun read(
             buffer: ProtocolBuffer,
             version: ProtocolVersion,
             connection: NettyConnection
-        ): ClientPlayPlayerPositionLookPacketPacket = ClientPlayPlayerPositionLookPacketPacket(
+        ): ClientPlayPlayerPositionLookPacket = ClientPlayPlayerPositionLookPacket(
             buffer.readDouble(),
             buffer.readDouble(),
             buffer.readDouble(),
@@ -38,18 +38,18 @@ data class ClientPlayPlayerPositionLookPacketPacket(
         )
 
         override fun write(
-            buffer: ProtocolBuffer,
-            version: ProtocolVersion,
-            packetPacket: ClientPlayPlayerPositionLookPacketPacket,
-            connection: NettyConnection
+                buffer: ProtocolBuffer,
+                version: ProtocolVersion,
+                packet: ClientPlayPlayerPositionLookPacket,
+                connection: NettyConnection
         ) {
-            buffer.writeDouble(packetPacket.x)
-            buffer.writeDouble(packetPacket.y)
-            buffer.writeDouble(packetPacket.stance)
-            buffer.writeDouble(packetPacket.z)
-            buffer.writeFloat(packetPacket.yaw)
-            buffer.writeFloat(packetPacket.pitch)
-            buffer.writeBoolean(packetPacket.onGround)
+            buffer.writeDouble(packet.x)
+            buffer.writeDouble(packet.y)
+            buffer.writeDouble(packet.stance)
+            buffer.writeDouble(packet.z)
+            buffer.writeFloat(packet.yaw)
+            buffer.writeFloat(packet.pitch)
+            buffer.writeBoolean(packet.onGround)
         }
     }
 }

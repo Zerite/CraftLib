@@ -10,9 +10,9 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @since 0.1.0-SNAPSHOT
  */
 
-class ClientPlayPlayerPositionLookTest : PacketTest<ClientPlayPlayerPositionLookPacketPacket>(ClientPlayPlayerPositionLookPacketPacket) {
+class ClientPlayPlayerPositionLookTest : PacketTest<ClientPlayPlayerPositionLookPacket>(ClientPlayPlayerPositionLookPacket) {
     init {
-        example(ClientPlayPlayerPositionLookPacketPacket(50.0, 100.0, 0.2, 150.0, 90f, 180f, true)) {
+        example(ClientPlayPlayerPositionLookPacket(50.0, 100.0, 0.2, 150.0, 90f, 180f, true)) {
             ProtocolVersion.MC1_7_2 {
                 writeDouble(50.0)
                 writeDouble(100.0)
@@ -24,7 +24,7 @@ class ClientPlayPlayerPositionLookTest : PacketTest<ClientPlayPlayerPositionLook
             }
         }
 
-        example(ClientPlayPlayerPositionLookPacketPacket(0.0, Double.MAX_VALUE, 0.5, Double.MIN_VALUE, 90f, 180f, false)) {
+        example(ClientPlayPlayerPositionLookPacket(0.0, Double.MAX_VALUE, 0.5, Double.MIN_VALUE, 90f, 180f, false)) {
             ProtocolVersion.MC1_7_2 {
                 writeDouble(0.0)
                 writeDouble(Double.MAX_VALUE)

@@ -94,7 +94,7 @@ object MinecraftProtocol {
                 ProtocolVersion.MC1_7_2 to 0x05
             }
 
-            ClientPlayPlayerPositionLookPacketPacket {
+            ClientPlayPlayerPositionLookPacket {
                 ProtocolVersion.MC1_7_2 to 0x06
             }
 

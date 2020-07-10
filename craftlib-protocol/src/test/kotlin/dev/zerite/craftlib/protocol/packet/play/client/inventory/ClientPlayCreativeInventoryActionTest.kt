@@ -21,7 +21,7 @@ class ClientPlayCreativeInventoryActionTest :
                 writeShort(0)
                 writeByte(0)
                 writeShort(0)
-                writeShort(0)
+                writeShort(-1)
             }
         }
     }

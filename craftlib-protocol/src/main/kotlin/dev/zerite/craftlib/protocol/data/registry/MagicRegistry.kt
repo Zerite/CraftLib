@@ -237,6 +237,17 @@ object MagicRegistry {
     }
 
     /**
+     * Vanilla values which the client status packet can send.
+     */
+    val clientStatus = create<MagicClientStatus> {
+        ProtocolVersion.MC1_7_2 {
+            MagicClientStatus.PERFORM_RESPAWN to 0
+            MagicClientStatus.REQUEST_STATS to 1
+            MagicClientStatus.OPEN_INVENTORY_ACHIEVEMENT to 2
+        }
+    }
+
+    /**
      * Creates a new Minecraft enum and provides a builder function
      * to initialize it.
      *

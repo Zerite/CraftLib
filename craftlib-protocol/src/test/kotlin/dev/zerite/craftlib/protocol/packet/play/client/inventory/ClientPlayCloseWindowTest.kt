@@ -1,6 +1,7 @@
-package dev.zerite.craftlib.protocol.packet.play.client.player
+package dev.zerite.craftlib.protocol.packet.play.client.inventory
 
 import dev.zerite.craftlib.protocol.packet.PacketTest
+import dev.zerite.craftlib.protocol.packet.play.client.inventory.ClientPlayCloseWindowPacket
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
 /**
@@ -11,10 +12,9 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @author ChachyDev
  * @since 0.1.0-SNAPSHOT
  */
-
-class ClientPlayPlayerCloseWindowTest : PacketTest<ClientPlayPlayerCloseWindowPacket>(ClientPlayPlayerCloseWindowPacket) {
+class ClientPlayCloseWindowTest : PacketTest<ClientPlayCloseWindowPacket>(ClientPlayCloseWindowPacket) {
     init {
-        example(ClientPlayPlayerCloseWindowPacket(0)) {
+        example(ClientPlayCloseWindowPacket(0)) {
             ProtocolVersion.MC1_7_2 {
                 writeByte(0)
             }

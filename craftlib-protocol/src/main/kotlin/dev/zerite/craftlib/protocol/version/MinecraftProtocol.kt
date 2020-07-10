@@ -12,7 +12,14 @@ import dev.zerite.craftlib.protocol.packet.login.server.ServerLoginEncryptionReq
 import dev.zerite.craftlib.protocol.packet.login.server.ServerLoginSuccessPacket
 import dev.zerite.craftlib.protocol.packet.play.client.display.ClientPlayChatMessagePacket
 import dev.zerite.craftlib.protocol.packet.play.client.interaction.ClientPlayUseEntityPacket
+import dev.zerite.craftlib.protocol.packet.play.client.inventory.ClientPlayCloseWindowPacket
+import dev.zerite.craftlib.protocol.packet.play.client.inventory.ClientPlayConfirmTransactionPacket
+import dev.zerite.craftlib.protocol.packet.play.client.inventory.ClientPlayCreativeInventoryActionPacket
+import dev.zerite.craftlib.protocol.packet.play.client.inventory.ClientPlayEnchantItemPacket
 import dev.zerite.craftlib.protocol.packet.play.client.other.ClientPlayKeepAlivePacket
+import dev.zerite.craftlib.protocol.packet.play.client.other.ClientPlayClientStatusPacket
+import dev.zerite.craftlib.protocol.packet.play.client.other.ClientPlayTabCompletePacket
+import dev.zerite.craftlib.protocol.packet.play.client.other.ClientPlayUpdateSignPacket
 import dev.zerite.craftlib.protocol.packet.play.client.player.*
 import dev.zerite.craftlib.protocol.packet.play.server.display.*
 import dev.zerite.craftlib.protocol.packet.play.server.entity.*
@@ -93,48 +100,37 @@ object MinecraftProtocol {
             ClientPlayPlayerLookPacket {
                 ProtocolVersion.MC1_7_2 to 0x05
             }
-
             ClientPlayPlayerPositionLookPacket {
                 ProtocolVersion.MC1_7_2 to 0x06
             }
-
             ClientPlayPlayerHeldItemChangePacket {
                 ProtocolVersion.MC1_7_2 to 0x09
             }
-
             ClientPlayPlayerSteerVehiclePacket {
                 ProtocolVersion.MC1_7_2 to 0x0C
             }
-
-            ClientPlayPlayerCloseWindowPacket {
+            ClientPlayCloseWindowPacket {
                 ProtocolVersion.MC1_7_2 to 0x0D
             }
-
-            ClientPlayPlayerConfirmTransactionPacket {
+            ClientPlayConfirmTransactionPacket {
                 ProtocolVersion.MC1_7_2 to 0x0F
             }
-
-            ClientPlayPlayerCreateInventoryActionPacket {
+            ClientPlayCreativeInventoryActionPacket {
                 ProtocolVersion.MC1_7_2 to 0x10
             }
-
-            ClientPlayPlayerEnchantItemPacket {
+            ClientPlayEnchantItemPacket {
                 ProtocolVersion.MC1_7_2 to 0x11
             }
-
-            ClientPlayPlayerUpdateSignPacket {
+            ClientPlayUpdateSignPacket {
                 ProtocolVersion.MC1_7_2 to 0x12
             }
-
             ClientPlayPlayerAbilitiesPacket {
                 ProtocolVersion.MC1_7_2 to 0x13
             }
-
-            ClientPlayPlayerTabCompletePacket {
+            ClientPlayTabCompletePacket {
                 ProtocolVersion.MC1_7_2 to 0x14
             }
-
-            ClientPlayPlayerClientStatusPacket {
+            ClientPlayClientStatusPacket {
                 ProtocolVersion.MC1_7_2 to 0x16
             }
         }

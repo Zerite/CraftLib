@@ -1,4 +1,4 @@
-package dev.zerite.craftlib.protocol.packet.play.client.player
+package dev.zerite.craftlib.protocol.packet.play.client.inventory
 
 import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
@@ -14,23 +14,23 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @author ChachyDev
  * @since 0.1.0-SNAPSHOT
  */
-data class ClientPlayPlayerCloseWindowPacket(
-        var windowId: Int
+data class ClientPlayCloseWindowPacket(
+    var windowId: Int
 ) : Packet() {
-    companion object : PacketIO<ClientPlayPlayerCloseWindowPacket> {
+    companion object : PacketIO<ClientPlayCloseWindowPacket> {
         override fun read(
-                buffer: ProtocolBuffer,
-                version: ProtocolVersion,
-                connection: NettyConnection
-        ) = ClientPlayPlayerCloseWindowPacket(
-                buffer.readByte().toInt()
+            buffer: ProtocolBuffer,
+            version: ProtocolVersion,
+            connection: NettyConnection
+        ) = ClientPlayCloseWindowPacket(
+            buffer.readByte().toInt()
         )
 
         override fun write(
-                buffer: ProtocolBuffer,
-                version: ProtocolVersion,
-                packet: ClientPlayPlayerCloseWindowPacket,
-                connection: NettyConnection
+            buffer: ProtocolBuffer,
+            version: ProtocolVersion,
+            packet: ClientPlayCloseWindowPacket,
+            connection: NettyConnection
         ) {
             buffer.writeByte(packet.windowId)
         }

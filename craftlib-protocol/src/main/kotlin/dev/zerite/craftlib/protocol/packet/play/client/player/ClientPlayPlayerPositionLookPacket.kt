@@ -12,7 +12,6 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @author ChachyDev
  * @since 0.1.0-SNAPSHOT
  */
-
 data class ClientPlayPlayerPositionLookPacket(
     var x: Double,
     var y: Double,
@@ -38,10 +37,10 @@ data class ClientPlayPlayerPositionLookPacket(
         )
 
         override fun write(
-                buffer: ProtocolBuffer,
-                version: ProtocolVersion,
-                packet: ClientPlayPlayerPositionLookPacket,
-                connection: NettyConnection
+            buffer: ProtocolBuffer,
+            version: ProtocolVersion,
+            packet: ClientPlayPlayerPositionLookPacket,
+            connection: NettyConnection
         ) {
             buffer.writeDouble(packet.x)
             buffer.writeDouble(packet.y)

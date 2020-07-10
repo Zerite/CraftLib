@@ -11,7 +11,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  */
 class ClientPlayPlayerSteerVehicleTest : PacketTest<ClientPlayPlayerSteerVehiclePacket>(ClientPlayPlayerSteerVehiclePacket) {
     init {
-        example(ClientPlayPlayerSteerVehiclePacket(2f, 2f, false, unMount = false)) {
+        example(ClientPlayPlayerSteerVehiclePacket(2f, 2f, false, unmount = false)) {
             ProtocolVersion.MC1_7_2 {
                 writeFloat(2f)
                 writeFloat(2f)
@@ -19,9 +19,7 @@ class ClientPlayPlayerSteerVehicleTest : PacketTest<ClientPlayPlayerSteerVehicle
                 writeBoolean(false)
             }
         }
-
-
-        example(ClientPlayPlayerSteerVehiclePacket(0f, 2f, true, unMount = true)) {
+        example(ClientPlayPlayerSteerVehiclePacket(0f, 2f, true, unmount = true)) {
             ProtocolVersion.MC1_7_2 {
                 writeFloat(0f)
                 writeFloat(2f)

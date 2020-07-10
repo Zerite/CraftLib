@@ -16,8 +16,6 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @author ChachyDev
  * @since 0.1.0-SNAPSHOT
  */
-
-
 class ClientPlayPlayerAbilitiesTest : PacketTest<ClientPlayPlayerAbilitiesPacket>(ClientPlayPlayerAbilitiesPacket) {
     init {
         example(ClientPlayPlayerAbilitiesPacket(8 shr 3, (8 shr 3 / 250).toFloat(), (8 shr 3 / 250).toFloat())) {

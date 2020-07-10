@@ -20,26 +20,35 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @since 0.1.0-SNAPSHOT
  */
 data class ClientPlayPlayerAbilitiesPacket(
-        var flags: Int,
-        var flyingSpeed: Float,
-        var walkingSpeed: Float
+    var flags: Int,
+    var flyingSpeed: Float,
+    var walkingSpeed: Float
 ) : Packet() {
+    @Suppress("UNUSED")
     companion object : PacketIO<ClientPlayPlayerAbilitiesPacket> {
+        /**
+         * Constant values which make up the flags.
+         */
+        const val GOD_MODE = 8
+        const val CAN_FLY = 4
+        const val FLYING = 2
+        const val CREATIVE = 1
+
         override fun read(
-                buffer: ProtocolBuffer,
-                version: ProtocolVersion,
-                connection: NettyConnection
+            buffer: ProtocolBuffer,
+            version: ProtocolVersion,
+            connection: NettyConnection
         ) = ClientPlayPlayerAbilitiesPacket(
-                buffer.readByte().toInt(),
-                buffer.readFloat(),
-                buffer.readFloat()
+            buffer.readByte().toInt(),
+            buffer.readFloat(),
+            buffer.readFloat()
         )
 
         override fun write(
-                buffer: ProtocolBuffer,
-                version: ProtocolVersion,
-                packet: ClientPlayPlayerAbilitiesPacket,
-                connection: NettyConnection
+            buffer: ProtocolBuffer,
+            version: ProtocolVersion,
+            packet: ClientPlayPlayerAbilitiesPacket,
+            connection: NettyConnection
         ) {
             buffer.writeByte(packet.flags)
             buffer.writeFloat(packet.flyingSpeed)

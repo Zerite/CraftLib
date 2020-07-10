@@ -1,4 +1,4 @@
-package dev.zerite.craftlib.protocol.packet.play.client.player
+package dev.zerite.craftlib.protocol.packet.play.client.inventory
 
 import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
@@ -7,39 +7,36 @@ import dev.zerite.craftlib.protocol.connection.NettyConnection
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
 /**
- * Steer Vehicle
+ * Confirm Transaction
  *
  * @author ChachyDev
  * @since 0.1.0-SNAPSHOT
  */
-data class ClientPlayPlayerSteerVehiclePacket(
-    var sideways: Float,
-    var forward: Float,
-    var jump: Boolean,
-    var unmount: Boolean
+data class ClientPlayConfirmTransactionPacket(
+    var windowId: Int,
+    var actionNumber: Int,
+    var accepted: Boolean
 ) : Packet() {
-    companion object : PacketIO<ClientPlayPlayerSteerVehiclePacket> {
+    companion object : PacketIO<ClientPlayConfirmTransactionPacket> {
         override fun read(
             buffer: ProtocolBuffer,
             version: ProtocolVersion,
             connection: NettyConnection
-        ) = ClientPlayPlayerSteerVehiclePacket(
-            buffer.readFloat(),
-            buffer.readFloat(),
-            buffer.readBoolean(),
+        ) = ClientPlayConfirmTransactionPacket(
+            buffer.readByte().toInt(),
+            buffer.readShort().toInt(),
             buffer.readBoolean()
         )
 
         override fun write(
             buffer: ProtocolBuffer,
             version: ProtocolVersion,
-            packet: ClientPlayPlayerSteerVehiclePacket,
+            packet: ClientPlayConfirmTransactionPacket,
             connection: NettyConnection
         ) {
-            buffer.writeFloat(packet.sideways)
-            buffer.writeFloat(packet.forward)
-            buffer.writeBoolean(packet.jump)
-            buffer.writeBoolean(packet.unmount)
+            buffer.writeByte(packet.windowId)
+            buffer.writeShort(packet.actionNumber)
+            buffer.writeBoolean(packet.accepted)
         }
     }
 }

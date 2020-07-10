@@ -22,7 +22,6 @@ class ClientPlayPlayerPositionLookTest : PacketTest<ClientPlayPlayerPositionLook
                 writeBoolean(true)
             }
         }
-
         example(ClientPlayPlayerPositionLookPacket(0.0, Double.MAX_VALUE, 0.5, Double.MIN_VALUE, 90f, 180f, false)) {
             ProtocolVersion.MC1_7_2 {
                 writeDouble(0.0)

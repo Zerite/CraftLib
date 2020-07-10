@@ -10,16 +10,14 @@ import dev.zerite.craftlib.protocol.packet.login.client.ClientLoginStartPacket
 import dev.zerite.craftlib.protocol.packet.login.server.ServerLoginDisconnectPacket
 import dev.zerite.craftlib.protocol.packet.login.server.ServerLoginEncryptionRequestPacket
 import dev.zerite.craftlib.protocol.packet.login.server.ServerLoginSuccessPacket
+import dev.zerite.craftlib.protocol.packet.play.client.display.ClientPlayAnimationPacket
 import dev.zerite.craftlib.protocol.packet.play.client.display.ClientPlayChatMessagePacket
+import dev.zerite.craftlib.protocol.packet.play.client.interaction.ClientPlayEntityActionPacket
+import dev.zerite.craftlib.protocol.packet.play.client.interaction.ClientPlayPlayerBlockPlacementPacket
+import dev.zerite.craftlib.protocol.packet.play.client.interaction.ClientPlayPlayerDiggingPacket
 import dev.zerite.craftlib.protocol.packet.play.client.interaction.ClientPlayUseEntityPacket
-import dev.zerite.craftlib.protocol.packet.play.client.inventory.ClientPlayCloseWindowPacket
-import dev.zerite.craftlib.protocol.packet.play.client.inventory.ClientPlayConfirmTransactionPacket
-import dev.zerite.craftlib.protocol.packet.play.client.inventory.ClientPlayCreativeInventoryActionPacket
-import dev.zerite.craftlib.protocol.packet.play.client.inventory.ClientPlayEnchantItemPacket
-import dev.zerite.craftlib.protocol.packet.play.client.other.ClientPlayKeepAlivePacket
-import dev.zerite.craftlib.protocol.packet.play.client.other.ClientPlayClientStatusPacket
-import dev.zerite.craftlib.protocol.packet.play.client.other.ClientPlayTabCompletePacket
-import dev.zerite.craftlib.protocol.packet.play.client.other.ClientPlayUpdateSignPacket
+import dev.zerite.craftlib.protocol.packet.play.client.inventory.*
+import dev.zerite.craftlib.protocol.packet.play.client.other.*
 import dev.zerite.craftlib.protocol.packet.play.client.player.*
 import dev.zerite.craftlib.protocol.packet.play.server.display.*
 import dev.zerite.craftlib.protocol.packet.play.server.entity.*
@@ -103,14 +101,29 @@ object MinecraftProtocol {
             ClientPlayPlayerPositionLookPacket {
                 ProtocolVersion.MC1_7_2 to 0x06
             }
+            ClientPlayPlayerDiggingPacket {
+                ProtocolVersion.MC1_7_2 to 0x07
+            }
+            ClientPlayPlayerBlockPlacementPacket {
+                ProtocolVersion.MC1_7_2 to 0x08
+            }
             ClientPlayPlayerHeldItemChangePacket {
                 ProtocolVersion.MC1_7_2 to 0x09
+            }
+            ClientPlayAnimationPacket {
+                ProtocolVersion.MC1_7_2 to 0x0A
+            }
+            ClientPlayEntityActionPacket {
+                ProtocolVersion.MC1_7_2 to 0x0B
             }
             ClientPlayPlayerSteerVehiclePacket {
                 ProtocolVersion.MC1_7_2 to 0x0C
             }
             ClientPlayCloseWindowPacket {
                 ProtocolVersion.MC1_7_2 to 0x0D
+            }
+            ClientPlayClickWindowPacket {
+                ProtocolVersion.MC1_7_2 to 0x0E
             }
             ClientPlayConfirmTransactionPacket {
                 ProtocolVersion.MC1_7_2 to 0x0F
@@ -130,8 +143,14 @@ object MinecraftProtocol {
             ClientPlayTabCompletePacket {
                 ProtocolVersion.MC1_7_2 to 0x14
             }
+            ClientPlayClientSettingsPacket {
+                ProtocolVersion.MC1_7_2 to 0x15
+            }
             ClientPlayClientStatusPacket {
                 ProtocolVersion.MC1_7_2 to 0x16
+            }
+            ClientPlayPluginMessagePacket {
+                ProtocolVersion.MC1_7_2 to 0x17
             }
         }
         clientbound {

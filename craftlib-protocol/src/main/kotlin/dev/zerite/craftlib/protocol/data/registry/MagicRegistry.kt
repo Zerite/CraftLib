@@ -248,6 +248,62 @@ object MagicRegistry {
     }
 
     /**
+     * Vanilla values which the player digging status packet reads.
+     */
+    val playerDiggingStatus = create<MagicPlayerDiggingStatus> {
+        ProtocolVersion.MC1_7_2 {
+            MagicPlayerDiggingStatus.STARTED_DIGGING to 0
+            MagicPlayerDiggingStatus.CANCELLED_DIGGING to 1
+            MagicPlayerDiggingStatus.FINISHED_DIGGING to 2
+            MagicPlayerDiggingStatus.DROP_ITEM_STACK to 3
+            MagicPlayerDiggingStatus.DROP_ITEM to 4
+            MagicPlayerDiggingStatus.SHOOT_ARROW to 5
+        }
+    }
+
+    /**
+     * Stores the possible animations for the animation packet.
+     */
+    val clientAnimation = create<MagicClientAnimation> {
+        ProtocolVersion.MC1_7_2 {
+            MagicClientAnimation.NO_ANIMATION to 0
+            MagicClientAnimation.SWING_ARM to 1
+            MagicClientAnimation.DAMAGE_ANIMATION to 2
+            MagicClientAnimation.LEAVE_BED to 3
+            MagicClientAnimation.EAT_FOOD to 5
+            MagicClientAnimation.CRITICAL_EFFECT to 6
+            MagicClientAnimation.MAGIC_CRITICAL_EFFECT to 7
+            MagicClientAnimation.CROUCH to 104
+            MagicClientAnimation.UNCROUCH to 105
+        }
+    }
+
+    /**
+     * Stores the values for the entity action packet.
+     */
+    val entityAction = create<MagicEntityAction> {
+        ProtocolVersion.MC1_7_2 {
+            MagicEntityAction.CROUCH to 1
+            MagicEntityAction.UNCROUCH to 2
+            MagicEntityAction.LEAVE_BED to 3
+            MagicEntityAction.START_SPRINTING to 4
+            MagicEntityAction.STOP_SPRINTING to 5
+        }
+    }
+
+    /**
+     * Stores the values for view distance.
+     */
+    val viewDistance = create<MagicViewDistance> {
+        ProtocolVersion.MC1_7_2 {
+            MagicViewDistance.FAR to 0
+            MagicViewDistance.NORMAL to 1
+            MagicViewDistance.SHORT to 2
+            MagicViewDistance.TINY to 3
+        }
+    }
+
+    /**
      * Creates a new Minecraft enum and provides a builder function
      * to initialize it.
      *

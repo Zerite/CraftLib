@@ -1,5 +1,6 @@
 package dev.zerite.craftlib.protocol.connection
 
+import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.packet.handshake.client.ClientHandshakePacket
 import dev.zerite.craftlib.protocol.packet.login.client.ClientLoginStartPacket
 import dev.zerite.craftlib.protocol.packet.login.server.ServerLoginSuccessPacket
@@ -66,12 +67,12 @@ fun main() {
                 }
             }
 
-            override fun sent(connection: NettyConnection, packet: Any) {
+            override fun sent(connection: NettyConnection, packet: Packet) {
                 // Check if we're in debug logging & print
                 if (debugLogging) println("[C->S]: $packet")
             }
 
-            override fun received(connection: NettyConnection, packet: Any) {
+            override fun received(connection: NettyConnection, packet: Packet) {
                 // Check if we're in debug logging & print
                 if (debugLogging && packet !is ServerPlayMapChunkBulkPacket) println("[S->C]: $packet")
 

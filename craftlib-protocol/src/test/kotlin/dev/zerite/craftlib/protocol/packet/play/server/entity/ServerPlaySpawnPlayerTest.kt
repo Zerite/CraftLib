@@ -48,7 +48,7 @@ class ServerPlaySpawnPlayerTest : PacketTest<ServerPlaySpawnPlayerPacket>(Server
         ) {
             ProtocolVersion.MC1_7_2 {
                 writeVarInt(100)
-                writeUUID(UUID(20L, 30L), mode = ProtocolBuffer.UUIDMode.STRING)
+                writeUUID(UUID(20L, 30L), mode = ProtocolBuffer.UUIDMode.DASHES)
                 writeString("Player")
                 writeInt(1280)
                 writeInt(1280)

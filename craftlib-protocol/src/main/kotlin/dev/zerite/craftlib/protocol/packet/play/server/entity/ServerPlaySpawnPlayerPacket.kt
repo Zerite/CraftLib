@@ -37,7 +37,7 @@ data class ServerPlaySpawnPlayerPacket(
             connection: NettyConnection
         ) = ServerPlaySpawnPlayerPacket(
             buffer.readVarInt(),
-            buffer.readUUID(mode = ProtocolBuffer.UUIDMode.STRING),
+            buffer.readUUID(mode = ProtocolBuffer.UUIDMode.DASHES),
             buffer.readString(),
             buffer.readFixedPoint(),
             buffer.readFixedPoint(),
@@ -55,7 +55,7 @@ data class ServerPlaySpawnPlayerPacket(
             connection: NettyConnection
         ) {
             buffer.writeVarInt(packet.entityId)
-            buffer.writeUUID(packet.uuid, mode = ProtocolBuffer.UUIDMode.STRING)
+            buffer.writeUUID(packet.uuid, mode = ProtocolBuffer.UUIDMode.DASHES)
             buffer.writeString(packet.name)
             buffer.writeFixedPoint(packet.x)
             buffer.writeFixedPoint(packet.y)

@@ -1,13 +1,25 @@
 package dev.zerite.craftlib.protocol.connection
 
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
+import dev.zerite.craftlib.chat.dsl.chat
 import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.packet.handshake.client.ClientHandshakePacket
+import dev.zerite.craftlib.protocol.packet.login.client.ClientLoginEncryptionResponsePacket
 import dev.zerite.craftlib.protocol.packet.login.client.ClientLoginStartPacket
+import dev.zerite.craftlib.protocol.packet.login.server.ServerLoginEncryptionRequestPacket
 import dev.zerite.craftlib.protocol.packet.login.server.ServerLoginSuccessPacket
 import dev.zerite.craftlib.protocol.packet.play.server.world.ServerPlayMapChunkBulkPacket
+import dev.zerite.craftlib.protocol.util.Crypto
+import dev.zerite.craftlib.protocol.util.ext.toUuid
 import dev.zerite.craftlib.protocol.version.MinecraftProtocol
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
+import java.math.BigInteger
+import java.net.HttpURLConnection
 import java.net.InetAddress
+import java.net.URL
+import java.security.MessageDigest
+import java.util.*
 
 /**
  * Tests the client authentication with connecting to an
@@ -20,10 +32,56 @@ fun main() {
     // Get the parameters
     val host = System.getProperty("client.host") ?: "127.0.0.1"
     val port = System.getProperty("client.port")?.toIntOrNull() ?: 25566
-    val username = System.getProperty("client.username") ?: "ExampleUser"
+    var username = System.getProperty("client.username") ?: "ExampleUser"
+    val password: String? = System.getProperty("client.password")
     val debugNetty = System.getProperty("client.nettyDebug")?.toBoolean() ?: true
     val debugLogging = System.getProperty("client.loggingDebug")?.toBoolean() ?: true
+    val disconnectOnError = System.getProperty("client.disconnectOnError")?.toBoolean() ?: false
     val errorInterval = System.getProperty("client.errorInterval")?.toLong() ?: 1000L
+    val clientToken = UUID.randomUUID()
+
+    var accessToken: String? = null
+    var uuid = System.getProperty("client.uuid")?.toUuid() ?: UUID(0, 0)
+
+    if (password != null) {
+        // TODO: Use craftlib-auth once it's created
+        println("Logging in")
+        val authUrl = URL("https://authserver.mojang.com/authenticate")
+        val data = JsonObject().also { data ->
+            data.add("agent", JsonObject().also {
+                it.addProperty("name", "Minecraft")
+                it.addProperty("version", 1)
+            })
+            data.addProperty("username", username)
+            data.addProperty("password", password)
+            data.addProperty("clientToken", clientToken.toString())
+            data.addProperty("requestUser", false)
+        }
+        val connection = authUrl.openConnection() as HttpURLConnection
+        connection.requestMethod = "POST"
+        connection.addRequestProperty("Content-Type", "application/json")
+        connection.addRequestProperty(
+            "User-Agent",
+            "Craftlib/${MinecraftProtocol::class.java.`package`.implementationVersion}"
+        )
+        connection.addRequestProperty("Accept", "application/json")
+        connection.doOutput = true
+        connection.outputStream.use {
+            it.write(data.toString().toByteArray())
+        }
+        val errored = connection.responseCode != 200
+        val stream = if (errored) connection.errorStream else connection.inputStream
+        val responseData = JsonParser.parseString(stream.bufferedReader().use { it.readText() }).asJsonObject
+        if (errored) {
+            error("Failed to log in: ${responseData["errorMessage"].asString}")
+        }
+        responseData["selectedProfile"].asJsonObject.let {
+            username = it["name"].asString
+            uuid = it["id"].asString.toUuid(dashes = true)
+        }
+        accessToken = responseData["accessToken"].asString
+        println("Successfully logged in as $username")
+    }
 
     // Connect to localhost
     MinecraftProtocol.connect(InetAddress.getByName(host), port) {
@@ -77,6 +135,48 @@ fun main() {
                 if (debugLogging && packet !is ServerPlayMapChunkBulkPacket) println("[S->C]: $packet")
 
                 when (packet) {
+                    is ServerLoginEncryptionRequestPacket -> {
+                        if (accessToken == null) error("Can't connect to online mode servers without authentication")
+                        val secret = Crypto.newSecretKey()
+                        // Generate server id hash
+                        val digest = MessageDigest.getInstance("SHA-1")
+                        for (array in arrayOf(
+                            packet.serverId.toByteArray(charset("ISO_8859_1")),
+                            secret.encoded,
+                            packet.publicKey.encoded
+                        )) {
+                            digest.update(array)
+                        }
+                        val idHash = BigInteger(digest.digest()).toString(16)
+                        // Authenticate
+                        val url = URL("https://sessionserver.mojang.com/session/minecraft/join")
+                        val data = JsonObject().also {
+                            it.addProperty("accessToken", accessToken)
+                            it.addProperty("selectedProfile", uuid.toString().replace("-", ""))
+                            it.addProperty("serverId", idHash)
+                        }
+                        val authConnection = url.openConnection() as HttpURLConnection
+                        authConnection.requestMethod = "POST"
+                        authConnection.addRequestProperty("Content-Type", "application/json")
+                        authConnection.addRequestProperty(
+                            "User-Agent",
+                            "Craftlib/${MinecraftProtocol::class.java.`package`.implementationVersion}"
+                        )
+                        authConnection.addRequestProperty("Accept", "application/json")
+                        authConnection.doOutput = true
+                        authConnection.outputStream.use {
+                            it.write(data.toString().toByteArray())
+                        }
+
+                        if (authConnection.responseCode != 204) {
+                            error("Failed to log in to Mojang servers")
+                        }
+
+                        // Send response packet
+                        connection.send(ClientLoginEncryptionResponsePacket(packet.publicKey, secret, packet.verifyToken)) {
+                            connection.enableEncryption(secret)
+                        }
+                    }
                     is ServerLoginSuccessPacket -> connection.state = MinecraftProtocol.PLAY
                 }
             }
@@ -88,6 +188,9 @@ fun main() {
                     cause.printStackTrace()
 
                     nextLog = System.currentTimeMillis() + errorInterval
+                }
+                if (disconnectOnError) {
+                    connection.close(chat { string(cause.toString()) })
                 }
             }
         }

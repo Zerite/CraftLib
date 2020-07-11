@@ -1,7 +1,9 @@
 package dev.zerite.craftlib.protocol.version
 
 import dev.zerite.craftlib.protocol.connection.NettyConnection
+import dev.zerite.craftlib.protocol.connection.NettyServer
 import dev.zerite.craftlib.protocol.connection.PacketHandler
+import dev.zerite.craftlib.protocol.connection.ServerHandler
 import dev.zerite.craftlib.protocol.connection.io.LengthCodec
 import dev.zerite.craftlib.protocol.connection.io.PacketCodec
 import dev.zerite.craftlib.protocol.packet.handshake.client.ClientHandshakePacket
@@ -28,21 +30,26 @@ import dev.zerite.craftlib.protocol.packet.play.server.interaction.ServerPlayUpd
 import dev.zerite.craftlib.protocol.packet.play.server.interaction.ServerPlayUseBedPacket
 import dev.zerite.craftlib.protocol.packet.play.server.inventory.*
 import dev.zerite.craftlib.protocol.packet.play.server.join.ServerPlayJoinGamePacket
-import dev.zerite.craftlib.protocol.packet.play.server.player.ServerPlayPlayerAbilitiesPacket
 import dev.zerite.craftlib.protocol.packet.play.server.join.ServerPlaySpawnPositionPacket
 import dev.zerite.craftlib.protocol.packet.play.server.join.ServerPlayStatisticsPacket
 import dev.zerite.craftlib.protocol.packet.play.server.other.*
+import dev.zerite.craftlib.protocol.packet.play.server.player.ServerPlayPlayerAbilitiesPacket
 import dev.zerite.craftlib.protocol.packet.play.server.player.ServerPlayPlayerPositionLookPacket
 import dev.zerite.craftlib.protocol.packet.play.server.player.ServerPlaySetExperiencePacket
 import dev.zerite.craftlib.protocol.packet.play.server.player.ServerPlayUpdateHealthPacket
 import dev.zerite.craftlib.protocol.packet.play.server.world.*
 import io.netty.bootstrap.Bootstrap
+import io.netty.bootstrap.ServerBootstrap
 import io.netty.channel.ChannelInitializer
+import io.netty.channel.ServerChannel
 import io.netty.channel.epoll.Epoll
 import io.netty.channel.epoll.EpollEventLoopGroup
+import io.netty.channel.epoll.EpollServerSocketChannel
 import io.netty.channel.epoll.EpollSocketChannel
 import io.netty.channel.nio.NioEventLoopGroup
+import io.netty.channel.socket.ServerSocketChannel
 import io.netty.channel.socket.SocketChannel
+import io.netty.channel.socket.nio.NioServerSocketChannel
 import io.netty.channel.socket.nio.NioSocketChannel
 import io.netty.handler.logging.LogLevel
 import io.netty.handler.logging.LoggingHandler
@@ -396,6 +403,7 @@ object MinecraftProtocol {
      * @author Koding
      * @since  0.1.0-SNAPSHOT
      */
+    @Suppress("UNUSED")
     fun connect(address: InetAddress, port: Int, build: ConnectConfig.() -> Unit = {}): NettyConnection {
         val config = ConnectConfig(address, port).apply(build)
         val connection = config.connectionFactory().apply { handler = config.handler }
@@ -429,6 +437,60 @@ object MinecraftProtocol {
             .let { if (config.connectSync) it.syncUninterruptibly() }
 
         return connection
+    }
+
+    /**
+     * Listen on a socket with the given address and port.
+     *
+     * @param  port        The port to bind to.
+     * @param  build       Builds the config values.
+     *
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    @Suppress("UNUSED")
+    fun listen(port: Int, build: ListenConfig.() -> Unit = {}): NettyServer {
+        val config = ListenConfig(port).apply(build)
+        val server = config.serverFactory().apply { handler = config.handler }
+
+        // Configure and listen
+        ServerBootstrap()
+            .group(config.eventLoopGroup, config.eventLoopGroup)
+            .channel(config.channel)
+            .childHandler(object : ChannelInitializer<SocketChannel>() {
+                /**
+                 * Initialize the channel by registering the pipeline.
+                 *
+                 * @param  ch      The channel being initialized.
+                 * @author Koding
+                 * @since  0.1.0-SNAPSHOT
+                 */
+                override fun initChannel(ch: SocketChannel) {
+                    config.build(ch)
+                    ch.config().isTcpNoDelay = config.noDelay
+
+                    config.timeout.takeIf { it > 0 }
+                        ?.let { ch.pipeline().addLast("readTimeout", ReadTimeoutHandler(it)) }
+
+                    val connection = config.connectionFactory().apply {
+                        this.server = server
+                        this.handler = config.packetHandler
+                    }
+
+                    ch.pipeline()
+                        .addLast("length", LengthCodec(connection))
+                        .addLast("packet", PacketCodec(connection))
+                        .apply { if (config.debug) addLast("logger", LoggingHandler(LogLevel.INFO)) }
+                        .addLast("connection", connection)
+                }
+            })
+            .bind(config.port)
+            .apply {
+                addListener { server.open(channel() as ServerChannel) }
+            }
+            .let { if (config.listenSync) it.syncUninterruptibly() }
+
+        return server
     }
 
     /**
@@ -502,6 +564,111 @@ object MinecraftProtocol {
          * The connection factory which builds a default connection.
          */
         var connectionFactory = { NettyConnection(PacketDirection.SERVERBOUND) }
+
+        /**
+         * Sets the connection factory variable.
+         *
+         * @param  build       The connection builder.
+         * @author Koding
+         * @since  0.1.0-SNAPSHOT
+         */
+        @Suppress("UNUSED")
+        fun connectionFactory(build: () -> NettyConnection) {
+            // Set the factory
+            connectionFactory = build
+        }
+
+        /**
+         * The builder for adding additional calls to the channel.
+         */
+        var build: SocketChannel.() -> Unit = {}
+
+        /**
+         * Sets the build variable.
+         *
+         * @param  build      The new build function.
+         * @author Koding
+         * @since  0.1.0-SNAPSHOT
+         */
+        @Suppress("UNUSED")
+        fun build(build: SocketChannel.() -> Unit) {
+            this.build = build
+        }
+    }
+
+    /**
+     * Configuration for a server listener.
+     *
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    data class ListenConfig(var port: Int) {
+        /**
+         * Defines the initial server handler for the connection.
+         */
+        var handler: ServerHandler? = null
+
+        /**
+         * Defines the initial packet handler for all new connections.
+         */
+        var packetHandler: PacketHandler? = null
+
+        /**
+         * Default timeout for inactivity, causing termination of the pipeline.
+         */
+        var timeout = 30
+
+        /**
+         * Whether we should block the current thread of the connection
+         * whilst it is being initialized.
+         */
+        var listenSync = true
+
+        /**
+         * Set the TCP No Delay value in the builder.
+         */
+        var noDelay = true
+
+        /**
+         * Configures if we should add the logging handler to the pipeline.
+         */
+        var debug = false
+
+        /**
+         * The event loop group we should be using as a parent for all our
+         * event processing for this connection.
+         */
+        var eventLoopGroup = if (Epoll.isAvailable()) EpollEventLoopGroup() else NioEventLoopGroup()
+
+        /**
+         * The channel type which should be associated with the event loop
+         * group type.
+         */
+        var channel: Class<out ServerSocketChannel> =
+            if (Epoll.isAvailable()) EpollServerSocketChannel::class.java else NioServerSocketChannel::class.java
+
+        /**
+         * The connection factory which builds a default connection.
+         */
+        var serverFactory = { NettyServer() }
+
+        /**
+         * Sets the server factory variable.
+         *
+         * @param  build       The server builder.
+         * @author Koding
+         * @since  0.1.0-SNAPSHOT
+         */
+        @Suppress("UNUSED")
+        fun serverFactory(build: () -> NettyServer) {
+            // Set the factory
+            serverFactory = build
+        }
+
+        /**
+         * The connection factory which builds a default connection.
+         */
+        var connectionFactory = { NettyConnection(PacketDirection.CLIENTBOUND) }
 
         /**
          * Sets the connection factory variable.

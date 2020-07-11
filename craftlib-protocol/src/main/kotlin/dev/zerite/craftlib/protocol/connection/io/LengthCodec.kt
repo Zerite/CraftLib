@@ -65,7 +65,7 @@ class LengthCodec(private val connection: NettyConnection) : ByteToMessageCodec<
                     ?: throw CorruptedFrameException("Empty packet")
 
                 // Check if we have all packet bytes
-                if (length >= buffer.readableBytes) {
+                if (buffer.readableBytes < length) {
                     buffer.resetReaderIndex()
                 } else {
                     // Create a new buffer containing only this packet and not any others which may come after it

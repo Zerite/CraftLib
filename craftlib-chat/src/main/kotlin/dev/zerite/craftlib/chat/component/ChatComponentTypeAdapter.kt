@@ -67,7 +67,7 @@ class ChatComponentTypeAdapter : TypeAdapter<BaseChatComponent>() {
         out.writeArray("extra", input.siblings.toTypedArray()) { write(out, it) }
 
         when (input) {
-            is StringChatComponent -> out.write("text", input.text.takeIf { it.isNotBlank() })
+            is StringChatComponent -> out.write("text", input.text)
             is TranslationChatComponent -> {
                 out.write("translate", input.key)
                 out.writeArray("with", input.with) { write(out, it) }

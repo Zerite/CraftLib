@@ -1,8 +1,15 @@
 package dev.zerite.craftlib.protocol.connection
 
 import dev.zerite.craftlib.chat.component.BaseChatComponent
+import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.util.Cancellable
 
+/**
+ * Handles receiving packets from the remote server.
+ *
+ * @author Koding
+ * @since  0.1.0-SNAPSHOT
+ */
 @Suppress("UNUSED")
 interface PacketHandler {
 
@@ -33,7 +40,7 @@ interface PacketHandler {
      * @author Koding
      * @since  0.1.0-SNAPSHOT
      */
-    fun received(connection: NettyConnection, packet: Any) {}
+    fun received(connection: NettyConnection, packet: Packet) {}
 
     /**
      * Fired before a packet is sent to the remote connection.
@@ -55,7 +62,7 @@ interface PacketHandler {
      * @author Koding
      * @since  0.1.0-SNAPSHOT
      */
-    fun sent(connection: NettyConnection, packet: Any) {}
+    fun sent(connection: NettyConnection, packet: Packet) {}
 
     /**
      * Called when this connection has disconnected from the host.
@@ -77,7 +84,9 @@ interface PacketHandler {
      * @author Koding
      * @since  0.1.0-SNAPSHOT
      */
-    fun exception(connection: NettyConnection, cause: Throwable) {}
+    fun exception(connection: NettyConnection, cause: Throwable) {
+        cause.printStackTrace()
+    }
 
 }
 
@@ -88,4 +97,4 @@ interface PacketHandler {
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-data class PacketSendingEvent(val connection: NettyConnection, var packet: Any) : Cancellable()
+data class PacketSendingEvent(val connection: NettyConnection, var packet: Packet) : Cancellable()

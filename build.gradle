@@ -28,7 +28,7 @@ subprojects {
     }
 
     dependencies {
-        implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+        api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
         testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
 //        testImplementation 'junit:junit:4.12'
         testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"

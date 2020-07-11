@@ -1,6 +1,8 @@
 package dev.zerite.craftlib.protocol.connection
 
-import dev.zerite.craftlib.chat.component.chatComponent
+import dev.zerite.craftlib.chat.component.BaseChatComponent
+import dev.zerite.craftlib.chat.component.StringChatComponent
+import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.connection.io.EncryptionCodec
 import dev.zerite.craftlib.protocol.version.MinecraftProtocol
 import dev.zerite.craftlib.protocol.version.PacketDirection
@@ -19,7 +21,7 @@ import javax.crypto.SecretKey
  * @since  0.1.0-SNAPSHOT
  */
 @Suppress("UNUSED")
-open class NettyConnection(val direction: PacketDirection) : SimpleChannelInboundHandler<Any>() {
+open class NettyConnection(val direction: PacketDirection) : SimpleChannelInboundHandler<Packet>() {
 
     companion object {
         /**
@@ -48,7 +50,7 @@ open class NettyConnection(val direction: PacketDirection) : SimpleChannelInboun
     @Suppress("UNUSED")
     var handler: PacketHandler? = null
         set(value) {
-            handler?.assigned(this)
+            value?.assigned(this)
             field = value
         }
 
@@ -64,6 +66,11 @@ open class NettyConnection(val direction: PacketDirection) : SimpleChannelInboun
     var version = ProtocolVersion.UNKNOWN
 
     /**
+     * If applicable, the server which this connection is associated with.
+     */
+    var server: NettyServer? = null
+
+    /**
      * Send a packet to the remote connection and optionally listen
      * for when it was sent.
      *
@@ -75,7 +82,7 @@ open class NettyConnection(val direction: PacketDirection) : SimpleChannelInboun
      * @author Koding
      * @since  0.1.0-SNAPSHOT
      */
-    fun <T : Any> send(packet: T, listener: T.() -> Unit = {}) =
+    fun <T : Packet> send(packet: T, listener: T.() -> Unit = {}) =
         PacketSendingEvent(this, packet).let {
             handler?.sending(this, it)
             if (it.cancelled) return@let null
@@ -108,13 +115,13 @@ open class NettyConnection(val direction: PacketDirection) : SimpleChannelInboun
      * @since  0.1.0-SNAPSHOT
      */
     @Suppress("UNUSED")
-    fun close(reason: String) =
+    fun close(reason: BaseChatComponent) =
         channel
             .takeIf { !disconnected }
             ?.apply { disconnected = true }
             ?.close()
             ?.addListener {
-                handler?.disconnected(this, reason.chatComponent)
+                handler?.disconnected(this, reason)
             }
 
     /**
@@ -126,6 +133,7 @@ open class NettyConnection(val direction: PacketDirection) : SimpleChannelInboun
     override fun channelActive(ctx: ChannelHandlerContext) {
         channel = ctx.channel()
         channel.attr(attribute).set(this)
+        server?.connected(this)
         handler?.connected(this)
     }
 
@@ -137,7 +145,8 @@ open class NettyConnection(val direction: PacketDirection) : SimpleChannelInboun
      */
     override fun channelInactive(ctx: ChannelHandlerContext) {
         // Run the handler
-        close("{ \"text\": \"Disconnected\" }")
+        close(StringChatComponent("Disconnected"))
+        server?.disconnected(this)
     }
 
     /**
@@ -147,7 +156,7 @@ open class NettyConnection(val direction: PacketDirection) : SimpleChannelInboun
      * @param  packet  The packet which was read.
      * @author Netty
      */
-    override fun channelRead0(ctx: ChannelHandlerContext, packet: Any) {
+    override fun channelRead0(ctx: ChannelHandlerContext, packet: Packet) {
         handler?.received(this, packet)
     }
 

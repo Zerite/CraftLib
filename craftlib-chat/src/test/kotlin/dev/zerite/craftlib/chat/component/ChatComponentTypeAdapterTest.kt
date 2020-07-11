@@ -51,7 +51,7 @@ class ChatComponentTypeAdapterTest {
             }
         )
         test(
-            "{\"extra\":[{\"text\":\"extra\"}]}",
+            "{\"extra\":[{\"text\":\"extra\"}],\"text\":\"\"}",
             StringChatComponent("").apply {
                 this + StringChatComponent("extra")
             }

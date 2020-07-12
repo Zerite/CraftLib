@@ -41,6 +41,13 @@ subprojects {
         from sourceSets.main.allSource
     }
 
+    jar {
+        manifest.attributes(
+                'Implementation-Title': 'Craftlib',
+                'Implementation-Version': project.version
+        )
+    }
+
     publishing {
         publications {
             maven(MavenPublication) {

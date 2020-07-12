@@ -28,7 +28,7 @@ data class ByteNibbleArray(var data: ByteArray, private val desired: Int = 16 * 
      * @author Koding
      * @since  0.1.0-SNAPSHOT
      */
-    operator fun get(index: Int, default: Int) = if (index < 0 || (index / 2) >= data.size - 1 || data.isEmpty()) default else this[index]
+    operator fun get(index: Int, default: Int) = if (index < 0 || (index / 2) >= data.size || data.isEmpty()) default else this[index]
 
     /**
      * Sets the data at the given index to the provided value.

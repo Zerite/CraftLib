@@ -32,7 +32,7 @@ abstract class PacketTest<T : Packet>(private val io: PacketIO<T>) {
          * The maximum supported protocol version which we should use to
          * write all the packets withs.
          */
-        private val maxSupported = ProtocolVersion.MC1_7_2
+        private val maxSupported = ProtocolVersion.MC1_7_6
     }
 
     /**
@@ -142,11 +142,15 @@ abstract class PacketTest<T : Packet>(private val io: PacketIO<T>) {
      * @author Koding
      * @since  0.1.0-SNAPSHOT
      */
-    protected fun example(packet: T, builder: ExampleListBuilder.() -> Unit = {}) =
+    protected fun example(
+        packet: T,
+        minimumVersion: ProtocolVersion = ProtocolVersion.values().filter { it <= maxSupported }.minBy { it.id } ?: error("No compatible versions"),
+        builder: ExampleListBuilder.() -> Unit = {}
+    ) =
         ProtocolState.SideData.runForAllProtocols(
             ExampleListBuilder().apply(builder).examples.toTypedArray()
         ) { version, bytes ->
-            if (version > maxSupported) return@runForAllProtocols
+            if (version < minimumVersion || version > maxSupported) return@runForAllProtocols
             examples.computeIfAbsent(packet) { EnumMap(ProtocolVersion::class.java) }[version] = bytes
         }
 

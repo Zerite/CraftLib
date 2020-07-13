@@ -24,6 +24,10 @@ class ServerLoginSuccessTest : PacketTest<ServerLoginSuccessPacket>(ServerLoginS
                 writeUUID(uuid, mode = ProtocolBuffer.UUIDMode.DASHES)
                 writeString("AuthPlayer")
             }
+            ProtocolVersion.MC1_7_6 {
+                writeUUID(uuid, mode = ProtocolBuffer.UUIDMode.STRING)
+                writeString("AuthPlayer")
+            }
         }
     }
 

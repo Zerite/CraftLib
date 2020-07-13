@@ -22,7 +22,7 @@ data class ServerLoginSuccessPacket(var uuid: UUID, var username: String) : Pack
             version: ProtocolVersion,
             connection: NettyConnection
         ) = ServerLoginSuccessPacket(
-            buffer.readUUID(mode = ProtocolBuffer.UUIDMode.DASHES),
+            buffer.readUUID(mode = ProtocolBuffer.UUIDMode.DASHES.takeIf { version < ProtocolVersion.MC1_7_6 } ?: ProtocolBuffer.UUIDMode.STRING),
             buffer.readString()
         )
 
@@ -32,7 +32,7 @@ data class ServerLoginSuccessPacket(var uuid: UUID, var username: String) : Pack
             packet: ServerLoginSuccessPacket,
             connection: NettyConnection
         ) {
-            buffer.writeUUID(packet.uuid, mode = ProtocolBuffer.UUIDMode.DASHES)
+            buffer.writeUUID(packet.uuid, mode = ProtocolBuffer.UUIDMode.DASHES.takeIf { version < ProtocolVersion.MC1_7_6 } ?: ProtocolBuffer.UUIDMode.STRING)
             buffer.writeString(packet.username)
         }
     }

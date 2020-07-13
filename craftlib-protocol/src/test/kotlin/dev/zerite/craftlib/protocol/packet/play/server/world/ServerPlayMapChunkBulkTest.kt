@@ -4,10 +4,8 @@ import dev.zerite.craftlib.protocol.data.world.Block
 import dev.zerite.craftlib.protocol.data.world.Chunk
 import dev.zerite.craftlib.protocol.data.world.ChunkColumn
 import dev.zerite.craftlib.protocol.packet.PacketTest
+import dev.zerite.craftlib.protocol.util.ext.deflated
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
-import java.io.ByteArrayOutputStream
-import java.io.DataOutputStream
-import java.util.zip.Deflater
 
 /**
  * Tests that chunk data is being properly read and written, and that all
@@ -47,19 +45,7 @@ class ServerPlayMapChunkBulkTest : PacketTest<ServerPlayMapChunkBulkPacket>(Serv
         val column = ChunkColumn(20, 21, Array(16) { Chunk() }, byteArrayOf())
         example(ServerPlayMapChunkBulkPacket(true, arrayOf(column))) {
             ProtocolVersion.MC1_7_2 {
-                val byteOutput = ByteArrayOutputStream()
-                val output = DataOutputStream(byteOutput)
-                ChunkColumn.write(output, column, hasSkyLight = true)
-
-                val bytes = byteOutput.toByteArray()
-                val compressed = ByteArray(bytes.size)
-
-                Deflater(-1).apply {
-                    setInput(bytes, 0, bytes.size)
-                    finish()
-                    deflate(compressed)
-                    end()
-                }
+                val compressed = ChunkColumn.write(column, hasSkyLight = true).output.deflated()
 
                 writeShort(1)
                 writeInt(compressed.size)

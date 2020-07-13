@@ -4,7 +4,6 @@ import dev.zerite.craftlib.protocol.data.world.Block
 import dev.zerite.craftlib.protocol.data.world.Chunk
 import dev.zerite.craftlib.protocol.data.world.ChunkColumn
 import dev.zerite.craftlib.protocol.packet.PacketTest
-import dev.zerite.craftlib.protocol.util.ext.dataOutput
 import dev.zerite.craftlib.protocol.util.ext.deflated
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
@@ -41,8 +40,7 @@ class ServerPlayChunkDataTest : PacketTest<ServerPlayChunkDataPacket>(ServerPlay
         val column = ChunkColumn(20, 21, Array(16) { Chunk() }, byteArrayOf())
         example(ServerPlayChunkDataPacket(column)) {
             ProtocolVersion.MC1_7_2 {
-                val (stream, _) = dataOutput { ChunkColumn.write(this, column) }
-                val bytes = stream.toByteArray().deflated()
+                val bytes = ChunkColumn.write(column).output.deflated()
 
                 // Coords
                 writeInt(20)

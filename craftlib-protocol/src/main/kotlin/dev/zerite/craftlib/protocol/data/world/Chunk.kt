@@ -24,7 +24,7 @@ data class Chunk(internal var blocks: Array<Block?> = arrayOfNulls(DESIRED_BLOCK
          * @author Koding
          * @since  0.1.0-SNAPSHOT
          */
-        fun index(x: Int, y: Int, z: Int) = x + (y * 16 + z) * 16
+        fun index(x: Int, y: Int, z: Int) = (y shl 8) or (z shl 4) or x
     }
 
     /**

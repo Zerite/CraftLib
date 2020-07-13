@@ -1,7 +1,6 @@
 package dev.zerite.craftlib.protocol.data.world
 
-import java.io.DataInput
-import java.io.DataOutput
+import dev.zerite.craftlib.protocol.util.ext.trim
 
 /**
  * Stores a full column of chunks and has functionality to
@@ -32,69 +31,97 @@ data class ChunkColumn(val x: Int, val z: Int, val chunks: Array<Chunk>, private
          * @since  0.1.0-SNAPSHOT
          */
         fun read(
-            data: DataInput,
+            data: ByteArray,
             metadata: ChunkMetadata,
             hasSkyLight: Boolean = true,
             readBiomes: Boolean = metadata.biomes
-        ) = ChunkColumn(
-            metadata.chunkX,
-            metadata.chunkZ,
-            Array(16) { ChunkArrays() }.apply {
-                readIf(metadata.primaryBitmap, { blockTypes = ByteArray(0) }) {
-                    blockTypes = ByteArray(FULL_BYTE_SIZE).apply { data.readFully(this) }
-                }
-                readIf(metadata.primaryBitmap, { this.metadata = ByteNibbleArray(ByteArray(0)) }) {
-                    this.metadata = ByteNibbleArray(ByteArray(HALF_BYTE_SIZE).apply { data.readFully(this) })
-                }
-                readIf(metadata.primaryBitmap, { blockLight = ByteNibbleArray(ByteArray(0)) }) {
-                    blockLight = ByteNibbleArray(ByteArray(HALF_BYTE_SIZE).apply { data.readFully(this) })
-                }
-                readIf(
-                    metadata.primaryBitmap,
-                    { skyLight = ByteNibbleArray(ByteArray(0)) },
-                    { hasSkyLight }
-                ) {
-                    skyLight = ByteNibbleArray(ByteArray(HALF_BYTE_SIZE).apply { data.readFully(this) })
-                }
-                readIf(metadata.addBitmap, { addArray = ByteNibbleArray(ByteArray(0)) }) {
-                    addArray = ByteNibbleArray(ByteArray(HALF_BYTE_SIZE).apply { data.readFully(this) })
-                }
-            }.map {
-                val blockData = arrayOfNulls<Block?>(16 * 16 * 16)
+        ): ChunkColumn {
+            var marker = 0
+            return ChunkColumn(
+                metadata.chunkX,
+                metadata.chunkZ,
+                Array(16) { ChunkArrays() }.apply {
+                    val masked = (0..15).count { metadata.primaryBitmap and (1 shl it) != 0 }
+                    var i = 0
 
-                for (y in 0 until 16) {
-                    for (z in 0 until 16) {
-                        for (x in 0 until 16) {
-                            val index = Chunk.index(x, y, z)
-                            if (index > it.blockTypes.size || it.blockTypes.isEmpty()) continue
+                    repeat(size) {
+                        val chunk = this[it]
+                        if (metadata.primaryBitmap and (1 shl it) == 0) {
+                            chunk.blockTypes = ByteArray(FULL_BYTE_SIZE)
+                            chunk.metadata = ByteNibbleArray(ByteArray(HALF_BYTE_SIZE))
+                            chunk.blockLight = ByteNibbleArray(ByteArray(HALF_BYTE_SIZE))
+                            chunk.skyLight = ByteNibbleArray(ByteArray(HALF_BYTE_SIZE))
+                            chunk.addArray = ByteNibbleArray(ByteArray(HALF_BYTE_SIZE))
+                            return@repeat
+                        }
 
-                            val type = it.blockTypes[index].toInt() + it.addArray[index, 0]
-                            val meta = it.metadata[index, 0]
-                            val light = it.blockLight[index, 0]
-                            val sky = it.skyLight[index, 0]
+                        var bytesPosition = i * 4096
+                        chunk.blockTypes = data.copyOfRange(bytesPosition, bytesPosition + 4096)
+                        bytesPosition += ((masked - i) * 4096) + (i * 2048)
+                        chunk.metadata = ByteNibbleArray(data.copyOfRange(bytesPosition, bytesPosition + 2048))
+                        bytesPosition += masked * 2048
+                        chunk.blockLight = ByteNibbleArray(data.copyOfRange(bytesPosition, bytesPosition + 2048))
+                        bytesPosition += masked * 2048
+                        marker += 8192
 
-                            blockData[index] =
-                                if (type == 0 && meta == 0 && light == 0 && sky == 0) null
-                                else Block(
-                                    type,
-                                    meta,
-                                    light,
-                                    sky
-                                ).apply { location = BlockLocation(x, y, z) }
+                        chunk.skyLight = ByteNibbleArray(
+                            if (hasSkyLight) data.copyOfRange(
+                                bytesPosition,
+                                bytesPosition + 2048
+                            ).apply {
+                                bytesPosition += masked * 2048
+                                marker += 2048
+                            } else ByteArray(0)
+                        )
+
+                        chunk.addArray = ByteNibbleArray(
+                            if (metadata.addBitmap and (1 shl it) != 0) data.copyOfRange(
+                                bytesPosition,
+                                bytesPosition + 2048
+                            ).apply {
+                                bytesPosition += masked * 2048
+                                marker += 2048
+                            } else ByteArray(0)
+                        )
+
+                        i++
+                    }
+                }.map {
+                    val blockData = arrayOfNulls<Block?>(16 * 16 * 16)
+
+                    for (y in 0 until 16) {
+                        for (z in 0 until 16) {
+                            for (x in 0 until 16) {
+                                val index = Chunk.index(x, y, z)
+                                if (index > it.blockTypes.size || it.blockTypes.isEmpty()) continue
+
+                                val type = (it.blockTypes[index].toInt() and 255) or (it.addArray[index, 0] shl 8)
+                                val meta = it.metadata[index, 0]
+                                val light = it.blockLight[index, 0]
+                                val sky = it.skyLight[index, 0]
+
+                                blockData[index] =
+                                    if (type == 0 && meta == 0 && light == 0 && sky == 0) null
+                                    else Block(
+                                        type,
+                                        meta,
+                                        light,
+                                        sky
+                                    ).apply { location = BlockLocation(x, y, z) }
+                            }
                         }
                     }
-                }
 
-                Chunk(blockData)
-            }.toTypedArray(),
-            if (readBiomes) ByteArray(16 * 16).apply { data.readFully(this) } else ByteArray(16 * 16)
-        )
+                    Chunk(blockData)
+                }.toTypedArray(),
+                if (readBiomes) data.copyOfRange(marker, marker + 256) else ByteArray(16 * 16)
+            )
+        }
 
         /**
          * Writes a chunk column to the buffer whilst accounting for the
          * provided metadata values.
          *
-         * @param  data          The data buffer which we are writing to.
          * @param  column        The chunk column we are writing.
          * @param  hasSkyLight   Whether this chunk data should include skylight.
          * @param  writeBiomes   Whether we should write biome data.
@@ -103,13 +130,15 @@ data class ChunkColumn(val x: Int, val z: Int, val chunks: Array<Chunk>, private
          * @since  0.1.0-SNAPSHOT
          */
         fun write(
-            data: DataOutput,
             column: ChunkColumn,
             hasSkyLight: Boolean = true,
             writeBiomes: Boolean = true
         ): ChunkWriteOutput {
             var primaryBitmap = 0
             var addBitmap = 0
+
+            val output = ByteArray(196864)
+            var outputPos = 0
 
             column.chunks.mapIndexed { i, it ->
                 ChunkArrays().apply {
@@ -129,7 +158,7 @@ data class ChunkColumn(val x: Int, val z: Int, val chunks: Array<Chunk>, private
                                 val block = it[x, y, z] ?: continue
                                 val add = block.id and 0xF00 shr 8
 
-                                blockTypes[index] = block.id.toByte()
+                                blockTypes[index] = (block.id and 255).toByte()
                                 metadata[index] = block.metadata
                                 blockLight[index] = block.blockLight
                                 skyLight[index] = block.skyLight
@@ -145,56 +174,44 @@ data class ChunkColumn(val x: Int, val z: Int, val chunks: Array<Chunk>, private
                     if (foundAdd) addBitmap = addBitmap or (1 shl i)
                 }
             }.toTypedArray().apply {
-                writeIf(primaryBitmap) { data.write(blockTypes) }
-                writeIf(primaryBitmap) { data.write(metadata.data) }
-                writeIf(primaryBitmap) { data.write(blockLight.data) }
-                writeIf(primaryBitmap, { hasSkyLight }) { data.write(skyLight.data) }
-                writeIf(addBitmap) { data.write(addArray.data) }
+                val masked = (0..15).count { primaryBitmap and (1 shl it) != 0 }
+                var i = 0
+
+                for (it in 0..15) {
+                    val chunk = this[it]
+                    if (primaryBitmap and (1 shl it) == 0) continue
+
+                    var bytesPosition = i * 4096
+                    System.arraycopy(chunk.blockTypes, 0, output, bytesPosition, 4096)
+                    bytesPosition += ((masked - i) * 4096) + (i * 2048)
+                    System.arraycopy(chunk.metadata.data, 0, output, bytesPosition, chunk.metadata.data.size)
+                    bytesPosition += masked * 2048
+                    System.arraycopy(chunk.blockLight.data, 0, output, bytesPosition, chunk.blockLight.data.size)
+                    bytesPosition += masked * 2048
+
+                    outputPos += 8192
+                    if (hasSkyLight) {
+                        System.arraycopy(chunk.skyLight.data, 0, output, bytesPosition, 2048)
+                        bytesPosition += masked * 2048
+                        outputPos += 2048
+                    }
+
+                    if (addBitmap and (1 shl it) != 0) {
+                        System.arraycopy(chunk.skyLight.data, 0, output, bytesPosition, 2048)
+                        bytesPosition += masked * 2048
+                        outputPos += 2048
+                    }
+
+                    i++
+                }
             }
 
-            if (writeBiomes) data.write(column.biomes)
-            return ChunkWriteOutput(primaryBitmap, addBitmap)
-        }
+            if (writeBiomes) {
+                System.arraycopy(column.biomes, 0, output, outputPos, 256)
+                outputPos += 256
+            }
 
-        /**
-         * Reads an array of chunk array data into the class if it
-         * meets a list of conditions.
-         *
-         * @param  mask         The mask we check against.
-         * @param  default      The fallback value if we should not execute this.
-         * @param  check        Any additional checks which we may need.
-         * @param  reader       Reads the data and inserts it into the chunk array data.
-         *
-         * @author Koding
-         * @since  0.1.0-SNAPSHOT
-         */
-        private fun Array<ChunkArrays>.readIf(
-            mask: Int,
-            default: ChunkArrays.() -> Unit,
-            check: Int.() -> Boolean = { true },
-            reader: ChunkArrays.() -> Unit
-        ) = repeat(size) {
-            if (mask and (1 shl it) != 0 && it.check()) reader(this[it])
-            else default(this[it])
-        }
-
-        /**
-         * Writes an array of chunk array data into the class if it
-         * meets a list of conditions.
-         *
-         * @param  mask         The mask we check against.
-         * @param  check        Any additional checks which we may need.
-         * @param  writer       Writes the data and inserts it into the output.
-         *
-         * @author Koding
-         * @since  0.1.0-SNAPSHOT
-         */
-        private fun Array<ChunkArrays>.writeIf(
-            mask: Int,
-            check: Int.() -> Boolean = { true },
-            writer: ChunkArrays.() -> Unit
-        ) = repeat(size) {
-            if (mask and (1 shl it) != 0 && it.check()) writer(this[it])
+            return ChunkWriteOutput(primaryBitmap, addBitmap, output.trim(outputPos))
         }
     }
 
@@ -270,8 +287,29 @@ data class ChunkColumn(val x: Int, val z: Int, val chunks: Array<Chunk>, private
  */
 data class ChunkWriteOutput(
     val primaryBitmask: Int,
-    val addBitmask: Int
-)
+    val addBitmask: Int,
+    val output: ByteArray
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as ChunkWriteOutput
+
+        if (primaryBitmask != other.primaryBitmask) return false
+        if (addBitmask != other.addBitmask) return false
+        if (!output.contentEquals(other.output)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = primaryBitmask
+        result = 31 * result + addBitmask
+        result = 31 * result + output.contentHashCode()
+        return result
+    }
+}
 
 /**
  * Stores array data about a chunk which we read.

@@ -6,8 +6,6 @@ import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
 import dev.zerite.craftlib.protocol.data.world.ChunkColumn
 import dev.zerite.craftlib.protocol.data.world.ChunkMetadata
-import dev.zerite.craftlib.protocol.util.ext.dataInput
-import dev.zerite.craftlib.protocol.util.ext.dataOutput
 import dev.zerite.craftlib.protocol.util.ext.deflated
 import dev.zerite.craftlib.protocol.util.ext.inflated
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
@@ -42,10 +40,7 @@ data class ServerPlayChunkDataPacket(
 
             return ServerPlayChunkDataPacket(
                 buffer.readByteArray { readInt() }.inflated(196864)
-                    .dataInput {
-                        // TODO: Test with the nether
-                        ChunkColumn.read(this, metadata, hasSkyLight = true)
-                    }
+                    .let { ChunkColumn.read(it, metadata, hasSkyLight = true) }
             )
         }
 
@@ -55,13 +50,13 @@ data class ServerPlayChunkDataPacket(
             packet: ServerPlayChunkDataPacket,
             connection: NettyConnection
         ) {
-            val (stream, data) = dataOutput { ChunkColumn.write(this, packet.column) }
+            val (primaryBitmask, addBitmask, bytes) = ChunkColumn.write(packet.column)
             buffer.writeInt(packet.column.x)
             buffer.writeInt(packet.column.z)
             buffer.writeBoolean(packet.column.chunks.all { it.blocks.filterNotNull().isNotEmpty() })
-            buffer.writeShort(data.primaryBitmask)
-            buffer.writeShort(data.addBitmask)
-            buffer.writeByteArray(stream.toByteArray().deflated()) { writeInt(it) }
+            buffer.writeShort(primaryBitmask)
+            buffer.writeShort(addBitmask)
+            buffer.writeByteArray(bytes.deflated()) { writeInt(it) }
         }
     }
 }

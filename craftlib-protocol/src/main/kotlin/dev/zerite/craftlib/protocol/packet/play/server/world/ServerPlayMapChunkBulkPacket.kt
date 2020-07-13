@@ -6,10 +6,9 @@ import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
 import dev.zerite.craftlib.protocol.data.world.ChunkColumn
 import dev.zerite.craftlib.protocol.data.world.ChunkMetadata
-import dev.zerite.craftlib.protocol.util.ext.dataInput
-import dev.zerite.craftlib.protocol.util.ext.dataOutput
 import dev.zerite.craftlib.protocol.util.ext.deflated
 import dev.zerite.craftlib.protocol.util.ext.inflated
+import dev.zerite.craftlib.protocol.util.ext.trim
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
 /**
@@ -62,7 +61,7 @@ data class ServerPlayMapChunkBulkPacket(
                     System.arraycopy(data, readerIndex, chunkBytes, 0, dataLength)
                     readerIndex += dataLength
 
-                    chunkBytes.dataInput { ChunkColumn.read(this, meta, hasSkyLight = skyLight) }
+                    ChunkColumn.read(chunkBytes, meta, hasSkyLight = skyLight)
                 }
             )
         }
@@ -73,19 +72,22 @@ data class ServerPlayMapChunkBulkPacket(
             packet: ServerPlayMapChunkBulkPacket,
             connection: NettyConnection
         ) {
-            val (stream, meta) = dataOutput {
-                packet.columns.map {
-                    it to ChunkColumn.write(this, it, hasSkyLight = packet.skyLight)
-                }.toTypedArray()
-            }
-            val bytes = stream.toByteArray().deflated()
+            val bytes = ByteArray(196864 * packet.columns.size)
+            var bytesPosition = 0
+
+            val output = packet.columns.map {
+                it to ChunkColumn.write(it, hasSkyLight = packet.skyLight).apply {
+                    System.arraycopy(output, 0, bytes, bytesPosition, output.size)
+                    bytesPosition += output.size
+                }
+            }.toTypedArray()
 
             buffer.writeShort(packet.columns.size)
-            buffer.writeInt(bytes.size)
+            buffer.writeInt(bytesPosition)
             buffer.writeBoolean(packet.skyLight)
-            buffer.writeBytes(bytes)
+            buffer.writeBytes(bytes.trim(bytesPosition).deflated())
 
-            buffer.writeArray(meta, { }) { (col, out) ->
+            buffer.writeArray(output, { }) { (col, out) ->
                 writeInt(col.x)
                 writeInt(col.z)
                 writeShort(out.primaryBitmask)

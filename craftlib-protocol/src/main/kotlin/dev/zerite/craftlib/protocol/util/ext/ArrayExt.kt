@@ -14,6 +14,7 @@ import java.util.zip.Inflater
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
+@Suppress("UNUSED")
 fun <T> dataOutput(block: DataOutputStream.() -> T) =
     ByteArrayOutputStream().use {
         it to DataOutputStream(it).use(block)
@@ -27,6 +28,7 @@ fun <T> dataOutput(block: DataOutputStream.() -> T) =
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
+@Suppress("UNUSED")
 fun <T> ByteArray.dataInput(block: DataInputStream.() -> T) =
     inputStream().use { DataInputStream(it).use(block) }
 
@@ -56,4 +58,16 @@ fun ByteArray.deflated() =
 fun ByteArray.inflated(size: Int) =
     ByteArray(size).also {
         Inflater().apply { setInput(this@inflated, 0, this@inflated.size) }.inflate(it)
+    }
+
+/**
+ * Trims a byte array to size given the provided max length.
+ *
+ * @param  length      The maximum length of the byte array.
+ * @author Koding
+ * @since  0.1.0-SNAPSHOT
+ */
+fun ByteArray.trim(length: Int) =
+    ByteArray(length).also {
+        System.arraycopy(this, 0, it, 0, length)
     }

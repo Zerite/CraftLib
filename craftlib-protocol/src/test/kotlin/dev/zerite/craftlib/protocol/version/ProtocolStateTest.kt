@@ -3,6 +3,7 @@ package dev.zerite.craftlib.protocol.version
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
+import kotlin.test.assertNull
 
 class ProtocolStateTest {
 
@@ -16,16 +17,10 @@ class ProtocolStateTest {
     @Test
     fun `Test State Fails`() {
         val state = ProtocolState("Example", 1)
+        assertNull(state[PacketDirection.CLIENTBOUND][ProtocolVersion.UNKNOWN, -1])
+        assertNull(state[PacketDirection.CLIENTBOUND][ProtocolVersion.UNKNOWN, Any()])
         assertFails {
-            state[PacketDirection.CLIENTBOUND][ProtocolVersion.UNKNOWN, -1]
-        }
-        assertFails {
-            state[PacketDirection.CLIENTBOUND][ProtocolVersion.UNKNOWN, Any()]
-        }
-        assertFails {
-            state[PacketDirection.CLIENTBOUND].apply {
-                Any::class.typeParameter
-            }
+            state[PacketDirection.CLIENTBOUND].apply { Any::class.typeParameter }
         }
     }
 

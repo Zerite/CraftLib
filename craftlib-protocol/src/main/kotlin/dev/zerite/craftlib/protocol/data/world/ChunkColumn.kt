@@ -42,17 +42,17 @@ data class ChunkColumn(val x: Int, val z: Int, val chunks: Array<Chunk>, private
                 metadata.chunkZ,
                 Array(16) { ChunkArrays() }.apply {
                     val masked = (0..15).count { metadata.primaryBitmap and (1 shl it) != 0 }
+                    val maskedAdd = (0..15).count { metadata.addBitmap and (1 shl it) != 0 }
                     var i = 0
 
-                    repeat(size) {
-                        val chunk = this[it]
+                    forEachIndexed { it, chunk ->
                         if (metadata.primaryBitmap and (1 shl it) == 0) {
                             chunk.blockTypes = ByteArray(FULL_BYTE_SIZE)
                             chunk.metadata = ByteNibbleArray(ByteArray(HALF_BYTE_SIZE))
                             chunk.blockLight = ByteNibbleArray(ByteArray(HALF_BYTE_SIZE))
                             chunk.skyLight = ByteNibbleArray(ByteArray(HALF_BYTE_SIZE))
                             chunk.addArray = ByteNibbleArray(ByteArray(HALF_BYTE_SIZE))
-                            return@repeat
+                            return@forEachIndexed
                         }
 
                         var bytesPosition = i * 4096
@@ -69,7 +69,7 @@ data class ChunkColumn(val x: Int, val z: Int, val chunks: Array<Chunk>, private
                                 bytesPosition,
                                 bytesPosition + 2048
                             ).apply {
-                                bytesPosition += masked * 2048
+                                bytesPosition += maskedAdd * 2048
                                 marker += 2048
                             } else ByteArray(0)
                         )
@@ -102,12 +102,7 @@ data class ChunkColumn(val x: Int, val z: Int, val chunks: Array<Chunk>, private
 
                                 blockData[index] =
                                     if (type == 0 && meta == 0 && light == 0 && sky == 0) null
-                                    else Block(
-                                        type,
-                                        meta,
-                                        light,
-                                        sky
-                                    ).apply { location = BlockLocation(x, y, z) }
+                                    else Block(type, meta, light, sky).apply { location = BlockLocation(x, y, z) }
                             }
                         }
                     }

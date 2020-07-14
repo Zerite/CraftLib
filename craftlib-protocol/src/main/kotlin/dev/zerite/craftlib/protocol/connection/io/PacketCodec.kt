@@ -3,6 +3,7 @@ package dev.zerite.craftlib.protocol.connection.io
 import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.connection.NettyConnection
+import dev.zerite.craftlib.protocol.packet.base.RawPacket
 import dev.zerite.craftlib.protocol.wrap
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
@@ -32,13 +33,18 @@ class PacketCodec(private val connection: NettyConnection) : ByteToMessageCodec<
      * @since  0.1.0-SNAPSHOT
      */
     override fun encode(ctx: ChannelHandlerContext, packet: Packet, buf: ByteBuf) {
+        val buffer = buf.wrap(connection)
+
         // Get the packet registry data
         val data = connection.state[connection.direction][connection.version, packet]
-
-        val buffer = buf.wrap(connection)
-        buffer.writeVarInt(data.id)
+            ?: return run {
+                val raw = packet as? RawPacket ?: return@run
+                buffer.writeVarInt(raw.id)
+                buffer.writeBytes(raw.data)
+            }
 
         // Write the packet data
+        buffer.writeVarInt(data.id)
         @Suppress("UNCHECKED_CAST")
         (data.io as? PacketIO<Packet>)?.write(buffer, connection.version, packet, connection)
     }
@@ -59,17 +65,19 @@ class PacketCodec(private val connection: NettyConnection) : ByteToMessageCodec<
         val id = buffer.readVarInt()
 
         // Get the packet registry data
-        val io = connection.state[decodeDirection][connection.version, id].io
+        val io = connection.state[decodeDirection][connection.version, id]?.io
 
         // Read the data fully
-        out.add(io.read(buffer, connection.version, connection))
+        val packet = (io?.read(buffer, connection.version, connection)
+            ?: RawPacket(id, buffer.readByteArray(buf.readableBytes())))
+            .apply { out.add(this) }
 
         /*
-        Check if the packet didn't read all of its bytes.
-        If we don't do this the next packet will have some old data from this packet in its buffer and mess up
-        the entire packet reading pipeline
+         * Check if the packet didn't read all of its bytes.
+         * If we don't do this the next packet will have some old data from this packet in its buffer and mess up
+         * the entire packet reading pipeline
          */
         if (buffer.readableBytes > 0)
-            error("Packet ${io::class.java.simpleName} wasn't fully read (${buffer.readableBytes} bytes left)")
+            error("Packet ${packet::class.java.simpleName} wasn't fully read (${buffer.readableBytes} bytes left)")
     }
 }

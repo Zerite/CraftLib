@@ -97,7 +97,7 @@ data class ProtocolState(val name: String, val id: Int) {
          * @since  0.1.0-SNAPSHOT
          */
         operator fun get(version: ProtocolVersion, id: Int) =
-            idToData[version]?.get(id) ?: error("Invalid packet ID ($id / 0x${id.toString(16)}): [$direction]")
+            idToData[version]?.get(id)
 
         /**
          * Get packet data from the packet specified.
@@ -110,7 +110,6 @@ data class ProtocolState(val name: String, val id: Int) {
          */
         operator fun get(version: ProtocolVersion, packet: Any) =
             classToData[version]?.get(packet::class.java)
-                ?: error("Invalid packet ${packet::class.java.simpleName}: [$direction]")
 
         /**
          * Allows for DSL to be used on the raw side data values.

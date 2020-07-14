@@ -56,6 +56,7 @@ data class ServerPlayMapChunkBulkPacket(
                     var dataLength = 2048 * 4 * primarySize + 256
                     dataLength += 2048 * secondarySize
                     if (skyLight) dataLength += 2048 * primarySize
+                    if (meta.addBitmap and (1 shl it) != 0) dataLength += 2048 * secondarySize
 
                     val chunkBytes = ByteArray(dataLength)
                     System.arraycopy(data, readerIndex, chunkBytes, 0, dataLength)

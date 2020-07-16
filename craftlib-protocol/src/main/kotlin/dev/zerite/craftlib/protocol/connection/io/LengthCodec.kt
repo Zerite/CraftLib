@@ -77,5 +77,7 @@ class LengthCodec(private val connection: NettyConnection) : ByteToMessageCodec<
                 return
             }
         }
+
+        throw CorruptedFrameException("Length is too large")
     }
 }

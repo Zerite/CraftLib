@@ -22,7 +22,8 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @since  0.1.0-SNAPSHOT
  */
 data class ServerPlayChunkDataPacket(
-    var column: ChunkColumn
+    var column: ChunkColumn,
+    var groundUp: Boolean
 ) : Packet() {
     companion object : PacketIO<ServerPlayChunkDataPacket> {
         override fun read(
@@ -40,7 +41,8 @@ data class ServerPlayChunkDataPacket(
 
             return ServerPlayChunkDataPacket(
                 buffer.readByteArray { readInt() }.inflated(196864)
-                    .let { ChunkColumn.read(it, metadata, hasSkyLight = true) }
+                    .let { ChunkColumn.read(it, metadata, hasSkyLight = true) },
+                metadata.biomes
             )
         }
 
@@ -50,10 +52,10 @@ data class ServerPlayChunkDataPacket(
             packet: ServerPlayChunkDataPacket,
             connection: NettyConnection
         ) {
-            val (primaryBitmask, addBitmask, bytes) = ChunkColumn.write(packet.column)
+            val (primaryBitmask, addBitmask, bytes) = ChunkColumn.write(packet.column, writeBiomes = packet.groundUp)
             buffer.writeInt(packet.column.x)
             buffer.writeInt(packet.column.z)
-            buffer.writeBoolean(packet.column.chunks.all { it.blocks.filterNotNull().isNotEmpty() })
+            buffer.writeBoolean(packet.groundUp)
             buffer.writeShort(primaryBitmask)
             buffer.writeShort(addBitmask)
             buffer.writeByteArray(bytes.deflated()) { writeInt(it) }

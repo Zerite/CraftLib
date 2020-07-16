@@ -4,6 +4,8 @@ import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
+import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
+import dev.zerite.craftlib.protocol.data.registry.impl.MagicEntityProperty
 import dev.zerite.craftlib.protocol.packet.base.EntityIdPacket
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 import java.util.*
@@ -30,7 +32,7 @@ data class ServerPlayEntityPropertiesPacket(
             buffer.readInt(),
             buffer.readArray({ readInt() }) {
                 Property(
-                    readString(),
+                    MagicEntityProperty[version, readString()],
                     readDouble(),
                     readArray({ readShort().toInt() }) {
                         Modifier(
@@ -51,7 +53,7 @@ data class ServerPlayEntityPropertiesPacket(
         ) {
             buffer.writeInt(packet.entityId)
             buffer.writeArray(packet.properties, { writeInt(it) }) { p ->
-                writeString(p.key)
+                writeString(MagicEntityProperty[version, p.key, String::class] ?: return@writeArray)
                 writeDouble(p.value)
                 writeArray(p.modifiers, { writeShort(it) }) {
                     writeUUID(it.uuid, ProtocolBuffer.UUIDMode.RAW)
@@ -63,7 +65,7 @@ data class ServerPlayEntityPropertiesPacket(
     }
 
     data class Property(
-        var key: String,
+        var key: RegistryEntry,
         var value: Double,
         var modifiers: Array<Modifier>
     ) {

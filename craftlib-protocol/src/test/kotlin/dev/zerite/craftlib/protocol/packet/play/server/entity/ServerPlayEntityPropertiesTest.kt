@@ -1,6 +1,8 @@
 package dev.zerite.craftlib.protocol.packet.play.server.entity
 
 import dev.zerite.craftlib.protocol.ProtocolBuffer
+import dev.zerite.craftlib.protocol.data.registry.UnknownRegistryEntry
+import dev.zerite.craftlib.protocol.data.registry.impl.MagicEntityProperty
 import dev.zerite.craftlib.protocol.packet.PacketTest
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 import java.util.*
@@ -16,7 +18,7 @@ class ServerPlayEntityPropertiesTest : PacketTest<ServerPlayEntityPropertiesPack
     init {
         example(ServerPlayEntityPropertiesPacket(0, emptyArray()))
         example(ServerPlayEntityPropertiesPacket(42, Array(5) {
-            ServerPlayEntityPropertiesPacket.Property("example${it * 2}", it.toDouble(), Array(3) {
+            ServerPlayEntityPropertiesPacket.Property(UnknownRegistryEntry("example${it * 2}"), it.toDouble(), Array(3) {
                 ServerPlayEntityPropertiesPacket.Modifier(UUID.randomUUID(), 2.0, 1)
             })
         }))
@@ -24,7 +26,7 @@ class ServerPlayEntityPropertiesTest : PacketTest<ServerPlayEntityPropertiesPack
             ServerPlayEntityPropertiesPacket(
                 127, arrayOf(
                     ServerPlayEntityPropertiesPacket.Property(
-                        "generic.maxHealth", 20.0, arrayOf(
+                        MagicEntityProperty.GENERIC_MAX_HEALTH, 20.0, arrayOf(
                             ServerPlayEntityPropertiesPacket.Modifier(UUID(0L, 0L), 1.0, 1)
                         )
                     )

@@ -341,6 +341,21 @@ object MagicRegistry {
     }
 
     /**
+     * Valid properties which can be attached to an entity.
+     */
+    val entityProperty = create<MagicEntityProperty> {
+        ProtocolVersion.MC1_7_2 {
+            MagicEntityProperty.GENERIC_MAX_HEALTH to "generic.maxHealth"
+            MagicEntityProperty.GENERIC_FOLLOW_RANGE to "generic.followRange"
+            MagicEntityProperty.GENERIC_KNOCKBACK_RESISTANCE to "generic.knockbackResistance"
+            MagicEntityProperty.GENERIC_MOVEMENT_SPEED to "generic.movementSpeed"
+            MagicEntityProperty.GENERIC_ATTACK_DAMAGE to "generic.attackDamage"
+            MagicEntityProperty.HORSE_JUMP_STRENGTH to "horse.jumpStrength"
+            MagicEntityProperty.ZOMBIE_SPAWN_REINFORCEMENTS to "zombie.spawnReinforcements"
+        }
+    }
+
+    /**
      * Creates a new Minecraft enum and provides a builder function
      * to initialize it.
      *

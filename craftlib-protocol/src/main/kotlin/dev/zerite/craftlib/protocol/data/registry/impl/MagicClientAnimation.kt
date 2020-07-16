@@ -1,6 +1,7 @@
 package dev.zerite.craftlib.protocol.data.registry.impl
 
 import dev.zerite.craftlib.protocol.data.registry.IMinecraftRegistry
+import dev.zerite.craftlib.protocol.data.registry.LazyRegistryDelegate
 import dev.zerite.craftlib.protocol.data.registry.MagicRegistry
 import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
 
@@ -12,7 +13,8 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
  */
 class MagicClientAnimation(name: String) : RegistryEntry(name) {
 
-    companion object {
+    companion object :
+        IMinecraftRegistry<MagicClientAnimation> by LazyRegistryDelegate({ MagicRegistry.clientAnimation }) {
         val NO_ANIMATION = MagicClientAnimation("No Animation")
         val SWING_ARM = MagicClientAnimation("Swing Arm")
         val DAMAGE_ANIMATION = MagicClientAnimation("Damage Animation")
@@ -25,11 +27,3 @@ class MagicClientAnimation(name: String) : RegistryEntry(name) {
     }
 
 }
-
-/**
- * Easy accessor for the animation registry.
- *
- * @author Koding
- * @since  0.1.0-SNAPSHOT
- */
-object ClientAnimation : IMinecraftRegistry<MagicClientAnimation> by MagicRegistry.clientAnimation

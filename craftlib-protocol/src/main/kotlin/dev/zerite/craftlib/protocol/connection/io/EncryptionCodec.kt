@@ -53,7 +53,7 @@ class EncryptionCodec(private val connection: NettyConnection, key: Key) :
             heapOutput = ByteArray(outSize)
         }
 
-        out.writeBytes(heapOutput, 0, encryptionCipher.update(bytes, 0, size, heapOutput))
+        out.writeBytes(heapOutput, 0, encryptionCipher.update(bytes, 0, size, heapOutput, 0))
     }
 
     /**

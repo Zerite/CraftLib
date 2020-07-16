@@ -5,7 +5,7 @@ import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
 import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
-import dev.zerite.craftlib.protocol.data.registry.impl.GameStateReason
+import dev.zerite.craftlib.protocol.data.registry.impl.MagicGameStateReason
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
 /**
@@ -25,7 +25,7 @@ data class ServerPlayChangeGameStatePacket(
             version: ProtocolVersion,
             connection: NettyConnection
         ) = ServerPlayChangeGameStatePacket(
-            GameStateReason[version, buffer.readUnsignedByte().toInt()],
+            MagicGameStateReason[version, buffer.readUnsignedByte().toInt()],
             buffer.readFloat()
         )
 
@@ -35,7 +35,7 @@ data class ServerPlayChangeGameStatePacket(
             packet: ServerPlayChangeGameStatePacket,
             connection: NettyConnection
         ) {
-            buffer.writeByte(GameStateReason[version, packet.reason, Int::class] ?: 0)
+            buffer.writeByte(MagicGameStateReason[version, packet.reason, Int::class] ?: 0)
             buffer.writeFloat(packet.value)
         }
     }

@@ -1,6 +1,7 @@
 package dev.zerite.craftlib.protocol.data.registry.impl
 
 import dev.zerite.craftlib.protocol.data.registry.IMinecraftRegistry
+import dev.zerite.craftlib.protocol.data.registry.LazyRegistryDelegate
 import dev.zerite.craftlib.protocol.data.registry.MagicRegistry
 import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
 
@@ -13,7 +14,7 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
  */
 open class MagicDifficulty(name: String) : RegistryEntry(name) {
 
-    companion object {
+    companion object : IMinecraftRegistry<MagicDifficulty> by LazyRegistryDelegate({ MagicRegistry.difficulty }) {
         val PEACEFUL = MagicDifficulty("Peaceful")
         val EASY = MagicDifficulty("Easy")
         val NORMAL = MagicDifficulty("Normal")
@@ -21,11 +22,3 @@ open class MagicDifficulty(name: String) : RegistryEntry(name) {
     }
 
 }
-
-/**
- * Easy accessor for the difficulty enum in the registry.
- *
- * @author Koding
- * @since  0.1.0-SNAPSHOT
- */
-object Difficulty : IMinecraftRegistry<MagicDifficulty> by MagicRegistry.difficulty

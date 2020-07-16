@@ -5,9 +5,9 @@ import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
 import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
-import dev.zerite.craftlib.protocol.data.registry.impl.Difficulty
-import dev.zerite.craftlib.protocol.data.registry.impl.Dimension
-import dev.zerite.craftlib.protocol.data.registry.impl.Gamemode
+import dev.zerite.craftlib.protocol.data.registry.impl.MagicDifficulty
+import dev.zerite.craftlib.protocol.data.registry.impl.MagicDimension
+import dev.zerite.craftlib.protocol.data.registry.impl.MagicGamemode
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
 /**
@@ -31,9 +31,9 @@ data class ServerPlayRespawnPacket(
             version: ProtocolVersion,
             connection: NettyConnection
         ) = ServerPlayRespawnPacket(
-            Dimension[version, buffer.readInt()],
-            Difficulty[version, buffer.readUnsignedByte().toInt()],
-            Gamemode[version, buffer.readUnsignedByte().toInt()],
+            MagicDimension[version, buffer.readInt()],
+            MagicDifficulty[version, buffer.readUnsignedByte().toInt()],
+            MagicGamemode[version, buffer.readUnsignedByte().toInt()],
             buffer.readString()
         )
 
@@ -43,9 +43,9 @@ data class ServerPlayRespawnPacket(
             packet: ServerPlayRespawnPacket,
             connection: NettyConnection
         ) {
-            buffer.writeInt(Dimension[version, packet.dimension, Int::class] ?: 0)
-            buffer.writeByte(Difficulty[version, packet.difficulty, Int::class] ?: 0)
-            buffer.writeByte(Gamemode[version, packet.gamemode, Int::class] ?: 0)
+            buffer.writeInt(MagicDimension[version, packet.dimension, Int::class] ?: 0)
+            buffer.writeByte(MagicDifficulty[version, packet.difficulty, Int::class] ?: 0)
+            buffer.writeByte(MagicGamemode[version, packet.gamemode, Int::class] ?: 0)
             buffer.writeString(packet.levelType)
         }
     }

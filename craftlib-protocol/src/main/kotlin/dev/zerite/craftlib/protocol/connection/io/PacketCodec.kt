@@ -67,6 +67,8 @@ class PacketCodec(private val connection: NettyConnection) : ByteToMessageCodec<
         // Get the packet registry data
         val io = connection.state[decodeDirection][connection.version, id]?.io
 
+        if (io != null && !ctx.channel().isOpen) return
+
         // Read the data fully
         val packet = (io?.read(buffer, connection.version, connection)
             ?: RawPacket(id, buffer.readByteArray(buf.readableBytes())))

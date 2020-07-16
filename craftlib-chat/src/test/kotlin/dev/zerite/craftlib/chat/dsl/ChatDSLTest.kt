@@ -38,9 +38,9 @@ class ChatDSLTest {
         )
         assertEquals(
             StringChatComponent("parent").apply {
-                hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, "text")
+                hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, StringChatComponent("text"))
             },
-            chat { string("parent") onHover hover(HoverEvent.Action.SHOW_TEXT, "text") }
+            chat { string("parent") onHover hover(HoverEvent.Action.SHOW_TEXT, StringChatComponent("text")) }
         )
     }
 

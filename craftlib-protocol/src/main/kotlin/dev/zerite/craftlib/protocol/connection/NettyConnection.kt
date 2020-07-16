@@ -120,9 +120,7 @@ open class NettyConnection(val direction: PacketDirection) : SimpleChannelInboun
             .takeIf { !disconnected }
             ?.apply { disconnected = true }
             ?.close()
-            ?.addListener {
-                handler?.disconnected(this, reason)
-            }
+            ?.addListener { handler?.disconnected(this, reason) }
 
     /**
      * Fired when the channel becomes active and begins connecting.

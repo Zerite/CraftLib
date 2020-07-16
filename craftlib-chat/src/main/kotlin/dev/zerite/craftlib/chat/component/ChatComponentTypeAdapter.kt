@@ -61,7 +61,8 @@ class ChatComponentTypeAdapter : TypeAdapter<BaseChatComponent>() {
         }
         out.write("hoverEvent", input.hoverEvent) {
             write("action", it.action.name.toLowerCase())
-            write("value", it.value)
+            name("value")
+            write(out, it.value)
         }
 
         out.writeArray("extra", input.siblings.toTypedArray()) { write(out, it) }
@@ -147,7 +148,7 @@ class ChatComponentTypeAdapter : TypeAdapter<BaseChatComponent>() {
             this["hoverEvent"]?.asJsonObject?.let {
                 base.hoverEvent = HoverEvent(
                     HoverEvent.Action.valueOf(it["action"].asString.toUpperCase()),
-                    it["value"].asJsonPrimitive.toString
+                    it["value"].asJsonObject.asComponent()
                 )
             }
 

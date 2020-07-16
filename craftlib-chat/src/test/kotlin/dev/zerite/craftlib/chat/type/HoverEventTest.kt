@@ -1,5 +1,6 @@
 package dev.zerite.craftlib.chat.type
 
+import dev.zerite.craftlib.chat.component.StringChatComponent
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
@@ -15,16 +16,16 @@ class HoverEventTest {
     @Test
     fun `Test Equals`() {
         assertEquals(
-            HoverEvent(HoverEvent.Action.SHOW_TEXT, "example"),
-            HoverEvent(HoverEvent.Action.SHOW_TEXT, "example")
+            HoverEvent(HoverEvent.Action.SHOW_TEXT, StringChatComponent("example")),
+            HoverEvent(HoverEvent.Action.SHOW_TEXT, StringChatComponent("example"))
         )
         assertNotEquals(
-            HoverEvent(HoverEvent.Action.SHOW_TEXT, "example"),
-            HoverEvent(HoverEvent.Action.SHOW_ENTITY, "example")
+            HoverEvent(HoverEvent.Action.SHOW_TEXT, StringChatComponent("example")),
+            HoverEvent(HoverEvent.Action.SHOW_ENTITY, StringChatComponent("example"))
         )
         assertNotEquals(
-            HoverEvent(HoverEvent.Action.SHOW_TEXT, "example"),
-            HoverEvent(HoverEvent.Action.SHOW_TEXT, "different")
+            HoverEvent(HoverEvent.Action.SHOW_TEXT, StringChatComponent("example")),
+            HoverEvent(HoverEvent.Action.SHOW_TEXT, StringChatComponent("different"))
         )
     }
 

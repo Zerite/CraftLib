@@ -148,3 +148,22 @@ interface IMinecraftRegistry<T : RegistryEntry> {
     operator fun get(version: ProtocolVersion, magic: RegistryEntry): Any
     operator fun <T : Any> get(version: ProtocolVersion, magic: RegistryEntry, type: KClass<T>): T?
 }
+
+/**
+ * Allows for a registry to be lazy loaded and then delegated to a companion object.
+ *
+ * @author Koding
+ * @since  0.1.0-SNAPSHOT
+ */
+class LazyRegistryDelegate<T : RegistryEntry>(get: () -> IMinecraftRegistry<T>) : IMinecraftRegistry<T> {
+    /**
+     * The lazy value for the registry.
+     */
+    private val entry by lazy(get)
+
+    override fun get(version: ProtocolVersion, key: String) = entry[version, key]
+    override fun get(version: ProtocolVersion, key: Int) = entry[version, key]
+    override fun get(version: ProtocolVersion, magic: RegistryEntry) = entry[version, magic]
+    override fun <T : Any> get(version: ProtocolVersion, magic: RegistryEntry, type: KClass<T>) =
+        entry[version, magic, type]
+}

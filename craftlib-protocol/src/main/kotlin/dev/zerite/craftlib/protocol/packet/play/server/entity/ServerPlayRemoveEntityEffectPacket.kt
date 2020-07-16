@@ -5,7 +5,7 @@ import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
 import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
-import dev.zerite.craftlib.protocol.data.registry.impl.PotionEffect
+import dev.zerite.craftlib.protocol.data.registry.impl.MagicPotionEffect
 import dev.zerite.craftlib.protocol.packet.base.EntityIdPacket
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
@@ -26,7 +26,7 @@ data class ServerPlayRemoveEntityEffectPacket(
             connection: NettyConnection
         ) = ServerPlayRemoveEntityEffectPacket(
             buffer.readInt(),
-            PotionEffect[version, buffer.readByte().toInt()]
+            MagicPotionEffect[version, buffer.readByte().toInt()]
         )
 
         override fun write(
@@ -36,7 +36,7 @@ data class ServerPlayRemoveEntityEffectPacket(
             connection: NettyConnection
         ) {
             buffer.writeInt(packet.entityId)
-            buffer.writeByte(PotionEffect[version, packet.effect, Int::class] ?: 0)
+            buffer.writeByte(MagicPotionEffect[version, packet.effect, Int::class] ?: 0)
         }
     }
 }

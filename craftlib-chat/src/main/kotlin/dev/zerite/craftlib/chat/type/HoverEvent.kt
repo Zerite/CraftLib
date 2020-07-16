@@ -1,5 +1,7 @@
 package dev.zerite.craftlib.chat.type
 
+import dev.zerite.craftlib.chat.component.BaseChatComponent
+
 /**
  * Similarly to the click event, this tells the client what
  * to display or do upon the text being hovered over in chat.
@@ -8,7 +10,7 @@ package dev.zerite.craftlib.chat.type
  * @since  0.1.0-SNAPSHOT
  */
 @Suppress("UNUSED")
-data class HoverEvent(val action: Action, val value: String) {
+data class HoverEvent(val action: Action, val value: BaseChatComponent) {
 
     /**
      * Tells the client what to do with the provided value in relation

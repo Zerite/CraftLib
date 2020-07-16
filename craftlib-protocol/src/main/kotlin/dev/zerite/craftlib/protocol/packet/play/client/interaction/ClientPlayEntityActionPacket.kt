@@ -5,7 +5,7 @@ import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
 import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
-import dev.zerite.craftlib.protocol.data.registry.impl.EntityAction
+import dev.zerite.craftlib.protocol.data.registry.impl.MagicEntityAction
 import dev.zerite.craftlib.protocol.packet.base.EntityIdPacket
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
@@ -28,7 +28,7 @@ data class ClientPlayEntityActionPacket(
             connection: NettyConnection
         ) = ClientPlayEntityActionPacket(
             buffer.readInt(),
-            EntityAction[version, buffer.readByte().toInt()],
+            MagicEntityAction[version, buffer.readByte().toInt()],
             buffer.readInt()
         )
 
@@ -39,7 +39,7 @@ data class ClientPlayEntityActionPacket(
             connection: NettyConnection
         ) {
             buffer.writeInt(packet.entityId)
-            buffer.writeByte(EntityAction[version, packet.action, Int::class] ?: 0)
+            buffer.writeByte(MagicEntityAction[version, packet.action, Int::class] ?: 0)
             buffer.writeInt(packet.jumpBoost)
         }
     }

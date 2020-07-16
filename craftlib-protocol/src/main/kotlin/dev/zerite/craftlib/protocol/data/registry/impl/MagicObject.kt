@@ -1,6 +1,7 @@
 package dev.zerite.craftlib.protocol.data.registry.impl
 
 import dev.zerite.craftlib.protocol.data.registry.IMinecraftRegistry
+import dev.zerite.craftlib.protocol.data.registry.LazyRegistryDelegate
 import dev.zerite.craftlib.protocol.data.registry.MagicRegistry
 import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
 
@@ -13,7 +14,7 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
 data class MagicObject(override val name: String, val boundingXZ: Double, val boundingY: Double) : RegistryEntry(name) {
 
     @Suppress("UNUSED")
-    companion object {
+    companion object : IMinecraftRegistry<MagicObject> by LazyRegistryDelegate({ MagicRegistry.objects }) {
         val BOAT = MagicObject("Boat", 1.5, 0.6)
         val ITEM_STACK = MagicObject("Dropped Item", 0.25, 0.25)
         val MINECART = MagicObject("Minecart", 0.98, 0.7)
@@ -38,11 +39,3 @@ data class MagicObject(override val name: String, val boundingXZ: Double, val bo
     }
 
 }
-
-/**
- * Easy accessor for the object registry.
- *
- * @author Koding
- * @since  0.1.0-SNAPSHOT
- */
-object ObjectType : IMinecraftRegistry<MagicObject> by MagicRegistry.objects

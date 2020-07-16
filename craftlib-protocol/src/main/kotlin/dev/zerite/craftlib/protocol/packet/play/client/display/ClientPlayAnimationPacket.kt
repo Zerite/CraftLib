@@ -5,7 +5,7 @@ import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
 import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
-import dev.zerite.craftlib.protocol.data.registry.impl.ClientAnimation
+import dev.zerite.craftlib.protocol.data.registry.impl.MagicClientAnimation
 import dev.zerite.craftlib.protocol.packet.base.EntityIdPacket
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
@@ -26,7 +26,7 @@ data class ClientPlayAnimationPacket(
             connection: NettyConnection
         ) = ClientPlayAnimationPacket(
             buffer.readInt(),
-            ClientAnimation[version, buffer.readByte().toInt()]
+            MagicClientAnimation[version, buffer.readByte().toInt()]
         )
 
         override fun write(
@@ -36,7 +36,7 @@ data class ClientPlayAnimationPacket(
             connection: NettyConnection
         ) {
             buffer.writeInt(packet.entityId)
-            buffer.writeByte(ClientAnimation[version, packet.animation, Int::class] ?: 0)
+            buffer.writeByte(MagicClientAnimation[version, packet.animation, Int::class] ?: 0)
         }
     }
 }

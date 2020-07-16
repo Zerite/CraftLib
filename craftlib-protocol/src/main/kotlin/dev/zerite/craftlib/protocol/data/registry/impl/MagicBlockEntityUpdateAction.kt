@@ -1,6 +1,7 @@
 package dev.zerite.craftlib.protocol.data.registry.impl
 
 import dev.zerite.craftlib.protocol.data.registry.IMinecraftRegistry
+import dev.zerite.craftlib.protocol.data.registry.LazyRegistryDelegate
 import dev.zerite.craftlib.protocol.data.registry.MagicRegistry
 import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
 
@@ -12,17 +13,9 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
  */
 class MagicBlockEntityUpdateAction(name: String) : RegistryEntry(name) {
 
-    companion object {
+    companion object :
+        IMinecraftRegistry<MagicBlockEntityUpdateAction> by LazyRegistryDelegate({ MagicRegistry.blockEntityUpdateAction }) {
         val SET_SPAWNER_MOB = MagicBlockEntityUpdateAction("Set Spawner Mob")
     }
 
 }
-
-/**
- * Simple static accessor for the block entity update action magic value.
- *
- * @author Koding
- * @since  0.1.0-SNAPSHOT
- */
-object BlockEntityUpdateAction :
-    IMinecraftRegistry<MagicBlockEntityUpdateAction> by MagicRegistry.blockEntityUpdateAction

@@ -5,7 +5,7 @@ import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
 import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
-import dev.zerite.craftlib.protocol.data.registry.impl.ScoreboardAction
+import dev.zerite.craftlib.protocol.data.registry.impl.MagicScoreboardAction
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
 /**
@@ -27,7 +27,7 @@ data class ServerPlayScoreboardObjectivePacket(
         ) = ServerPlayScoreboardObjectivePacket(
             buffer.readString(),
             buffer.readString(),
-            ScoreboardAction[version, buffer.readByte().toInt()]
+            MagicScoreboardAction[version, buffer.readByte().toInt()]
         )
 
         override fun write(
@@ -38,7 +38,7 @@ data class ServerPlayScoreboardObjectivePacket(
         ) {
             buffer.writeString(packet.name)
             buffer.writeString(packet.value)
-            buffer.writeByte(ScoreboardAction[version, packet.action, Int::class] ?: 0)
+            buffer.writeByte(MagicScoreboardAction[version, packet.action, Int::class] ?: 0)
         }
     }
 }

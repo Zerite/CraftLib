@@ -5,7 +5,7 @@ import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
 import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
-import dev.zerite.craftlib.protocol.data.registry.impl.EntityStatus
+import dev.zerite.craftlib.protocol.data.registry.impl.MagicEntityStatus
 import dev.zerite.craftlib.protocol.packet.base.EntityIdPacket
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
@@ -27,7 +27,7 @@ data class ServerPlayEntityStatusPacket(
             connection: NettyConnection
         ) = ServerPlayEntityStatusPacket(
             buffer.readInt(),
-            EntityStatus[version, buffer.readByte().toInt()]
+            MagicEntityStatus[version, buffer.readByte().toInt()]
         )
 
         override fun write(
@@ -37,7 +37,7 @@ data class ServerPlayEntityStatusPacket(
             connection: NettyConnection
         ) {
             buffer.writeInt(packet.entityId)
-            buffer.writeByte(EntityStatus[version, packet.status, Int::class] ?: 0)
+            buffer.writeByte(MagicEntityStatus[version, packet.status, Int::class] ?: 0)
         }
     }
 }

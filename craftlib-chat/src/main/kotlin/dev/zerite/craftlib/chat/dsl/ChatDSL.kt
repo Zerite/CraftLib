@@ -113,7 +113,7 @@ class ChatBuilder {
      * @author Koding
      * @since  0.1.0-SNAPSHOT
      */
-    fun hover(action: HoverEvent.Action, value: String) = HoverEvent(action, value)
+    fun hover(action: HoverEvent.Action, value: BaseChatComponent) = HoverEvent(action, value)
 
     /**
      * Applies a chat formatting code to the chat component.

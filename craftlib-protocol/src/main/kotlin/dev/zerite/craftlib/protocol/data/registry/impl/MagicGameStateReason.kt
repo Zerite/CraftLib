@@ -1,6 +1,7 @@
 package dev.zerite.craftlib.protocol.data.registry.impl
 
 import dev.zerite.craftlib.protocol.data.registry.IMinecraftRegistry
+import dev.zerite.craftlib.protocol.data.registry.LazyRegistryDelegate
 import dev.zerite.craftlib.protocol.data.registry.MagicRegistry
 import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
 
@@ -14,7 +15,8 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
  */
 open class MagicGameStateReason(name: String) : RegistryEntry(name) {
     @Suppress("UNUSED")
-    companion object {
+    companion object :
+        IMinecraftRegistry<MagicGameStateReason> by LazyRegistryDelegate({ MagicRegistry.gameStateReason }) {
         val INVALID_BED = MagicGameStateReason("Invalid Bed Location")
         val BEGIN_RAINING = MagicGameStateReason("Start Raining")
         val END_RAINING = MagicGameStateReason("Stop Raining")
@@ -26,11 +28,3 @@ open class MagicGameStateReason(name: String) : RegistryEntry(name) {
         val FADE_TIME = MagicGameStateReason("Fade Time")
     }
 }
-
-/**
- * Alias for the game state reason field in the magic registry.
- *
- * @author Koding
- * @since  0.1.0-SNAPSHOT
- */
-object GameStateReason : IMinecraftRegistry<MagicGameStateReason> by MagicRegistry.gameStateReason

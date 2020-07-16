@@ -1,6 +1,7 @@
 package dev.zerite.craftlib.protocol.data.registry.impl
 
 import dev.zerite.craftlib.protocol.data.registry.IMinecraftRegistry
+import dev.zerite.craftlib.protocol.data.registry.LazyRegistryDelegate
 import dev.zerite.craftlib.protocol.data.registry.MagicRegistry
 import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
 
@@ -13,7 +14,7 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
 class MagicEntityStatus(name: String) : RegistryEntry(name) {
 
     @Suppress("UNUSED")
-    companion object {
+    companion object : IMinecraftRegistry<MagicEntityStatus> by LazyRegistryDelegate({ MagicRegistry.entityStatus }) {
         val ENTITY_HURT = MagicEntityStatus("Entity Damage")
         val ENTITY_DEAD = MagicEntityStatus("Entity Death")
         val WOLF_TAMING = MagicEntityStatus("Wolf Taming")
@@ -31,11 +32,3 @@ class MagicEntityStatus(name: String) : RegistryEntry(name) {
     }
 
 }
-
-/**
- * Simple accessor for the entity status registry.
- *
- * @author Koding
- * @since  0.1.0-SNAPSHOT
- */
-object EntityStatus : IMinecraftRegistry<MagicEntityStatus> by MagicRegistry.entityStatus

@@ -1,6 +1,7 @@
 package dev.zerite.craftlib.protocol.data.registry.impl
 
 import dev.zerite.craftlib.protocol.data.registry.IMinecraftRegistry
+import dev.zerite.craftlib.protocol.data.registry.LazyRegistryDelegate
 import dev.zerite.craftlib.protocol.data.registry.MagicRegistry
 import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
 
@@ -11,7 +12,7 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
  * @since  0.1.0-SNAPSHOT
  */
 class MagicTeamMode(name: String) : RegistryEntry(name) {
-    companion object {
+    companion object : IMinecraftRegistry<MagicTeamMode> by LazyRegistryDelegate({ MagicRegistry.teamMode }) {
         val CREATE_TEAM = MagicTeamMode("Create Team")
         val REMOVE_TEAM = MagicTeamMode("Remove Team")
         val UPDATE_INFO = MagicTeamMode("Update Info")
@@ -19,11 +20,3 @@ class MagicTeamMode(name: String) : RegistryEntry(name) {
         val REMOVE_PLAYERS = MagicTeamMode("Remove Players")
     }
 }
-
-/**
- * Easy accessor for the team mode magic value.
- *
- * @author Koding
- * @since  0.1.0-SNAPSHOT
- */
-object TeamMode : IMinecraftRegistry<MagicTeamMode> by MagicRegistry.teamMode

@@ -1,6 +1,7 @@
 package dev.zerite.craftlib.protocol.data.registry.impl
 
 import dev.zerite.craftlib.protocol.data.registry.IMinecraftRegistry
+import dev.zerite.craftlib.protocol.data.registry.LazyRegistryDelegate
 import dev.zerite.craftlib.protocol.data.registry.MagicRegistry
 import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
 
@@ -12,18 +13,10 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
  */
 open class MagicDimension(name: String) : RegistryEntry(name) {
 
-    companion object {
+    companion object : IMinecraftRegistry<MagicDimension> by LazyRegistryDelegate({ MagicRegistry.dimension }) {
         val NETHER = MagicDimension("The Nether")
         val OVERWORLD = MagicDimension("Overworld")
         val END = MagicDimension("The End")
     }
 
 }
-
-/**
- * Easy accessor for the difficulty enum in the registry.
- *
- * @author Koding
- * @since  0.1.0-SNAPSHOT
- */
-object Dimension : IMinecraftRegistry<MagicDimension> by MagicRegistry.dimension

@@ -46,9 +46,9 @@ class ChatComponentTypeAdapterTest {
             }
         )
         test(
-            "{\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"test\"},\"text\":\"example\"}",
+            "{\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"test\"}},\"text\":\"example\"}",
             StringChatComponent("example").apply {
-                hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, "test")
+                hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, StringChatComponent("test"))
             }
         )
         test(

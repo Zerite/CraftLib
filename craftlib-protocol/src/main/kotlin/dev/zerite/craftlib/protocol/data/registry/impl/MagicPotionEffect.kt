@@ -1,6 +1,7 @@
 package dev.zerite.craftlib.protocol.data.registry.impl
 
 import dev.zerite.craftlib.protocol.data.registry.IMinecraftRegistry
+import dev.zerite.craftlib.protocol.data.registry.LazyRegistryDelegate
 import dev.zerite.craftlib.protocol.data.registry.MagicRegistry
 import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
 
@@ -12,7 +13,7 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
  * @since  0.1.0-SNAPSHOT
  */
 data class MagicPotionEffect(override val name: String, val positive: Boolean) : RegistryEntry(name) {
-    companion object {
+    companion object : IMinecraftRegistry<MagicPotionEffect> by LazyRegistryDelegate({ MagicRegistry.potionEffect }) {
         val SPEED = MagicPotionEffect("Speed", true)
         val SLOWNESS = MagicPotionEffect("Slowness", false)
         val HASTE = MagicPotionEffect("Haste", true)
@@ -38,11 +39,3 @@ data class MagicPotionEffect(override val name: String, val positive: Boolean) :
         val SATURATION = MagicPotionEffect("Saturation", true)
     }
 }
-
-/**
- * Easy accessor for the potion effect magic values.
- *
- * @author Koding
- * @since  0.1.0-SNAPSHOT
- */
-object PotionEffect : IMinecraftRegistry<MagicPotionEffect> by MagicRegistry.potionEffect

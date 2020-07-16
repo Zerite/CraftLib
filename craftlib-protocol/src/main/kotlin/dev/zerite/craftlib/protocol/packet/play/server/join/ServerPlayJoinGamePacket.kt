@@ -5,9 +5,9 @@ import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
 import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
-import dev.zerite.craftlib.protocol.data.registry.impl.Difficulty
-import dev.zerite.craftlib.protocol.data.registry.impl.Dimension
-import dev.zerite.craftlib.protocol.data.registry.impl.Gamemode
+import dev.zerite.craftlib.protocol.data.registry.impl.MagicDifficulty
+import dev.zerite.craftlib.protocol.data.registry.impl.MagicDimension
+import dev.zerite.craftlib.protocol.data.registry.impl.MagicGamemode
 import dev.zerite.craftlib.protocol.packet.base.EntityIdPacket
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
@@ -41,9 +41,9 @@ data class ServerPlayJoinGamePacket(
             return ServerPlayJoinGamePacket(
                 entityId,
                 gamemode and 0x8 == 0x8,
-                Gamemode[version, gamemode and 0x7],
-                Dimension[version, buffer.readByte().toInt()],
-                Difficulty[version, buffer.readUnsignedByte().toInt()],
+                MagicGamemode[version, gamemode and 0x7],
+                MagicDimension[version, buffer.readByte().toInt()],
+                MagicDifficulty[version, buffer.readUnsignedByte().toInt()],
                 buffer.readUnsignedByte().toInt(),
                 buffer.readString()
             )
@@ -57,11 +57,11 @@ data class ServerPlayJoinGamePacket(
         ) {
             buffer.writeInt(packet.entityId)
             buffer.writeByte(
-                (Gamemode[version, packet.gamemode, Int::class] ?: 0) or
+                (MagicGamemode[version, packet.gamemode, Int::class] ?: 0) or
                         (if (packet.hardcore) 0x8 else 0x0)
             )
-            buffer.writeByte(Dimension[version, packet.dimension, Int::class] ?: 0)
-            buffer.writeByte(Difficulty[version, packet.difficulty, Int::class] ?: 0)
+            buffer.writeByte(MagicDimension[version, packet.dimension, Int::class] ?: 0)
+            buffer.writeByte(MagicDifficulty[version, packet.difficulty, Int::class] ?: 0)
             buffer.writeByte(packet.maxPlayers)
             buffer.writeString(packet.levelType)
         }

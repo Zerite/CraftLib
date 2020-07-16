@@ -5,7 +5,7 @@ import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
 import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
-import dev.zerite.craftlib.protocol.data.registry.impl.ScoreboardPosition
+import dev.zerite.craftlib.protocol.data.registry.impl.MagicScoreboardPosition
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
 /**
@@ -24,7 +24,7 @@ data class ServerPlayDisplayScoreboardPacket(
             version: ProtocolVersion,
             connection: NettyConnection
         ) = ServerPlayDisplayScoreboardPacket(
-            ScoreboardPosition[version, buffer.readByte().toInt()],
+            MagicScoreboardPosition[version, buffer.readByte().toInt()],
             buffer.readString()
         )
 
@@ -34,7 +34,7 @@ data class ServerPlayDisplayScoreboardPacket(
             packet: ServerPlayDisplayScoreboardPacket,
             connection: NettyConnection
         ) {
-            buffer.writeByte(ScoreboardPosition[version, packet.position, Int::class] ?: 0)
+            buffer.writeByte(MagicScoreboardPosition[version, packet.position, Int::class] ?: 0)
             buffer.writeString(packet.name)
         }
     }

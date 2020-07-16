@@ -5,9 +5,8 @@ import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
 import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
+import dev.zerite.craftlib.protocol.data.registry.impl.MagicTeamFriendlyFire
 import dev.zerite.craftlib.protocol.data.registry.impl.MagicTeamMode
-import dev.zerite.craftlib.protocol.data.registry.impl.TeamFriendlyFire
-import dev.zerite.craftlib.protocol.data.registry.impl.TeamMode
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
 /**
@@ -32,7 +31,7 @@ data class ServerPlayTeamsPacket(
             connection: NettyConnection
         ): ServerPlayTeamsPacket {
             val name = buffer.readString()
-            val mode = TeamMode[version, buffer.readByte().toInt()]
+            val mode = MagicTeamMode[version, buffer.readByte().toInt()]
 
             return ServerPlayTeamsPacket(
                 name,
@@ -42,7 +41,7 @@ data class ServerPlayTeamsPacket(
                 buffer.takeIf { mode == MagicTeamMode.CREATE_TEAM || mode == MagicTeamMode.UPDATE_INFO }?.readString(),
                 buffer.takeIf { mode == MagicTeamMode.CREATE_TEAM || mode == MagicTeamMode.UPDATE_INFO }
                     ?.readByte()?.toInt()
-                    ?.let { TeamFriendlyFire[version, it] },
+                    ?.let { MagicTeamFriendlyFire[version, it] },
                 buffer.takeIf { mode == MagicTeamMode.CREATE_TEAM || mode == MagicTeamMode.ADD_PLAYERS || mode == MagicTeamMode.REMOVE_PLAYERS }
                     ?.readArray({ readShort().toInt() }) { readString() }
             )
@@ -55,13 +54,13 @@ data class ServerPlayTeamsPacket(
             connection: NettyConnection
         ) {
             buffer.writeString(packet.name)
-            buffer.writeByte(TeamMode[version, packet.mode, Int::class] ?: 0)
+            buffer.writeByte(MagicTeamMode[version, packet.mode, Int::class] ?: 0)
 
             if (packet.mode == MagicTeamMode.CREATE_TEAM || packet.mode == MagicTeamMode.UPDATE_INFO) {
                 buffer.writeString(packet.displayName ?: "")
                 buffer.writeString(packet.prefix ?: "")
                 buffer.writeString(packet.suffix ?: "")
-                buffer.writeByte(packet.friendlyFire?.let { TeamFriendlyFire[version, it, Int::class] } ?: 0)
+                buffer.writeByte(packet.friendlyFire?.let { MagicTeamFriendlyFire[version, it, Int::class] } ?: 0)
             }
 
             if (packet.mode == MagicTeamMode.CREATE_TEAM || packet.mode == MagicTeamMode.ADD_PLAYERS || packet.mode == MagicTeamMode.REMOVE_PLAYERS)

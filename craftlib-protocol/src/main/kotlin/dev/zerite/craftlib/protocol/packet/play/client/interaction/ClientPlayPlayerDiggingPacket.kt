@@ -5,7 +5,7 @@ import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
 import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
-import dev.zerite.craftlib.protocol.data.registry.impl.PlayerDiggingStatus
+import dev.zerite.craftlib.protocol.data.registry.impl.MagicPlayerDiggingStatus
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
 /**
@@ -28,7 +28,7 @@ data class ClientPlayPlayerDiggingPacket(
             version: ProtocolVersion,
             connection: NettyConnection
         ) = ClientPlayPlayerDiggingPacket(
-            PlayerDiggingStatus[version, buffer.readByte().toInt()],
+            MagicPlayerDiggingStatus[version, buffer.readByte().toInt()],
             buffer.readInt(),
             buffer.readByte().toInt(),
             buffer.readInt(),
@@ -41,7 +41,7 @@ data class ClientPlayPlayerDiggingPacket(
             packet: ClientPlayPlayerDiggingPacket,
             connection: NettyConnection
         ) {
-            buffer.writeByte(PlayerDiggingStatus[version, packet.status, Int::class] ?: 0)
+            buffer.writeByte(MagicPlayerDiggingStatus[version, packet.status, Int::class] ?: 0)
             buffer.writeInt(packet.x)
             buffer.writeByte(packet.y)
             buffer.writeInt(packet.z)

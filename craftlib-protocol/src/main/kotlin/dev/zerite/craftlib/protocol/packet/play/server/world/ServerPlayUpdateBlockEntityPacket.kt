@@ -6,7 +6,7 @@ import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
 import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
-import dev.zerite.craftlib.protocol.data.registry.impl.BlockEntityUpdateAction
+import dev.zerite.craftlib.protocol.data.registry.impl.MagicBlockEntityUpdateAction
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
 data class ServerPlayUpdateBlockEntityPacket(
@@ -25,7 +25,7 @@ data class ServerPlayUpdateBlockEntityPacket(
             buffer.readInt(),
             buffer.readShort().toInt(),
             buffer.readInt(),
-            BlockEntityUpdateAction[version, buffer.readUnsignedByte().toInt()],
+            MagicBlockEntityUpdateAction[version, buffer.readUnsignedByte().toInt()],
             buffer.readNBT(compressed = true)?.tag
         )
 
@@ -38,7 +38,7 @@ data class ServerPlayUpdateBlockEntityPacket(
             buffer.writeInt(packet.x)
             buffer.writeShort(packet.y)
             buffer.writeInt(packet.z)
-            buffer.writeByte(BlockEntityUpdateAction[version, packet.action, Int::class] ?: 1)
+            buffer.writeByte(MagicBlockEntityUpdateAction[version, packet.action, Int::class] ?: 1)
             buffer.writeNBT(packet.nbt, compressed = true)
         }
     }

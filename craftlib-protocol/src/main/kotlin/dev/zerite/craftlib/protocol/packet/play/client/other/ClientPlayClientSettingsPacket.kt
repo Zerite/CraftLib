@@ -5,8 +5,8 @@ import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
 import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
-import dev.zerite.craftlib.protocol.data.registry.impl.Difficulty
-import dev.zerite.craftlib.protocol.data.registry.impl.ViewDistance
+import dev.zerite.craftlib.protocol.data.registry.impl.MagicDifficulty
+import dev.zerite.craftlib.protocol.data.registry.impl.MagicViewDistance
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
 /**
@@ -29,9 +29,9 @@ data class ClientPlayClientSettingsPacket(
             connection: NettyConnection
         ) = ClientPlayClientSettingsPacket(
             buffer.readString(),
-            ViewDistance[version, buffer.readByte().toInt()],
+            MagicViewDistance[version, buffer.readByte().toInt()],
             buffer.readByte().toInt().apply { buffer.readBoolean() },
-            Difficulty[version, buffer.readByte().toInt()],
+            MagicDifficulty[version, buffer.readByte().toInt()],
             buffer.readBoolean()
         )
 
@@ -42,10 +42,10 @@ data class ClientPlayClientSettingsPacket(
             connection: NettyConnection
         ) {
             buffer.writeString(packet.locale)
-            buffer.writeByte(ViewDistance[version, packet.viewDistance, Int::class] ?: 0)
+            buffer.writeByte(MagicViewDistance[version, packet.viewDistance, Int::class] ?: 0)
             buffer.writeByte(packet.chatFlags)
             buffer.writeBoolean(true)
-            buffer.writeByte(Difficulty[version, packet.difficulty, Int::class] ?: 0)
+            buffer.writeByte(MagicDifficulty[version, packet.difficulty, Int::class] ?: 0)
             buffer.writeBoolean(packet.showCape)
         }
     }

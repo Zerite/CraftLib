@@ -5,6 +5,8 @@ import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
 import dev.zerite.craftlib.protocol.data.entity.EntityMetadata
+import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
+import dev.zerite.craftlib.protocol.data.registry.impl.MagicMobType
 import dev.zerite.craftlib.protocol.packet.base.EntityIdPacket
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
@@ -17,7 +19,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  */
 data class ServerPlaySpawnMobPacket(
     override var entityId: Int,
-    var type: Int,
+    var type: RegistryEntry,
     var x: Double,
     var y: Double,
     var z: Double,
@@ -36,7 +38,7 @@ data class ServerPlaySpawnMobPacket(
             connection: NettyConnection
         ) = ServerPlaySpawnMobPacket(
             buffer.readVarInt(),
-            buffer.readUnsignedByte().toInt(),
+            MagicMobType[version, buffer.readUnsignedByte().toInt()],
             buffer.readFixedPoint(),
             buffer.readFixedPoint(),
             buffer.readFixedPoint(),
@@ -56,7 +58,7 @@ data class ServerPlaySpawnMobPacket(
             connection: NettyConnection
         ) {
             buffer.writeVarInt(packet.entityId)
-            buffer.writeByte(packet.type)
+            buffer.writeByte(MagicMobType[version, packet.type, Int::class] ?: 0)
             buffer.writeFixedPoint(packet.x)
             buffer.writeFixedPoint(packet.y)
             buffer.writeFixedPoint(packet.z)

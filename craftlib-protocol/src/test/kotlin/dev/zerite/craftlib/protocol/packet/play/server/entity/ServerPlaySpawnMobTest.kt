@@ -2,6 +2,7 @@ package dev.zerite.craftlib.protocol.packet.play.server.entity
 
 import dev.zerite.craftlib.protocol.data.entity.EntityMetadata
 import dev.zerite.craftlib.protocol.data.entity.MetadataValue
+import dev.zerite.craftlib.protocol.data.registry.impl.MagicMobType
 import dev.zerite.craftlib.protocol.packet.PacketTest
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
@@ -15,11 +16,26 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
 class ServerPlaySpawnMobTest : PacketTest<ServerPlaySpawnMobPacket>(ServerPlaySpawnMobPacket) {
 
     init {
-        example(ServerPlaySpawnMobPacket(0, 0, 0.0, 0.0, 0.0, 0f, 0f, 0f, 0.0, 0.0, 0.0, EntityMetadata(hashMapOf())))
+        example(
+            ServerPlaySpawnMobPacket(
+                0,
+                MagicMobType.BAT,
+                0.0,
+                0.0,
+                0.0,
+                0f,
+                0f,
+                0f,
+                0.0,
+                0.0,
+                0.0,
+                EntityMetadata(hashMapOf())
+            )
+        )
         example(
             ServerPlaySpawnMobPacket(
                 127,
-                1,
+                MagicMobType.MOOSHROOM,
                 100.0,
                 100.0,
                 100.0,
@@ -35,7 +51,7 @@ class ServerPlaySpawnMobTest : PacketTest<ServerPlaySpawnMobPacket>(ServerPlaySp
         example(
             ServerPlaySpawnMobPacket(
                 127,
-                1,
+                MagicMobType.COW,
                 100.0,
                 100.0,
                 100.0,
@@ -50,7 +66,7 @@ class ServerPlaySpawnMobTest : PacketTest<ServerPlaySpawnMobPacket>(ServerPlaySp
         ) {
             ProtocolVersion.MC1_7_2 {
                 writeVarInt(127)
-                writeByte(1)
+                writeByte(92)
 
                 // Fixed point
                 writeInt(3200)

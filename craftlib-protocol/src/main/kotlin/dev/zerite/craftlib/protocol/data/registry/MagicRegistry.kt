@@ -304,6 +304,43 @@ object MagicRegistry {
     }
 
     /**
+     * Maps the mob IDs to their type names.
+     */
+    val mobType = create<MagicMobType> {
+        ProtocolVersion.MC1_7_2 {
+            MagicMobType.CREEPER to 50
+            MagicMobType.SKELETON to 51
+            MagicMobType.SPIDER to 52
+            MagicMobType.GIANT_ZOMBIE to 53
+            MagicMobType.ZOMBIE to 54
+            MagicMobType.SLIME to 55
+            MagicMobType.GHAST to 56
+            MagicMobType.ZOMBIE_PIGMAN to 57
+            MagicMobType.ENDERMAN to 58
+            MagicMobType.CAVE_SPIDER to 59
+            MagicMobType.SILVERFISH to 60
+            MagicMobType.BLAZE to 61
+            MagicMobType.MAGMA_CUBE to 62
+            MagicMobType.ENDER_DRAGON to 63
+            MagicMobType.WITHER to 64
+            MagicMobType.BAT to 65
+            MagicMobType.WITCH to 66
+            MagicMobType.PIG to 90
+            MagicMobType.SHEEP to 91
+            MagicMobType.COW to 92
+            MagicMobType.CHICKEN to 93
+            MagicMobType.SQUID to 94
+            MagicMobType.WOLF to 95
+            MagicMobType.MOOSHROOM to 96
+            MagicMobType.SNOWMAN to 97
+            MagicMobType.OCELOT to 98
+            MagicMobType.IRON_GOLEM to 99
+            MagicMobType.HORSE to 100
+            MagicMobType.VILLAGER to 120
+        }
+    }
+
+    /**
      * Creates a new Minecraft enum and provides a builder function
      * to initialize it.
      *

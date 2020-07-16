@@ -1,6 +1,7 @@
 package dev.zerite.craftlib.chat.component
 
 import com.google.gson.JsonNull
+import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import com.google.gson.stream.JsonWriter
 import dev.zerite.craftlib.chat.type.ClickEvent
@@ -63,6 +64,7 @@ class ChatComponentTypeAdapterTest {
     fun `Test Exceptions`() {
         ChatComponentTypeAdapter().apply {
             assertFails { JsonNull.INSTANCE.asComponent() }
+            assertEquals(JsonObject().asComponent(), StringChatComponent(""))
             assertFails { JsonPrimitive('a').apply {
                 javaClass.getDeclaredField("value").let {
                     it.isAccessible = true

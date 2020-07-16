@@ -166,6 +166,56 @@ class ChatBuilder {
     @ChatDSL
     infix fun BaseChatComponent.with(other: BaseChatComponent) = apply { this + other }
 
+    /**
+     * Sets whether this chat component is bold.
+     *
+     * @param  value          Whether this component is bold.
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    @ChatDSL
+    infix fun BaseChatComponent.bold(value: Boolean) = apply { bold = value }
+
+    /**
+     * Sets whether this chat component is italic.
+     *
+     * @param  value          Whether this component is italic.
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    @ChatDSL
+    infix fun BaseChatComponent.italic(value: Boolean) = apply { italic = value }
+
+    /**
+     * Sets whether this chat component is underlined.
+     *
+     * @param  value          Whether this component is underlined.
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    @ChatDSL
+    infix fun BaseChatComponent.underlined(value: Boolean) = apply { underlined = value }
+
+    /**
+     * Sets whether this chat component has strikethrough.
+     *
+     * @param  value          Whether this component should have strikethrough.
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    @ChatDSL
+    infix fun BaseChatComponent.strikethrough(value: Boolean) = apply { strikethrough = value }
+
+    /**
+     * Sets whether this chat component should be obfuscated.
+     *
+     * @param  value          Whether this component should be obfuscated.
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    @ChatDSL
+    infix fun BaseChatComponent.obfuscated(value: Boolean) = apply { obfuscated = value }
+
 }
 
 /**

@@ -59,6 +59,27 @@ class ChatDSLTest {
                 chat { string("placeholder") + it }
             )
         }
+
+        assertEquals(
+            StringChatComponent("placeholder").apply { bold = false },
+            chat { string("placeholder") bold false }
+        )
+        assertEquals(
+            StringChatComponent("placeholder").apply { italic = false },
+            chat { string("placeholder") italic  false }
+        )
+        assertEquals(
+            StringChatComponent("placeholder").apply { underlined = false },
+            chat { string("placeholder") underlined false }
+        )
+        assertEquals(
+            StringChatComponent("placeholder").apply { strikethrough = false },
+            chat { string("placeholder") strikethrough false }
+        )
+        assertEquals(
+            StringChatComponent("placeholder").apply { obfuscated = false },
+            chat { string("placeholder") obfuscated false }
+        )
     }
 
     @Test

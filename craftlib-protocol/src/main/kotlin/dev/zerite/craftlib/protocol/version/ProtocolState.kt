@@ -39,6 +39,16 @@ data class ProtocolState(val name: String, val id: Int) {
     override fun toString() = "$name ($id)"
 
     /**
+     * Simple utility to easily run code inside this class using
+     * the apply block.
+     *
+     * @param  build        The code block to run.
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    operator fun invoke(build: ProtocolState.() -> Unit) = apply(build)
+
+    /**
      * Contains the individual data for each direction.
      *
      * @author Koding

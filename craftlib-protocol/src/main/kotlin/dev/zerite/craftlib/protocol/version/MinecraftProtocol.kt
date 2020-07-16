@@ -38,6 +38,10 @@ import dev.zerite.craftlib.protocol.packet.play.server.player.ServerPlayPlayerPo
 import dev.zerite.craftlib.protocol.packet.play.server.player.ServerPlaySetExperiencePacket
 import dev.zerite.craftlib.protocol.packet.play.server.player.ServerPlayUpdateHealthPacket
 import dev.zerite.craftlib.protocol.packet.play.server.world.*
+import dev.zerite.craftlib.protocol.packet.status.client.ClientStatusPingPacket
+import dev.zerite.craftlib.protocol.packet.status.client.ClientStatusRequestPacket
+import dev.zerite.craftlib.protocol.packet.status.server.ServerStatusPingPacket
+import dev.zerite.craftlib.protocol.packet.status.server.ServerStatusResponsePacket
 import io.netty.bootstrap.Bootstrap
 import io.netty.bootstrap.ServerBootstrap
 import io.netty.channel.ChannelInitializer
@@ -62,12 +66,7 @@ import java.net.InetAddress
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-object MinecraftProtocol {
-
-    /**
-     * The mapped protocol states for this object.
-     */
-    private val mapped = hashMapOf<Int, ProtocolState>()
+object MinecraftProtocol : AbstractProtocol() {
 
     /**
      * The initial state for all new connections, only listening
@@ -363,8 +362,22 @@ object MinecraftProtocol {
      * Handles packets relating to providing server list info.
      */
     val STATUS = protocol("Status", 1) {
-        serverbound {}
-        clientbound {}
+        serverbound {
+            ClientStatusRequestPacket {
+                ProtocolVersion.MC1_7_2 to 0x00
+            }
+            ClientStatusPingPacket {
+                ProtocolVersion.MC1_7_2 to 0x01
+            }
+        }
+        clientbound {
+            ServerStatusResponsePacket {
+                ProtocolVersion.MC1_7_2 to 0x00
+            }
+            ServerStatusPingPacket {
+                ProtocolVersion.MC1_7_2 to 0x01
+            }
+        }
     }
 
     /**
@@ -492,28 +505,6 @@ object MinecraftProtocol {
 
         return server
     }
-
-    /**
-     * Gets a protocol state given its ID.
-     *
-     * @param  id        The protocol's ID.
-     * @author Koding
-     * @since  0.1.0-SNAPSHOT
-     */
-    operator fun get(id: Int) = mapped[id] ?: error("Unknown connection state $id")
-
-    /**
-     * Builds a protocol state given the parameters.
-     *
-     * @param  name      The name of this protocol.
-     * @param  id        The handshake ID.
-     * @param  block     Builder function.
-     *
-     * @author Koding
-     * @since  0.1.0-SNAPSHOT
-     */
-    private fun protocol(name: String, id: Int, block: ProtocolState.() -> Unit) =
-        ProtocolState(name, id).apply(block).apply { mapped[id] = this }
 
     /**
      * Configuration for a connection being built.

@@ -20,7 +20,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  */
 class ServerPlayChunkDataTest : PacketTest<ServerPlayChunkDataPacket>(ServerPlayChunkDataPacket) {
     init {
-        example(ServerPlayChunkDataPacket(ChunkColumn(42, 42, Array(16) { Chunk() }, byteArrayOf())))
+        example(ServerPlayChunkDataPacket(ChunkColumn(42, 42, Array(16) { Chunk() }, ByteArray(16 * 16) { 1 }), true))
         example(
             ServerPlayChunkDataPacket(
                 ChunkColumn(
@@ -33,19 +33,20 @@ class ServerPlayChunkDataTest : PacketTest<ServerPlayChunkDataPacket>(ServerPlay
                         }
                     },
                     ByteArray(16 * 16) { 7 }
-                )
+                ),
+                true
             )
         )
 
         val column = ChunkColumn(20, 21, Array(16) { Chunk() }, byteArrayOf())
-        example(ServerPlayChunkDataPacket(column)) {
+        example(ServerPlayChunkDataPacket(column, true)) {
             ProtocolVersion.MC1_7_2 {
                 val bytes = ChunkColumn.write(column).output.deflated()
 
                 // Coords
                 writeInt(20)
                 writeInt(21)
-                writeBoolean(false)
+                writeBoolean(true)
 
                 // Masks
                 writeShort(0)

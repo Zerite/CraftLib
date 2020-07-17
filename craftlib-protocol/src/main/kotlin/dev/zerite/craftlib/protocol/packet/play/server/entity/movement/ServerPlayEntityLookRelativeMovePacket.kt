@@ -21,22 +21,23 @@ data class ServerPlayEntityLookRelativeMovePacket(
     var y: Double,
     var z: Double,
     var yaw: Float,
-    var pitch: Float
+    var pitch: Float,
+    var onGround: Boolean = false
 ) : EntityIdPacket, Packet() {
     companion object : PacketIO<ServerPlayEntityLookRelativeMovePacket> {
         override fun read(
             buffer: ProtocolBuffer,
             version: ProtocolVersion,
             connection: NettyConnection
-        ) =
-            ServerPlayEntityLookRelativeMovePacket(
-                buffer.readInt(),
-                buffer.readFixedPoint { readByte().toDouble() },
-                buffer.readFixedPoint { readByte().toDouble() },
-                buffer.readFixedPoint { readByte().toDouble() },
-                buffer.readByte().toFloat(),
-                buffer.readByte().toFloat()
-            )
+        ) = ServerPlayEntityLookRelativeMovePacket(
+            if (version >= ProtocolVersion.MC1_8) buffer.readVarInt() else buffer.readInt(),
+            buffer.readFixedPoint { readByte().toDouble() },
+            buffer.readFixedPoint { readByte().toDouble() },
+            buffer.readFixedPoint { readByte().toDouble() },
+            buffer.readByte().toFloat(),
+            buffer.readByte().toFloat(),
+            if (version >= ProtocolVersion.MC1_8) buffer.readBoolean() else false
+        )
 
         override fun write(
             buffer: ProtocolBuffer,
@@ -44,12 +45,15 @@ data class ServerPlayEntityLookRelativeMovePacket(
             packet: ServerPlayEntityLookRelativeMovePacket,
             connection: NettyConnection
         ) {
-            buffer.writeInt(packet.entityId)
+            if (version >= ProtocolVersion.MC1_8) buffer.writeVarInt(packet.entityId)
+            else buffer.writeInt(packet.entityId)
             buffer.writeFixedPoint(packet.x) { writeByte(it) }
             buffer.writeFixedPoint(packet.y) { writeByte(it) }
             buffer.writeFixedPoint(packet.z) { writeByte(it) }
             buffer.writeByte(packet.yaw.toInt())
             buffer.writeByte(packet.pitch.toInt())
+            if (version >= ProtocolVersion.MC1_8)
+                buffer.writeBoolean(packet.onGround)
         }
     }
 }

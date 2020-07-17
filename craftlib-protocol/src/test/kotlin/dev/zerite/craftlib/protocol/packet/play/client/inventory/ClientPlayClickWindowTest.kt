@@ -26,6 +26,19 @@ class ClientPlayClickWindowTest : PacketTest<ClientPlayClickWindowPacket>(Client
                 writeShort(0)
                 writeShort(-1)
             }
+            ProtocolVersion.MC1_8 {
+                writeByte(10)
+                writeShort(20)
+                writeByte(0)
+                writeShort(21)
+                writeByte(0)
+
+                // Slot
+                writeShort(0)
+                writeByte(0)
+                writeShort(0)
+                writeByte(0)
+            }
         }
         example(ClientPlayClickWindowPacket(20, 50, 2, 43, 1, Slot(1, 1))) {
             ProtocolVersion.MC1_7_2 {
@@ -40,6 +53,19 @@ class ClientPlayClickWindowTest : PacketTest<ClientPlayClickWindowPacket>(Client
                 writeByte(1)
                 writeShort(0)
                 writeShort(-1)
+            }
+            ProtocolVersion.MC1_8 {
+                writeByte(20)
+                writeShort(50)
+                writeByte(2)
+                writeShort(43)
+                writeByte(1)
+
+                // Slot
+                writeShort(1)
+                writeByte(1)
+                writeShort(0)
+                writeByte(0)
             }
         }
     }

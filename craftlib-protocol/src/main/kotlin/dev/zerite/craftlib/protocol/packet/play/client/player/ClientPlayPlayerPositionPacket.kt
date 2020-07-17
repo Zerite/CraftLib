@@ -35,7 +35,7 @@ data class ClientPlayPlayerPositionPacket(
         ) = ClientPlayPlayerPositionPacket(
             buffer.readDouble(),
             buffer.readDouble(),
-            buffer.readDouble(),
+            if (version >= ProtocolVersion.MC1_8) 0.0 else buffer.readDouble(),
             buffer.readDouble(),
             buffer.readBoolean()
         )
@@ -48,7 +48,8 @@ data class ClientPlayPlayerPositionPacket(
         ) {
             buffer.writeDouble(packet.x)
             buffer.writeDouble(packet.y)
-            buffer.writeDouble(packet.stance)
+            if (version <= ProtocolVersion.MC1_7_6)
+                buffer.writeDouble(packet.stance)
             buffer.writeDouble(packet.z)
             buffer.writeBoolean(packet.onGround)
         }

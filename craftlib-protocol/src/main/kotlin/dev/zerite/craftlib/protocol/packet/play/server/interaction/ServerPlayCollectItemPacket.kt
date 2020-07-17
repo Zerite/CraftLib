@@ -28,8 +28,8 @@ data class ServerPlayCollectItemPacket(
             version: ProtocolVersion,
             connection: NettyConnection
         ) = ServerPlayCollectItemPacket(
-            buffer.readInt(),
-            buffer.readInt()
+            if (version >= ProtocolVersion.MC1_8) buffer.readVarInt() else buffer.readInt(),
+            if (version >= ProtocolVersion.MC1_8) buffer.readVarInt() else buffer.readInt()
         )
 
         override fun write(
@@ -38,8 +38,13 @@ data class ServerPlayCollectItemPacket(
             packet: ServerPlayCollectItemPacket,
             connection: NettyConnection
         ) {
-            buffer.writeInt(packet.itemId)
-            buffer.writeInt(packet.entityId)
+            if (version >= ProtocolVersion.MC1_8) {
+                buffer.writeVarInt(packet.itemId)
+                buffer.writeVarInt(packet.entityId)
+            } else {
+                buffer.writeInt(packet.itemId)
+                buffer.writeInt(packet.entityId)
+            }
         }
     }
 }

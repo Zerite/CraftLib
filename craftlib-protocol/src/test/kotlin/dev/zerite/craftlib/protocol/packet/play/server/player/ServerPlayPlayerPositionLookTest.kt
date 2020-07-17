@@ -13,7 +13,7 @@ class ServerPlayPlayerPositionLookTest :
     PacketTest<ServerPlayPlayerPositionLookPacket>(ServerPlayPlayerPositionLookPacket) {
 
     init {
-        example(ServerPlayPlayerPositionLookPacket(0.0, 0.0, 0.0, 0.0f, 0.0f, true))
+        example(ServerPlayPlayerPositionLookPacket(0.0, 0.0, 0.0, 0.0f, 0.0f, false))
         example(
             ServerPlayPlayerPositionLookPacket(
                 Double.MAX_VALUE,
@@ -31,17 +31,25 @@ class ServerPlayPlayerPositionLookTest :
                 Double.MIN_VALUE,
                 -1.0f,
                 -1.0f,
-                true
+                false
             )
         )
-        example(ServerPlayPlayerPositionLookPacket(1.0, 2.0, 3.0, 1.0f, 0.0f, true)) {
+        example(ServerPlayPlayerPositionLookPacket(1.0, 2.0, 3.0, 1.0f, 0.0f, false)) {
             ProtocolVersion.MC1_7_2 {
                 writeDouble(1.0)
                 writeDouble(2.0)
                 writeDouble(3.0)
                 writeFloat(1.0f)
                 writeFloat(0.0f)
-                writeBoolean(true)
+                writeBoolean(false)
+            }
+            ProtocolVersion.MC1_8 {
+                writeDouble(1.0)
+                writeDouble(2.0)
+                writeDouble(3.0)
+                writeFloat(1.0f)
+                writeFloat(0.0f)
+                writeByte(0)
             }
         }
     }

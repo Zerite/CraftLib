@@ -34,6 +34,18 @@ class ServerPlayTeamsTest : PacketTest<ServerPlayTeamsPacket>(ServerPlayTeamsPac
                 writeShort(1)
                 writeString("Username")
             }
+            ProtocolVersion.MC1_8 {
+                writeString("team")
+                writeByte(0)
+                writeString("team")
+                writeString("prefix")
+                writeString("suffix")
+                writeByte(1)
+                writeString("always")
+                writeByte(16)
+                writeVarInt(1)
+                writeString("Username")
+            }
         }
         example(ServerPlayTeamsPacket("delete", MagicTeamMode.REMOVE_TEAM)) {
             ProtocolVersion.MC1_7_2 {
@@ -46,6 +58,12 @@ class ServerPlayTeamsTest : PacketTest<ServerPlayTeamsPacket>(ServerPlayTeamsPac
                 writeString("players")
                 writeByte(3)
                 writeShort(1)
+                writeString("NewPlayer")
+            }
+            ProtocolVersion.MC1_8 {
+                writeString("players")
+                writeByte(3)
+                writeVarInt(1)
                 writeString("NewPlayer")
             }
         }
@@ -66,6 +84,16 @@ class ServerPlayTeamsTest : PacketTest<ServerPlayTeamsPacket>(ServerPlayTeamsPac
                 writeString("dummy")
                 writeString("placeholder")
                 writeByte(3)
+            }
+            ProtocolVersion.MC1_8 {
+                writeString("update")
+                writeByte(2)
+                writeString("name")
+                writeString("dummy")
+                writeString("placeholder")
+                writeByte(3)
+                writeString("always")
+                writeByte(16)
             }
         }
     }

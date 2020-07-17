@@ -23,11 +23,10 @@ data class ServerPlayEntityHeadLookPacket(
             buffer: ProtocolBuffer,
             version: ProtocolVersion,
             connection: NettyConnection
-        ) =
-            ServerPlayEntityHeadLookPacket(
-                buffer.readInt(),
-                buffer.readStepRotation()
-            )
+        ) = ServerPlayEntityHeadLookPacket(
+            if (version >= ProtocolVersion.MC1_8) buffer.readVarInt() else buffer.readInt(),
+            buffer.readStepRotation()
+        )
 
         override fun write(
             buffer: ProtocolBuffer,
@@ -35,7 +34,8 @@ data class ServerPlayEntityHeadLookPacket(
             packet: ServerPlayEntityHeadLookPacket,
             connection: NettyConnection
         ) {
-            buffer.writeInt(packet.entityId)
+            if (version >= ProtocolVersion.MC1_8) buffer.writeVarInt(packet.entityId)
+            else buffer.writeInt(packet.entityId)
             buffer.writeStepRotation(packet.headYaw)
         }
     }

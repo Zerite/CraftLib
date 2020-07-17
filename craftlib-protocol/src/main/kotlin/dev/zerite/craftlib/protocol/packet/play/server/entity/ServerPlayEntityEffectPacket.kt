@@ -20,7 +20,8 @@ data class ServerPlayEntityEffectPacket(
     override var entityId: Int,
     var effect: RegistryEntry,
     var amplifier: Int,
-    var duration: Int
+    var duration: Int,
+    var hideParticles: Boolean = false
 ) : EntityIdPacket, Packet() {
     companion object : PacketIO<ServerPlayEntityEffectPacket> {
         override fun read(
@@ -28,10 +29,11 @@ data class ServerPlayEntityEffectPacket(
             version: ProtocolVersion,
             connection: NettyConnection
         ) = ServerPlayEntityEffectPacket(
-            buffer.readInt(),
+            if (version >= ProtocolVersion.MC1_8) buffer.readVarInt() else buffer.readInt(),
             MagicPotionEffect[version, buffer.readByte().toInt()],
             buffer.readByte().toInt(),
-            buffer.readShort().toInt()
+            if (version >= ProtocolVersion.MC1_8) buffer.readVarInt() else buffer.readShort().toInt(),
+            if (version >= ProtocolVersion.MC1_8) buffer.readBoolean() else false
         )
 
         override fun write(
@@ -40,10 +42,14 @@ data class ServerPlayEntityEffectPacket(
             packet: ServerPlayEntityEffectPacket,
             connection: NettyConnection
         ) {
-            buffer.writeInt(packet.entityId)
+            if (version >= ProtocolVersion.MC1_8) buffer.writeVarInt(packet.entityId)
+            else buffer.writeInt(packet.entityId)
             buffer.writeByte(MagicPotionEffect[version, packet.effect, Int::class] ?: 0)
             buffer.writeByte(packet.amplifier)
-            buffer.writeShort(packet.duration)
+            if (version >= ProtocolVersion.MC1_8) buffer.writeVarInt(packet.duration)
+            else buffer.writeShort(packet.duration)
+            if (version >= ProtocolVersion.MC1_8)
+                buffer.writeBoolean(packet.hideParticles)
         }
     }
 }

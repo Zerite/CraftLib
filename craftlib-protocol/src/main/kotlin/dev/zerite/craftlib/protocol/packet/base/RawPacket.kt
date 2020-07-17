@@ -9,7 +9,7 @@ import dev.zerite.craftlib.protocol.Packet
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-data class RawPacket(var id: Int, var data: ByteArray) : Packet() {
+class RawPacket(var id: Int, var data: ByteArray) : Packet() {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

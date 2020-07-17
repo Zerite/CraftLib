@@ -24,6 +24,12 @@ class ServerPlayEntityMetadataTest : PacketTest<ServerPlayEntityMetadataPacket>(
                 writeString("test")
                 writeByte(127)
             }
+            ProtocolVersion.MC1_8 {
+                writeVarInt(4)
+                writeByte((4 shl 5) or (2 and 0x1F) and 0xFF)
+                writeString("test")
+                writeByte(127)
+            }
         }
     }
 

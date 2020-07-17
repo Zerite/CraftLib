@@ -25,7 +25,7 @@ data class ClientPlayPluginMessagePacket(
             connection: NettyConnection
         ) = ClientPlayPluginMessagePacket(
             buffer.readString(),
-            buffer.readByteArray { readShort().toInt() }
+            buffer.readByteArray { if (version >= ProtocolVersion.MC1_8) readableBytes else readShort().toInt() }
         )
 
         override fun write(
@@ -35,7 +35,7 @@ data class ClientPlayPluginMessagePacket(
             connection: NettyConnection
         ) {
             buffer.writeString(packet.channel)
-            buffer.writeByteArray(packet.data) { writeShort(it) }
+            buffer.writeByteArray(packet.data) { if (version <= ProtocolVersion.MC1_7_6) writeShort(it) }
         }
     }
 

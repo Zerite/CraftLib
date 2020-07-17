@@ -13,17 +13,24 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  */
 class ClientPlayClientSettingsTest : PacketTest<ClientPlayClientSettingsPacket>(ClientPlayClientSettingsPacket) {
     init {
-        example(ClientPlayClientSettingsPacket("en_GB", MagicViewDistance.NORMAL, 0, MagicDifficulty.HARD, true)) {
+        example(ClientPlayClientSettingsPacket("en_GB", MagicViewDistance.NORMAL, 0, MagicDifficulty.PEACEFUL, 1)) {
             ProtocolVersion.MC1_7_2 {
                 writeString("en_GB")
                 writeByte(1)
                 writeByte(0)
                 writeBoolean(true)
-                writeByte(3)
+                writeByte(0)
                 writeBoolean(true)
             }
+            ProtocolVersion.MC1_8 {
+                writeString("en_GB")
+                writeByte(1)
+                writeByte(0)
+                writeBoolean(true)
+                writeByte(1)
+            }
         }
-        example(ClientPlayClientSettingsPacket("en_US", MagicViewDistance.TINY, 1, MagicDifficulty.PEACEFUL, false)) {
+        example(ClientPlayClientSettingsPacket("en_US", MagicViewDistance.TINY, 1, MagicDifficulty.PEACEFUL, 0)) {
             ProtocolVersion.MC1_7_2 {
                 writeString("en_US")
                 writeByte(3)
@@ -31,6 +38,13 @@ class ClientPlayClientSettingsTest : PacketTest<ClientPlayClientSettingsPacket>(
                 writeBoolean(true)
                 writeByte(0)
                 writeBoolean(false)
+            }
+            ProtocolVersion.MC1_8 {
+                writeString("en_US")
+                writeByte(3)
+                writeByte(1)
+                writeBoolean(true)
+                writeByte(0)
             }
         }
     }

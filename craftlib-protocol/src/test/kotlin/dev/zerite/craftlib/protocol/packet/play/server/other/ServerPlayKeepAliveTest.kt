@@ -18,6 +18,9 @@ class ServerPlayKeepAliveTest : PacketTest<ServerPlayKeepAlivePacket>(ServerPlay
             ProtocolVersion.MC1_7_2 {
                 writeInt(512)
             }
+            ProtocolVersion.MC1_8 {
+                writeVarInt(512)
+            }
         }
     }
 

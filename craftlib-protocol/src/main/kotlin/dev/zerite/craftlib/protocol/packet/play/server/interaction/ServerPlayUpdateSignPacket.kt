@@ -1,8 +1,11 @@
 package dev.zerite.craftlib.protocol.packet.play.server.interaction
 
+import dev.zerite.craftlib.chat.component.BaseChatComponent
+import dev.zerite.craftlib.chat.component.StringChatComponent
 import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
+import dev.zerite.craftlib.protocol.Vector3
 import dev.zerite.craftlib.protocol.connection.NettyConnection
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
@@ -17,25 +20,38 @@ data class ServerPlayUpdateSignPacket(
     var x: Int,
     var y: Int,
     var z: Int,
-    var first: String,
-    var second: String,
-    var third: String,
-    var forth: String
+    var first: BaseChatComponent,
+    var second: BaseChatComponent,
+    var third: BaseChatComponent,
+    var forth: BaseChatComponent
 ) : Packet() {
     companion object : PacketIO<ServerPlayUpdateSignPacket> {
         override fun read(
             buffer: ProtocolBuffer,
             version: ProtocolVersion,
             connection: NettyConnection
-        ) = ServerPlayUpdateSignPacket(
-            buffer.readInt(),
-            buffer.readShort().toInt(),
-            buffer.readInt(),
-            buffer.readString(),
-            buffer.readString(),
-            buffer.readString(),
-            buffer.readString()
-        )
+        ) = if (version >= ProtocolVersion.MC1_8) {
+            val position = buffer.readPosition()
+            ServerPlayUpdateSignPacket(
+                position.x,
+                position.y,
+                position.z,
+                buffer.readChat(),
+                buffer.readChat(),
+                buffer.readChat(),
+                buffer.readChat()
+            )
+        } else {
+            ServerPlayUpdateSignPacket(
+                buffer.readInt(),
+                buffer.readShort().toInt(),
+                buffer.readInt(),
+                StringChatComponent(buffer.readString()),
+                StringChatComponent(buffer.readString()),
+                StringChatComponent(buffer.readString()),
+                StringChatComponent(buffer.readString())
+            )
+        }
 
         override fun write(
             buffer: ProtocolBuffer,
@@ -43,13 +59,21 @@ data class ServerPlayUpdateSignPacket(
             packet: ServerPlayUpdateSignPacket,
             connection: NettyConnection
         ) {
-            buffer.writeInt(packet.x)
-            buffer.writeShort(packet.y)
-            buffer.writeInt(packet.z)
-            buffer.writeString(packet.first)
-            buffer.writeString(packet.second)
-            buffer.writeString(packet.third)
-            buffer.writeString(packet.forth)
+            if (version >= ProtocolVersion.MC1_8) {
+                buffer.writePosition(Vector3(packet.x, packet.y, packet.z))
+                buffer.writeChat(packet.first)
+                buffer.writeChat(packet.second)
+                buffer.writeChat(packet.third)
+                buffer.writeChat(packet.forth)
+            } else {
+                buffer.writeInt(packet.x)
+                buffer.writeShort(packet.y)
+                buffer.writeInt(packet.z)
+                buffer.writeString(packet.first.unformattedText)
+                buffer.writeString(packet.second.unformattedText)
+                buffer.writeString(packet.third.unformattedText)
+                buffer.writeString(packet.forth.unformattedText)
+            }
         }
     }
 }

@@ -48,6 +48,21 @@ class ServerPlayEntityPropertiesTest : PacketTest<ServerPlayEntityPropertiesPack
                 writeDouble(1.0)
                 writeByte(1)
             }
+            ProtocolVersion.MC1_8 {
+                // Write entity ID
+                writeVarInt(127)
+
+                // Write single property array
+                writeInt(1)
+                writeString("generic.maxHealth")
+                writeDouble(20.0)
+
+                // Write single modifier array
+                writeVarInt(1)
+                writeUUID(UUID(0L, 0L), ProtocolBuffer.UUIDMode.RAW)
+                writeDouble(1.0)
+                writeByte(1)
+            }
         }
     }
 

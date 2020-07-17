@@ -26,7 +26,7 @@ data class ServerPlayEntityPacket(
             version: ProtocolVersion,
             connection: NettyConnection
         ) = ServerPlayEntityPacket(
-            buffer.readInt()
+            if (version >= ProtocolVersion.MC1_8) buffer.readVarInt() else buffer.readInt()
         )
 
         override fun write(
@@ -35,7 +35,8 @@ data class ServerPlayEntityPacket(
             packet: ServerPlayEntityPacket,
             connection: NettyConnection
         ) {
-            buffer.writeInt(packet.entityId)
+            if (version >= ProtocolVersion.MC1_8) buffer.writeVarInt(packet.entityId)
+            else buffer.writeInt(packet.entityId)
         }
     }
 }

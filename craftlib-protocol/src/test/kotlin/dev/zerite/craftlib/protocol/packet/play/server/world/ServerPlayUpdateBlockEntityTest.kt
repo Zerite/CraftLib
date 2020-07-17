@@ -42,6 +42,11 @@ class ServerPlayUpdateBlockEntityTest :
                 writeByte(1)
                 writeNBT(compound { "type" to "Zombie" }, compressed = true)
             }
+            ProtocolVersion.MC1_8 {
+                writeLong(((20L and 0x3FFFFFFL) shl 38) or ((20L and 0x3FFFFFFL) shl 12) or (20L and 0xFFFL))
+                writeByte(1)
+                writeNBT(compound { "type" to "Zombie" }, compressed = true)
+            }
         }
     }
 

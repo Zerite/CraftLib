@@ -17,12 +17,22 @@ class ServerPlaySetExperienceTest : PacketTest<ServerPlaySetExperiencePacket>(Se
                 writeShort(5)
                 writeShort(200)
             }
+            ProtocolVersion.MC1_8 {
+                writeFloat(1f)
+                writeVarInt(5)
+                writeVarInt(200)
+            }
         }
         example(ServerPlaySetExperiencePacket(0.5f, 10, 10)) {
             ProtocolVersion.MC1_7_2 {
                 writeFloat(0.5f)
                 writeShort(10)
                 writeShort(10)
+            }
+            ProtocolVersion.MC1_8 {
+                writeFloat(0.5f)
+                writeVarInt(10)
+                writeVarInt(10)
             }
         }
     }

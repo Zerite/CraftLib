@@ -29,12 +29,12 @@ data class ServerPlayEntityPropertiesPacket(
             version: ProtocolVersion,
             connection: NettyConnection
         ) = ServerPlayEntityPropertiesPacket(
-            buffer.readInt(),
+            if (version >= ProtocolVersion.MC1_8) buffer.readVarInt() else buffer.readInt(),
             buffer.readArray({ readInt() }) {
                 Property(
                     MagicEntityProperty[version, readString()],
                     readDouble(),
-                    readArray({ readShort().toInt() }) {
+                    readArray({ if (version >= ProtocolVersion.MC1_8) readVarInt() else readShort().toInt() }) {
                         Modifier(
                             buffer.readUUID(ProtocolBuffer.UUIDMode.RAW),
                             buffer.readDouble(),
@@ -51,11 +51,12 @@ data class ServerPlayEntityPropertiesPacket(
             packet: ServerPlayEntityPropertiesPacket,
             connection: NettyConnection
         ) {
-            buffer.writeInt(packet.entityId)
+            if (version >= ProtocolVersion.MC1_8) buffer.writeVarInt(packet.entityId)
+            else buffer.writeInt(packet.entityId)
             buffer.writeArray(packet.properties, { writeInt(it) }) { p ->
                 writeString(MagicEntityProperty[version, p.key, String::class] ?: return@writeArray)
                 writeDouble(p.value)
-                writeArray(p.modifiers, { writeShort(it) }) {
+                writeArray(p.modifiers, { if (version >= ProtocolVersion.MC1_8) writeVarInt(it) else writeShort(it) }) {
                     writeUUID(it.uuid, ProtocolBuffer.UUIDMode.RAW)
                     writeDouble(it.amount)
                     writeByte(it.operation.toInt())

@@ -20,7 +20,7 @@ data class ClientPlayKeepAlivePacket(var id: Int) : Packet() {
             version: ProtocolVersion,
             connection: NettyConnection
         ) = ClientPlayKeepAlivePacket(
-            buffer.readInt()
+            if (version >= ProtocolVersion.MC1_8) buffer.readVarInt() else buffer.readInt()
         )
 
         override fun write(
@@ -29,7 +29,8 @@ data class ClientPlayKeepAlivePacket(var id: Int) : Packet() {
             packet: ClientPlayKeepAlivePacket,
             connection: NettyConnection
         ) {
-            buffer.writeInt(packet.id)
+            if (version >= ProtocolVersion.MC1_8) buffer.writeVarInt(packet.id)
+            else buffer.writeInt(packet.id)
         }
     }
 }

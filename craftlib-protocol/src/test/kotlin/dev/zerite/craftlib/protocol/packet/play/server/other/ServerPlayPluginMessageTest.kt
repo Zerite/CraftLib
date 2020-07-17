@@ -30,7 +30,8 @@ class ServerPlayPluginMessageTest : PacketTest<ServerPlayPluginMessagePacket>(
             ServerPlayPluginMessagePacket(
                 "minecraft:unregister",
                 byteArrayOf(21, 69, 42)
-            )
+            ),
+            maximumVersion = ProtocolVersion.MC1_7_6
         ) {
             ProtocolVersion.MC1_7_2 {
                 writeString("minecraft:unregister")

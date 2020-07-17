@@ -4,6 +4,8 @@ import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
+import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
+import dev.zerite.craftlib.protocol.data.registry.impl.MagicUseEntityType
 import dev.zerite.craftlib.protocol.packet.base.EntityIdPacket
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
@@ -19,17 +21,27 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  */
 data class ClientPlayUseEntityPacket(
     override var entityId: Int,
-    var mouse: Int
+    var type: RegistryEntry,
+    var targetX: Float = 0f,
+    var targetY: Float = 0f,
+    var targetZ: Float = 0f
 ) : EntityIdPacket, Packet() {
     companion object : PacketIO<ClientPlayUseEntityPacket> {
         override fun read(
             buffer: ProtocolBuffer,
             version: ProtocolVersion,
             connection: NettyConnection
-        ) = ClientPlayUseEntityPacket(
-            buffer.readInt(),
-            buffer.readByte().toInt()
-        )
+        ): ClientPlayUseEntityPacket {
+            val target = if (version >= ProtocolVersion.MC1_8) buffer.readVarInt() else buffer.readInt()
+            val type = MagicUseEntityType[version, if (version >= ProtocolVersion.MC1_8) buffer.readVarInt() else buffer.readByte().toInt()]
+            return ClientPlayUseEntityPacket(
+                target,
+                type,
+                buffer.takeIf { type == MagicUseEntityType.INTERACT_AT }?.readFloat() ?: 0f,
+                buffer.takeIf { type == MagicUseEntityType.INTERACT_AT }?.readFloat() ?: 0f,
+                buffer.takeIf { type == MagicUseEntityType.INTERACT_AT }?.readFloat() ?: 0f
+            )
+        }
 
         override fun write(
             buffer: ProtocolBuffer,
@@ -37,8 +49,17 @@ data class ClientPlayUseEntityPacket(
             packet: ClientPlayUseEntityPacket,
             connection: NettyConnection
         ) {
-            buffer.writeInt(packet.entityId)
-            buffer.writeByte(packet.mouse)
+            if (version >= ProtocolVersion.MC1_8) buffer.writeVarInt(packet.entityId)
+            else buffer.writeInt(packet.entityId)
+
+            if (version >= ProtocolVersion.MC1_8) buffer.writeVarInt(MagicUseEntityType[version, packet.type, Int::class] ?: 0)
+            else buffer.writeByte(MagicUseEntityType[version, packet.type, Int::class] ?: 0)
+
+            if (packet.type == MagicUseEntityType.INTERACT_AT) {
+                buffer.writeFloat(packet.targetX)
+                buffer.writeFloat(packet.targetY)
+                buffer.writeFloat(packet.targetZ)
+            }
         }
     }
 }

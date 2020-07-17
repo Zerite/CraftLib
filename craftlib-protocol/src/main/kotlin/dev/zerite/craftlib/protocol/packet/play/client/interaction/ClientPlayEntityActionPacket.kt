@@ -27,9 +27,9 @@ data class ClientPlayEntityActionPacket(
             version: ProtocolVersion,
             connection: NettyConnection
         ) = ClientPlayEntityActionPacket(
-            buffer.readInt(),
-            MagicEntityAction[version, buffer.readByte().toInt()],
-            buffer.readInt()
+            if (version >= ProtocolVersion.MC1_8) buffer.readVarInt() else buffer.readInt(),
+            MagicEntityAction[version, if (version >= ProtocolVersion.MC1_8) buffer.readVarInt() else buffer.readByte().toInt()],
+            if (version >= ProtocolVersion.MC1_8) buffer.readVarInt() else buffer.readInt()
         )
 
         override fun write(
@@ -38,9 +38,15 @@ data class ClientPlayEntityActionPacket(
             packet: ClientPlayEntityActionPacket,
             connection: NettyConnection
         ) {
-            buffer.writeInt(packet.entityId)
-            buffer.writeByte(MagicEntityAction[version, packet.action, Int::class] ?: 0)
-            buffer.writeInt(packet.jumpBoost)
+            if (version >= ProtocolVersion.MC1_8) {
+                buffer.writeVarInt(packet.entityId)
+                buffer.writeVarInt(MagicEntityAction[version, packet.action, Int::class] ?: 0)
+                buffer.writeVarInt(packet.jumpBoost)
+            } else {
+                buffer.writeInt(packet.entityId)
+                buffer.writeByte(MagicEntityAction[version, packet.action, Int::class] ?: 0)
+                buffer.writeInt(packet.jumpBoost)
+            }
         }
     }
 }

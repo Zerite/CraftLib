@@ -26,7 +26,7 @@ data class ServerPlayEntityEquipmentPacket(
             version: ProtocolVersion,
             connection: NettyConnection
         ) = ServerPlayEntityEquipmentPacket(
-            buffer.readInt(),
+            if (version >= ProtocolVersion.MC1_8) buffer.readVarInt() else buffer.readInt(),
             buffer.readShort(),
             buffer.readSlot()
         )
@@ -37,7 +37,8 @@ data class ServerPlayEntityEquipmentPacket(
             packet: ServerPlayEntityEquipmentPacket,
             connection: NettyConnection
         ) {
-            buffer.writeInt(packet.entityId)
+            if (version >= ProtocolVersion.MC1_8) buffer.writeVarInt(packet.entityId)
+            else buffer.writeInt(packet.entityId)
             buffer.writeShort(packet.slot.toInt())
             buffer.writeSlot(packet.item)
         }

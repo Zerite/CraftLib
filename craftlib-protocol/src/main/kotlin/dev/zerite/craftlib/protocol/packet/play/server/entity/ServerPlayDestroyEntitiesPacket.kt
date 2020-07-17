@@ -22,7 +22,9 @@ data class ServerPlayDestroyEntitiesPacket(
             version: ProtocolVersion,
             connection: NettyConnection
         ) = ServerPlayDestroyEntitiesPacket(
-            buffer.readArray({ readByte().toInt() }) { readInt() }.toIntArray()
+            buffer.readArray({
+                if (version >= ProtocolVersion.MC1_8) readVarInt() else readByte().toInt()
+            }) { if (version >= ProtocolVersion.MC1_8) readVarInt() else readInt() }.toIntArray()
         )
 
         override fun write(
@@ -31,7 +33,10 @@ data class ServerPlayDestroyEntitiesPacket(
             packet: ServerPlayDestroyEntitiesPacket,
             connection: NettyConnection
         ) {
-            buffer.writeArray(packet.entities.toTypedArray(), { writeByte(it) }) { writeInt(it) }
+            buffer.writeArray(
+                packet.entities.toTypedArray(),
+                { if (version >= ProtocolVersion.MC1_8) writeVarInt(it) else writeByte(it) }
+            ) { if (version >= ProtocolVersion.MC1_8) writeVarInt(it) else writeInt(it) }
         }
     }
 

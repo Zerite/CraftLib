@@ -1,5 +1,6 @@
 package dev.zerite.craftlib.protocol.packet.play.server.inventory
 
+import dev.zerite.craftlib.chat.component.StringChatComponent
 import dev.zerite.craftlib.protocol.data.registry.impl.MagicInventoryType
 import dev.zerite.craftlib.protocol.packet.PacketTest
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
@@ -14,7 +15,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  */
 class ServerPlayOpenWindowTest : PacketTest<ServerPlayOpenWindowPacket>(ServerPlayOpenWindowPacket) {
     init {
-        example(ServerPlayOpenWindowPacket(20, MagicInventoryType.HORSE, "Horse", 3, true, entityId = 42)) {
+        example(ServerPlayOpenWindowPacket(20, MagicInventoryType.HORSE, StringChatComponent("Horse"), 3, true, entityId = 42)) {
             ProtocolVersion.MC1_7_2 {
                 writeByte(20)
                 writeByte(11)
@@ -23,14 +24,27 @@ class ServerPlayOpenWindowTest : PacketTest<ServerPlayOpenWindowPacket>(ServerPl
                 writeBoolean(true)
                 writeInt(42)
             }
+            ProtocolVersion.MC1_8 {
+                writeByte(20)
+                writeString("EntityHorse")
+                writeString("{\"text\":\"Horse\"}")
+                writeByte(3)
+                writeInt(42)
+            }
         }
-        example(ServerPlayOpenWindowPacket(37, MagicInventoryType.CHEST, "Menu", 3 * 9, true)) {
+        example(ServerPlayOpenWindowPacket(37, MagicInventoryType.CHEST, StringChatComponent("Menu"), 3 * 9, true)) {
             ProtocolVersion.MC1_7_2 {
                 writeByte(37)
                 writeByte(0)
                 writeString("Menu")
                 writeByte(3 * 9)
                 writeBoolean(true)
+            }
+            ProtocolVersion.MC1_8 {
+                writeByte(37)
+                writeString("minecraft:chest")
+                writeString("{\"text\":\"Menu\"}")
+                writeByte(3 * 9)
             }
         }
     }

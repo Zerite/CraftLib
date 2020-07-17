@@ -19,20 +19,32 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  */
 class ClientPlayPlayerPositionTest : PacketTest<ClientPlayPlayerPositionPacket>(ClientPlayPlayerPositionPacket) {
     init {
-        example(ClientPlayPlayerPositionPacket(50.0, 100.0, 0.2, 150.0, true)) {
+        example(ClientPlayPlayerPositionPacket(50.0, 100.0, 0.0, 150.0, true)) {
             ProtocolVersion.MC1_7_2 {
                 writeDouble(50.0)
                 writeDouble(100.0)
-                writeDouble(0.2)
+                writeDouble(0.0)
+                writeDouble(150.0)
+                writeBoolean(true)
+            }
+            ProtocolVersion.MC1_8 {
+                writeDouble(50.0)
+                writeDouble(100.0)
                 writeDouble(150.0)
                 writeBoolean(true)
             }
         }
-        example(ClientPlayPlayerPositionPacket(0.0, Double.MAX_VALUE, 0.5, Double.MIN_VALUE, false)) {
+        example(ClientPlayPlayerPositionPacket(0.0, Double.MAX_VALUE, 0.0, Double.MIN_VALUE, false)) {
             ProtocolVersion.MC1_7_2 {
                 writeDouble(0.0)
                 writeDouble(Double.MAX_VALUE)
-                writeDouble(0.5)
+                writeDouble(0.0)
+                writeDouble(Double.MIN_VALUE)
+                writeBoolean(false)
+            }
+            ProtocolVersion.MC1_8 {
+                writeDouble(0.0)
+                writeDouble(Double.MAX_VALUE)
                 writeDouble(Double.MIN_VALUE)
                 writeBoolean(false)
             }

@@ -31,7 +31,7 @@ data class ServerPlayUpdateScorePacket(
                 name,
                 update,
                 buffer.takeIf { update }?.readString(),
-                buffer.takeIf { update }?.readInt()
+                buffer.takeIf { update }?.let { if (version >= ProtocolVersion.MC1_8) it.readVarInt() else it.readInt() }
             )
         }
 
@@ -46,7 +46,8 @@ data class ServerPlayUpdateScorePacket(
 
             if (packet.update) {
                 buffer.writeString(packet.score ?: "")
-                buffer.writeInt(packet.value ?: 0)
+                if (version >= ProtocolVersion.MC1_8) buffer.writeVarInt(packet.value ?: 0)
+                else buffer.writeInt(packet.value ?: 0)
             }
         }
     }

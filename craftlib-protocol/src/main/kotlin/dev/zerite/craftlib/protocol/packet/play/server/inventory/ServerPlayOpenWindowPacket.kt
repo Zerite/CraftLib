@@ -1,5 +1,7 @@
 package dev.zerite.craftlib.protocol.packet.play.server.inventory
 
+import dev.zerite.craftlib.chat.component.BaseChatComponent
+import dev.zerite.craftlib.chat.component.StringChatComponent
 import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
@@ -19,7 +21,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
 data class ServerPlayOpenWindowPacket(
     var windowId: Int,
     var type: RegistryEntry,
-    var title: String,
+    var title: BaseChatComponent,
     var slots: Int,
     var useWindowTitle: Boolean,
     var entityId: Int? = null
@@ -31,13 +33,14 @@ data class ServerPlayOpenWindowPacket(
             connection: NettyConnection
         ): ServerPlayOpenWindowPacket {
             val id = buffer.readUnsignedByte().toInt()
-            val type = MagicInventoryType[version, buffer.readUnsignedByte().toInt()]
+            val type = if (version >= ProtocolVersion.MC1_8) MagicInventoryType[version, buffer.readString()]
+            else MagicInventoryType[version, buffer.readUnsignedByte().toInt()]
             return ServerPlayOpenWindowPacket(
                 id,
                 type,
-                buffer.readString(),
+                if (version >= ProtocolVersion.MC1_8) buffer.readChat() else StringChatComponent(buffer.readString()),
                 buffer.readUnsignedByte().toInt(),
-                buffer.readBoolean(),
+                if (version >= ProtocolVersion.MC1_8) true else buffer.readBoolean(),
                 buffer.takeIf { type == MagicInventoryType.HORSE }?.readInt()
             )
         }
@@ -49,10 +52,18 @@ data class ServerPlayOpenWindowPacket(
             connection: NettyConnection
         ) {
             buffer.writeByte(packet.windowId)
-            buffer.writeByte(MagicInventoryType[version, packet.type, Int::class] ?: 0)
-            buffer.writeString(packet.title)
+
+            if (version >= ProtocolVersion.MC1_8) {
+                buffer.writeString(MagicInventoryType[version, packet.type, String::class] ?: "")
+                buffer.writeChat(packet.title)
+            } else {
+                buffer.writeByte(MagicInventoryType[version, packet.type, Int::class] ?: 0)
+                buffer.writeString(packet.title.unformattedText)
+            }
+
             buffer.writeByte(packet.slots)
-            buffer.writeBoolean(packet.useWindowTitle)
+            if (version <= ProtocolVersion.MC1_7_6)
+                buffer.writeBoolean(packet.useWindowTitle)
             if (packet.type == MagicInventoryType.HORSE) buffer.writeInt(packet.entityId ?: 0)
         }
     }

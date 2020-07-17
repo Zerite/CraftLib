@@ -20,6 +20,11 @@ class ServerPlayUpdateHealthTest : PacketTest<ServerPlayUpdateHealthPacket>(Serv
                 writeShort(10)
                 writeFloat(20f)
             }
+            ProtocolVersion.MC1_8 {
+                writeFloat(0f)
+                writeVarInt(10)
+                writeFloat(20f)
+            }
         }
     }
 

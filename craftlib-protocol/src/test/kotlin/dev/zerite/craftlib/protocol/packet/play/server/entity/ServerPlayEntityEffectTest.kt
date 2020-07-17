@@ -20,6 +20,13 @@ class ServerPlayEntityEffectTest : PacketTest<ServerPlayEntityEffectPacket>(Serv
                 writeByte(1)
                 writeShort(20)
             }
+            ProtocolVersion.MC1_8 {
+                writeVarInt(10)
+                writeByte(15)
+                writeByte(1)
+                writeVarInt(20)
+                writeBoolean(false)
+            }
         }
         example(ServerPlayEntityEffectPacket(50, MagicPotionEffect.HASTE, 20, 40)) {
             ProtocolVersion.MC1_7_2 {
@@ -27,6 +34,13 @@ class ServerPlayEntityEffectTest : PacketTest<ServerPlayEntityEffectPacket>(Serv
                 writeByte(3)
                 writeByte(20)
                 writeShort(40)
+            }
+            ProtocolVersion.MC1_8 {
+                writeVarInt(50)
+                writeByte(3)
+                writeByte(20)
+                writeVarInt(40)
+                writeBoolean(false)
             }
         }
     }

@@ -26,13 +26,12 @@ data class ServerPlayEntityVelocityPacket(
             buffer: ProtocolBuffer,
             version: ProtocolVersion,
             connection: NettyConnection
-        ) =
-            ServerPlayEntityVelocityPacket(
-                buffer.readInt(),
-                buffer.readVelocity(),
-                buffer.readVelocity(),
-                buffer.readVelocity()
-            )
+        ) = ServerPlayEntityVelocityPacket(
+            if (version >= ProtocolVersion.MC1_8) buffer.readVarInt() else buffer.readInt(),
+            buffer.readVelocity(),
+            buffer.readVelocity(),
+            buffer.readVelocity()
+        )
 
         override fun write(
             buffer: ProtocolBuffer,
@@ -40,7 +39,8 @@ data class ServerPlayEntityVelocityPacket(
             packet: ServerPlayEntityVelocityPacket,
             connection: NettyConnection
         ) {
-            buffer.writeInt(packet.entityId)
+            if (version >= ProtocolVersion.MC1_8) buffer.writeVarInt(packet.entityId)
+            else buffer.writeInt(packet.entityId)
             buffer.writeVelocity(packet.x)
             buffer.writeVelocity(packet.y)
             buffer.writeVelocity(packet.z)

@@ -25,7 +25,7 @@ data class ServerPlayConfirmTransactionPacket(
             version: ProtocolVersion,
             connection: NettyConnection
         ) = ServerPlayConfirmTransactionPacket(
-            buffer.readUnsignedByte().toInt(),
+            if (version >= ProtocolVersion.MC1_8) buffer.readByte().toInt() else buffer.readUnsignedByte().toInt(),
             buffer.readShort().toInt(),
             buffer.readBoolean()
         )

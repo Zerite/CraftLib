@@ -18,5 +18,7 @@ class MagicEntityAction(name: String) : RegistryEntry(name) {
         val LEAVE_BED = MagicEntityAction("Leave Bed")
         val START_SPRINTING = MagicEntityAction("Start Sprinting")
         val STOP_SPRINTING = MagicEntityAction("Stop Sprinting")
+        val HORSE_JUMP = MagicEntityAction("Horse Jump")
+        val OPEN_INVENTORY = MagicEntityAction("Open Inventory")
     }
 }

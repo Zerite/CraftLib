@@ -12,13 +12,19 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  */
 class ClientPlayAnimationTest : PacketTest<ClientPlayAnimationPacket>(ClientPlayAnimationPacket) {
     init {
-        example(ClientPlayAnimationPacket(60, MagicClientAnimation.DAMAGE_ANIMATION)) {
+        example(
+            ClientPlayAnimationPacket(60, MagicClientAnimation.DAMAGE_ANIMATION),
+            maximumVersion = ProtocolVersion.MC1_7_6
+        ) {
             ProtocolVersion.MC1_7_2 {
                 writeInt(60)
                 writeByte(2)
             }
         }
-        example(ClientPlayAnimationPacket(127, MagicClientAnimation.LEAVE_BED)) {
+        example(
+            ClientPlayAnimationPacket(127, MagicClientAnimation.LEAVE_BED),
+            maximumVersion = ProtocolVersion.MC1_7_6
+        ) {
             ProtocolVersion.MC1_7_2 {
                 writeInt(127)
                 writeByte(3)

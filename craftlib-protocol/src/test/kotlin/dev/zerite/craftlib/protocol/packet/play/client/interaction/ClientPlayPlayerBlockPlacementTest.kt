@@ -41,6 +41,21 @@ class ClientPlayPlayerBlockPlacementTest :
                 writeByte(6)
                 writeByte(7)
             }
+            ProtocolVersion.MC1_8 {
+                writeLong(((100L and 0x3FFFFFFL) shl 38) or ((64L and 0x3FFFFFFL) shl 12) or (50L and 0xFFFL))
+                writeByte(0)
+
+                // Item
+                writeShort(0)
+                writeByte(0)
+                writeShort(0)
+                writeByte(0)
+
+                // Cursor
+                writeByte(5)
+                writeByte(6)
+                writeByte(7)
+            }
         }
     }
 }

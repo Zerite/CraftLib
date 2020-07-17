@@ -15,7 +15,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  */
 data class ServerPlayUpdateHealthPacket(
     var health: Float,
-    var food: Short,
+    var food: Int,
     var saturation: Float
 ) : Packet() {
     companion object : PacketIO<ServerPlayUpdateHealthPacket> {
@@ -25,7 +25,7 @@ data class ServerPlayUpdateHealthPacket(
             connection: NettyConnection
         ) = ServerPlayUpdateHealthPacket(
             buffer.readFloat(),
-            buffer.readShort(),
+            if (version >= ProtocolVersion.MC1_8) buffer.readVarInt() else buffer.readShort().toInt(),
             buffer.readFloat()
         )
 
@@ -36,7 +36,8 @@ data class ServerPlayUpdateHealthPacket(
             connection: NettyConnection
         ) {
             buffer.writeFloat(packet.health)
-            buffer.writeShort(packet.food.toInt())
+            if (version >= ProtocolVersion.MC1_8) buffer.writeVarInt(packet.food)
+            else buffer.writeShort(packet.food)
             buffer.writeFloat(packet.saturation)
         }
     }

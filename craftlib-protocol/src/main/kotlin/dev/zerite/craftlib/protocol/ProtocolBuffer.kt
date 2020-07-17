@@ -10,10 +10,14 @@ import dev.zerite.craftlib.protocol.connection.NettyConnection
 import dev.zerite.craftlib.protocol.data.entity.EntityMetadata
 import dev.zerite.craftlib.protocol.data.entity.MetadataValue
 import dev.zerite.craftlib.protocol.util.ext.toUuid
+import dev.zerite.craftlib.protocol.version.ProtocolVersion
 import io.netty.buffer.ByteBuf
+import io.netty.buffer.ByteBufInputStream
 import io.netty.buffer.Unpooled
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
+import java.io.DataInput
+import java.io.DataInputStream
 import java.util.*
 import kotlin.math.floor
 import kotlin.math.roundToInt
@@ -43,8 +47,11 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
     /**
      * Returns the readers saved index.
      */
-    val readerIndex: Int
+    var readerIndex: Int
         get() = buf.readerIndex()
+        set(value) {
+            buf.readerIndex(value)
+        }
 
     /**
      * Read a VarInt from the buffer.
@@ -96,6 +103,58 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
 
             writeByte(temp)
         } while (current != 0)
+    }
+
+    /**
+     * Read a VarLong from the buffer.
+     *
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    fun readVarLong(): Long {
+        var amount = 0
+        var result = 0L
+        var read: Long
+
+        do {
+            read = readByte().toLong()
+
+            // Discard most significant bit as it's not part of the value
+            val value = read and 0b01111111
+
+            // Create space for this part of the value and add it
+            result = result or (value shl (7 * amount++))
+
+            if (amount > 10) error("VarLong has too many bytes (only 10 allowed)")
+        } while ((read and 0b10000000L) != 0L) // If the most significant bit is set we have to read another byte
+
+        return result
+    }
+
+    /**
+     * Writes a VarInt into the buffer.
+     *
+     * @param  value      The value which should be written.
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    fun writeVarLong(value: Long) {
+        var current: Long = value
+
+        do {
+            // Get the value we're supposed to write
+            var temp = current and 0b01111111L
+
+            // Discard the part of the value we're writing now
+            current = current ushr 7
+
+            // Set the most significant bit if we need to write any more bytes
+            if (current != 0L) {
+                temp = temp or 0b10000000L
+            }
+
+            writeByte(temp.toInt())
+        } while (current != 0L)
     }
 
     /**
@@ -328,7 +387,7 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
      * @author Koding
      * @since  0.1.0-SNAPSHOT
      */
-    fun readChat() = readString().chatComponent
+    fun readChat() = readString().apply { println(this) }.chatComponent
 
     /**
      * Writes a chat component to the buffer by converting it
@@ -522,11 +581,17 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
     fun readNBT(
         compressed: Boolean = false,
         length: ProtocolBuffer.() -> Int = { readShort().toInt() }
-    ) = length().let { len ->
-        if (len < 0) null
-        else ByteArrayInputStream(readByteArray(len)).let {
-            if (compressed) NBTIO.readCompressed(it)
-            else NBTIO.read(it)
+    ) = let {
+        val i = readerIndex
+        if (connection.version >= ProtocolVersion.MC1_8)
+            readByte().toInt().takeIf { it != 0 } ?: return@let null
+        readerIndex = i
+        length().let { len ->
+            if (len < 0) null
+            else ByteBufInputStream(buf).let {
+                if (compressed) NBTIO.readCompressed(it)
+                else NBTIO.read(DataInputStream(it) as DataInput)
+            }
         }
     }
 
@@ -545,7 +610,9 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
         tag: CompoundTag?,
         compressed: Boolean = false,
         length: ProtocolBuffer.(Int) -> Unit = { writeShort(it) }
-    ) = if (tag == null) length(-1)
+    ): Any = if (tag == null)
+        if (connection.version >= ProtocolVersion.MC1_8) writeByte(0)
+        else length(-1)
     else {
         val out = ByteArrayOutputStream()
         NamedTag("", tag).let {
@@ -565,7 +632,10 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
         if (id >= 0) {
             count = readByte()
             damage = readShort()
-            data = readNBT(compressed = true)?.tag
+            data = (readNBT(compressed = connection.version <= ProtocolVersion.MC1_7_6) {
+                if (connection.version >= ProtocolVersion.MC1_8) 0
+                else readShort().toInt()
+            })?.tag
         }
     }
 
@@ -581,7 +651,9 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
         if (id >= 0) {
             writeByte(count.toInt())
             writeShort(damage.toInt())
-            writeNBT(data, compressed = true)
+            writeNBT(data, compressed = connection.version <= ProtocolVersion.MC1_7_6) {
+                if (connection.version <= ProtocolVersion.MC1_7_6) writeShort(it)
+            }
         }
     }
 
@@ -739,6 +811,30 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
             writeShort(data.speedZ ?: 0)
         }
     }
+
+    /**
+     * Reads a position long from the buffer.
+     *
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    fun readPosition() = readLong().let {
+        Vector3(
+            (it shr 38).toInt(),
+            (it and 0xFFF).toInt(),
+            (it shl 26 shr 38).toInt()
+        )
+    }
+
+    /**
+     * Writes a position long into the buffer.
+     *
+     * @param  position        The position to write into the buffer.
+     * @author Koding
+     * @since  0.1.1-SNAPSHOT
+     */
+    fun writePosition(position: Vector3) =
+        writeLong(((position.x.toLong() and 0x3FFFFFFL) shl 38) or ((position.z.toLong() and 0x3FFFFFFL) shl 12) or (position.y.toLong() and 0xFFFL))
 
     /**
      * Set of modes which the UUIDs should be written using.

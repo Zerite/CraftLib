@@ -19,22 +19,23 @@ data class ServerPlayEntityTeleportPacket(
     var y: Double,
     var z: Double,
     var yaw: Float,
-    var pitch: Float
+    var pitch: Float,
+    var onGround: Boolean = false
 ) : EntityIdPacket, Packet() {
     companion object : PacketIO<ServerPlayEntityTeleportPacket> {
         override fun read(
             buffer: ProtocolBuffer,
             version: ProtocolVersion,
             connection: NettyConnection
-        ) =
-            ServerPlayEntityTeleportPacket(
-                buffer.readInt(),
-                buffer.readFixedPoint(),
-                buffer.readFixedPoint(),
-                buffer.readFixedPoint(),
-                buffer.readByte().toFloat(),
-                buffer.readByte().toFloat()
-            )
+        ) = ServerPlayEntityTeleportPacket(
+            if (version >= ProtocolVersion.MC1_8) buffer.readVarInt() else buffer.readInt(),
+            buffer.readFixedPoint(),
+            buffer.readFixedPoint(),
+            buffer.readFixedPoint(),
+            buffer.readByte().toFloat(),
+            buffer.readByte().toFloat(),
+            if (version >= ProtocolVersion.MC1_8) buffer.readBoolean() else false
+        )
 
         override fun write(
             buffer: ProtocolBuffer,
@@ -42,12 +43,15 @@ data class ServerPlayEntityTeleportPacket(
             packet: ServerPlayEntityTeleportPacket,
             connection: NettyConnection
         ) {
-            buffer.writeInt(packet.entityId)
+            if (version >= ProtocolVersion.MC1_8) buffer.writeVarInt(packet.entityId)
+            else buffer.writeInt(packet.entityId)
             buffer.writeFixedPoint(packet.x)
             buffer.writeFixedPoint(packet.y)
             buffer.writeFixedPoint(packet.z)
             buffer.writeByte(packet.yaw.toInt())
             buffer.writeByte(packet.pitch.toInt())
+            if (version >= ProtocolVersion.MC1_8)
+                buffer.writeBoolean(packet.onGround)
         }
     }
 }

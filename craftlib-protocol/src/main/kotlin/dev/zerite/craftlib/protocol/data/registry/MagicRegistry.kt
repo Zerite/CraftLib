@@ -44,6 +44,12 @@ object MagicRegistry {
             MagicGamemode.CREATIVE to 1
             MagicGamemode.ADVENTURE to 2
         }
+        ProtocolVersion.MC1_8 {
+            MagicGamemode.SURVIVAL to 0
+            MagicGamemode.CREATIVE to 1
+            MagicGamemode.ADVENTURE to 2
+            MagicGamemode.SPECTATOR to 3
+        }
     }
 
     /**
@@ -69,6 +75,20 @@ object MagicRegistry {
     val blockEntityUpdateAction = create<MagicBlockEntityUpdateAction> {
         ProtocolVersion.MC1_7_2 {
             MagicBlockEntityUpdateAction.SET_SPAWNER_MOB to 1
+        }
+        ProtocolVersion.MC1_7_6 {
+            MagicBlockEntityUpdateAction.SET_SPAWNER_MOB to 1
+            MagicBlockEntityUpdateAction.SET_COMMAND_BLOCK_TEXT to 2
+            MagicBlockEntityUpdateAction.SET_MOB_HEAD to 3
+            MagicBlockEntityUpdateAction.SET_FLOWER_POT to 4
+        }
+        ProtocolVersion.MC1_8 {
+            MagicBlockEntityUpdateAction.SET_SPAWNER_MOB to 1
+            MagicBlockEntityUpdateAction.SET_COMMAND_BLOCK_TEXT to 2
+            MagicBlockEntityUpdateAction.SET_BEACON_DATA to 3
+            MagicBlockEntityUpdateAction.SET_MOB_HEAD to 4
+            MagicBlockEntityUpdateAction.SET_FLOWER_POT to 5
+            MagicBlockEntityUpdateAction.SET_BANNER to 6
         }
     }
 
@@ -188,6 +208,20 @@ object MagicRegistry {
             MagicInventoryType.DROPPER to 10
             MagicInventoryType.HORSE to 11
         }
+        ProtocolVersion.MC1_8 {
+            MagicInventoryType.CHEST to "minecraft:chest"
+            MagicInventoryType.WORKBENCH to "minecraft:crafting_table"
+            MagicInventoryType.FURNACE to "minecraft:furnace"
+            MagicInventoryType.DISPENSER to "minecraft:dispenser"
+            MagicInventoryType.ENCHANTMENT_TABLE to "minecraft:enchanting_table"
+            MagicInventoryType.BREWING_STAND to "minecraft:brewing_stand"
+            MagicInventoryType.VILLAGER to "minecraft:villager"
+            MagicInventoryType.BEACON to "minecraft:beacon"
+            MagicInventoryType.ANVIL to "minecraft:anvil"
+            MagicInventoryType.HOPPER to "minecraft:hopper"
+            MagicInventoryType.DROPPER to "minecraft:dropper"
+            MagicInventoryType.HORSE to "EntityHorse"
+        }
     }
 
     /**
@@ -289,6 +323,15 @@ object MagicRegistry {
             MagicEntityAction.START_SPRINTING to 4
             MagicEntityAction.STOP_SPRINTING to 5
         }
+        ProtocolVersion.MC1_8 {
+            MagicEntityAction.CROUCH to 0
+            MagicEntityAction.UNCROUCH to 1
+            MagicEntityAction.LEAVE_BED to 2
+            MagicEntityAction.START_SPRINTING to 3
+            MagicEntityAction.STOP_SPRINTING to 4
+            MagicEntityAction.HORSE_JUMP to 5
+            MagicEntityAction.OPEN_INVENTORY to 6
+        }
     }
 
     /**
@@ -352,6 +395,183 @@ object MagicRegistry {
             MagicEntityProperty.GENERIC_ATTACK_DAMAGE to "generic.attackDamage"
             MagicEntityProperty.HORSE_JUMP_STRENGTH to "horse.jumpStrength"
             MagicEntityProperty.ZOMBIE_SPAWN_REINFORCEMENTS to "zombie.spawnReinforcements"
+        }
+    }
+
+    /**
+     * Maps where a chat message will be displayed.
+     */
+    val chatPosition = create<MagicChatPosition> {
+        ProtocolVersion.MC1_8 {
+            MagicChatPosition.CHAT to 0
+            MagicChatPosition.SYSTEM_MESSAGE to 1
+            MagicChatPosition.ACTION_BAR to 2
+        }
+    }
+
+    /**
+     * Stores the mappings for different particles.
+     */
+    val particleType = create<MagicParticleType> {
+        ProtocolVersion.MC1_7_2 {
+            MagicParticleType.EXPLOSION_NORMAL to "explode"
+            MagicParticleType.EXPLOSION_LARGE to "largeexplode"
+            MagicParticleType.EXPLOSION_HUGE to "hugeexplosion"
+            MagicParticleType.FIREWORKS_SPARK to "fireworksSpark"
+            MagicParticleType.WATER_BUBBLE to "bubble"
+            MagicParticleType.WATER_SPLASH to "splash"
+            MagicParticleType.WATER_WAKE to "wake"
+            MagicParticleType.SUSPENDED to "suspended"
+            MagicParticleType.SUSPENDED_DEPTH to "depthsuspend"
+            MagicParticleType.CRITICAL to "crit"
+            MagicParticleType.CRITICAL_MAGIC to "magicCrit"
+            MagicParticleType.SMOKE_NORMAL to "smoke"
+            MagicParticleType.SMOKE_LARGE to "largesmoke"
+            MagicParticleType.SPELL to "spell"
+            MagicParticleType.SPELL_INSTANT to "instantSpell"
+            MagicParticleType.SPELL_MOB to "mobSpell"
+            MagicParticleType.SPELL_MOB_AMBIENT to "mobSpellAmbient"
+            MagicParticleType.SPELL_WITCH to "witchMagic"
+            MagicParticleType.DRIP_WATER to "dripWater"
+            MagicParticleType.DRIP_LAVA to "dripLava"
+            MagicParticleType.VILLAGER_ANGRY to "angryVillager"
+            MagicParticleType.VILLAGER_HAPPY to "happyVillager"
+            MagicParticleType.TOWN_AURA to "townaura"
+            MagicParticleType.NOTE to "note"
+            MagicParticleType.PORTAL to "portal"
+            MagicParticleType.ENCHANTMENT_TABLE to "enchantmenttable"
+            MagicParticleType.FLAME to "flame"
+            MagicParticleType.LAVA to "lava"
+            MagicParticleType.FOOTSTEP to "footstep"
+            MagicParticleType.CLOUD to "cloud"
+            MagicParticleType.REDSTONE to "reddust"
+            MagicParticleType.SNOWBALL to "snowballpoof"
+            MagicParticleType.SNOW_SHOVEL to "snowshovel"
+            MagicParticleType.SLIME to "slime"
+            MagicParticleType.HEART to "heart"
+            MagicParticleType.BARRIER to "barrier"
+            MagicParticleType.ITEM_CRACK to "iconcrack_"
+            MagicParticleType.BLOCK_CRACK to "blockcrack_"
+            MagicParticleType.BLOCK_DUST to "blockdust_"
+            MagicParticleType.WATER_DROP to "droplet"
+            MagicParticleType.ITEM_TAKE to "take"
+            MagicParticleType.MOB_APPEARANCE to "mobappearance"
+        }
+        ProtocolVersion.MC1_8 {
+            MagicParticleType.EXPLOSION_NORMAL to 0
+            MagicParticleType.EXPLOSION_LARGE to 1
+            MagicParticleType.EXPLOSION_HUGE to 2
+            MagicParticleType.FIREWORKS_SPARK to 3
+            MagicParticleType.WATER_BUBBLE to 4
+            MagicParticleType.WATER_WAKE to 5
+            MagicParticleType.WATER_SPLASH to 6
+            MagicParticleType.SUSPENDED to 7
+            MagicParticleType.TOWN_AURA to 8
+            MagicParticleType.CRITICAL to 9
+            MagicParticleType.CRITICAL_MAGIC to 10
+            MagicParticleType.SMOKE_NORMAL to 11
+            MagicParticleType.SMOKE_LARGE to 12
+            MagicParticleType.SPELL_MOB to 13
+            MagicParticleType.SPELL_INSTANT to 14
+            MagicParticleType.SPELL to 15
+            MagicParticleType.SPELL_WITCH to 17
+            MagicParticleType.DRIP_WATER to 18
+            MagicParticleType.DRIP_LAVA to 19
+            MagicParticleType.VILLAGER_ANGRY to 20
+            MagicParticleType.VILLAGER_HAPPY to 21
+            MagicParticleType.SUSPENDED_DEPTH to 22
+            MagicParticleType.NOTE to 23
+            MagicParticleType.PORTAL to 24
+            MagicParticleType.ENCHANTMENT_TABLE to 25
+            MagicParticleType.FLAME to 26
+            MagicParticleType.LAVA to 27
+            MagicParticleType.FOOTSTEP to 28
+            MagicParticleType.CLOUD to 29
+            MagicParticleType.REDSTONE to 30
+            MagicParticleType.SNOWBALL to 31
+            MagicParticleType.SNOW_SHOVEL to 32
+            MagicParticleType.SLIME to 33
+            MagicParticleType.HEART to 34
+            MagicParticleType.BARRIER to 35
+            MagicParticleType.ITEM_CRACK to 36
+            MagicParticleType.BLOCK_CRACK to 37
+            MagicParticleType.BLOCK_DUST to 38
+            MagicParticleType.WATER_DROP to 49
+            MagicParticleType.ITEM_TAKE to 40
+            MagicParticleType.MOB_APPEARANCE to 41
+        }
+    }
+
+    /**
+     * Determines when a teams name tag should be visible.
+     */
+    val teamNameTagVisibility = create<MagicTeamNameTagVisibility> {
+        ProtocolVersion.MC1_8 {
+            MagicTeamNameTagVisibility.ALWAYS to "always"
+            MagicTeamNameTagVisibility.HIDE_FOR_OTHER_TEAMS to "hideForOtherTeams"
+            MagicTeamNameTagVisibility.HIDE_FOR_OWN_TEAM to "hideForOwnTeam"
+            MagicTeamNameTagVisibility.NEVER to "never"
+        }
+    }
+
+    /**
+     * Sent to the client to update their combat status.
+     */
+    val combatEvent = create<MagicCombatEvent> {
+        ProtocolVersion.MC1_8 {
+            MagicCombatEvent.ENTER_COMBAT to 0
+            MagicCombatEvent.END_COMBAT to 1
+            MagicCombatEvent.ENTITY_DEAD to 2
+        }
+    }
+
+    /**
+     * Controls the functionality of the world border packet.
+     */
+    val worldBorderAction = create<MagicWorldBorderAction> {
+        ProtocolVersion.MC1_8 {
+            MagicWorldBorderAction.SET_SIZE to 0
+            MagicWorldBorderAction.LERP_SIZE to 1
+            MagicWorldBorderAction.SET_CENTER to 2
+            MagicWorldBorderAction.INITIALIZE to 3
+            MagicWorldBorderAction.SET_WARNING_TIME to 4
+            MagicWorldBorderAction.SET_WARNING_BLOCKS to 5
+        }
+    }
+
+    /**
+     * Defines the action which the title packet will execute.
+     */
+    val titleAction = create<MagicTitleAction> {
+        ProtocolVersion.MC1_8 {
+            MagicTitleAction.TITLE to 0
+            MagicTitleAction.SUBTITLE to 1
+            MagicTitleAction.TIMES to 2
+            MagicTitleAction.CLEAR to 3
+            MagicTitleAction.RESET to 4
+        }
+    }
+
+    /**
+     * Controls how the use entity packet works.
+     */
+    val useEntityType = create<MagicUseEntityType> {
+        ProtocolVersion.MC1_7_2 {
+            MagicUseEntityType.INTERACT to 0
+            MagicUseEntityType.ATTACK to 1
+            MagicUseEntityType.INTERACT_AT to 2
+        }
+    }
+
+    /**
+     * Indicates the result of the resource pack being applied.
+     */
+    val resourcePackResult = create<MagicResourcePackResult> {
+        ProtocolVersion.MC1_8 {
+            MagicResourcePackResult.LOADED to 0
+            MagicResourcePackResult.DECLINED to 1
+            MagicResourcePackResult.FAILED_DOWNLOAD to 2
+            MagicResourcePackResult.ACCEPTED to 3
         }
     }
 

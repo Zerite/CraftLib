@@ -9,9 +9,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-class ServerPlayEntityLookTest : PacketTest<ServerPlayEntityLookPacket>(
-    ServerPlayEntityLookPacket
-) {
+class ServerPlayEntityLookTest : PacketTest<ServerPlayEntityLookPacket>(ServerPlayEntityLookPacket) {
 
     init {
         example(
@@ -39,6 +37,12 @@ class ServerPlayEntityLookTest : PacketTest<ServerPlayEntityLookPacket>(
                 writeInt(127)
                 writeByte(64)
                 writeByte(256)
+            }
+            ProtocolVersion.MC1_8 {
+                writeVarInt(127)
+                writeByte(64)
+                writeByte(256)
+                writeBoolean(false)
             }
         }
     }

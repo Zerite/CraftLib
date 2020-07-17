@@ -19,12 +19,22 @@ class ClientPlayEntityActionTest : PacketTest<ClientPlayEntityActionPacket>(Clie
                 writeByte(3)
                 writeInt(100)
             }
+            ProtocolVersion.MC1_8 {
+                writeVarInt(100)
+                writeVarInt(2)
+                writeVarInt(100)
+            }
         }
         example(ClientPlayEntityActionPacket(1277, MagicEntityAction.START_SPRINTING, 2)) {
             ProtocolVersion.MC1_7_2 {
                 writeInt(1277)
                 writeByte(4)
                 writeInt(2)
+            }
+            ProtocolVersion.MC1_8 {
+                writeVarInt(1277)
+                writeVarInt(3)
+                writeVarInt(2)
             }
         }
     }

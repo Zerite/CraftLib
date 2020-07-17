@@ -7,6 +7,7 @@ import dev.zerite.craftlib.protocol.connection.NettyConnection
 import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
 import dev.zerite.craftlib.protocol.data.registry.impl.MagicTeamFriendlyFire
 import dev.zerite.craftlib.protocol.data.registry.impl.MagicTeamMode
+import dev.zerite.craftlib.protocol.data.registry.impl.MagicTeamNameTagVisibility
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
 /**
@@ -22,6 +23,8 @@ data class ServerPlayTeamsPacket(
     var prefix: String? = null,
     var suffix: String? = null,
     var friendlyFire: RegistryEntry? = null,
+    var nameTagVisibility: RegistryEntry? = null,
+    var color: Int? = null,
     var players: Array<String>? = null
 ) : Packet() {
     companion object : PacketIO<ServerPlayTeamsPacket> {
@@ -42,8 +45,13 @@ data class ServerPlayTeamsPacket(
                 buffer.takeIf { mode == MagicTeamMode.CREATE_TEAM || mode == MagicTeamMode.UPDATE_INFO }
                     ?.readByte()?.toInt()
                     ?.let { MagicTeamFriendlyFire[version, it] },
+                buffer.takeIf { version >= ProtocolVersion.MC1_8 && (mode == MagicTeamMode.CREATE_TEAM || mode == MagicTeamMode.UPDATE_INFO) }
+                    ?.readString()
+                    ?.let { MagicTeamNameTagVisibility[version, it] },
+                buffer.takeIf { version >= ProtocolVersion.MC1_8 && (mode == MagicTeamMode.CREATE_TEAM || mode == MagicTeamMode.UPDATE_INFO) }
+                    ?.readByte()?.toInt(),
                 buffer.takeIf { mode == MagicTeamMode.CREATE_TEAM || mode == MagicTeamMode.ADD_PLAYERS || mode == MagicTeamMode.REMOVE_PLAYERS }
-                    ?.readArray({ readShort().toInt() }) { readString() }
+                    ?.readArray({ if (version >= ProtocolVersion.MC1_8) readVarInt() else readShort().toInt() }) { readString() }
             )
         }
 
@@ -61,10 +69,21 @@ data class ServerPlayTeamsPacket(
                 buffer.writeString(packet.prefix ?: "")
                 buffer.writeString(packet.suffix ?: "")
                 buffer.writeByte(packet.friendlyFire?.let { MagicTeamFriendlyFire[version, it, Int::class] } ?: 0)
+
+                if (version >= ProtocolVersion.MC1_8) {
+                    buffer.writeString(
+                        MagicTeamNameTagVisibility[version, packet.nameTagVisibility
+                            ?: MagicTeamNameTagVisibility.ALWAYS, String::class] ?: "always"
+                    )
+                    buffer.writeByte(packet.color ?: 16)
+                }
             }
 
             if (packet.mode == MagicTeamMode.CREATE_TEAM || packet.mode == MagicTeamMode.ADD_PLAYERS || packet.mode == MagicTeamMode.REMOVE_PLAYERS)
-                buffer.writeArray(packet.players ?: emptyArray(), { writeShort(it) }) {
+                buffer.writeArray(
+                    packet.players ?: emptyArray(),
+                    { if (version >= ProtocolVersion.MC1_8) writeVarInt(it) else writeShort(it) }
+                ) {
                     writeString(it)
                 }
         }

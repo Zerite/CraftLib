@@ -32,6 +32,10 @@ class ClientLoginEncryptionResponseTest :
                 writeByteArray(encodedSecret) { writeShort(it) }
                 writeByteArray(encodedVerify) { writeShort(it) }
             }
+            ProtocolVersion.MC1_8 {
+                writeByteArray(encodedSecret) { writeVarInt(it) }
+                writeByteArray(encodedVerify) { writeVarInt(it) }
+            }
         }
     }
 

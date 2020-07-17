@@ -17,14 +17,14 @@ class ServerPlayMultiBlockChangeTest : PacketTest<ServerPlayMultiBlockChangePack
             ServerPlayMultiBlockChangePacket(
                 10,
                 10,
-                arrayOf(ServerPlayMultiBlockChangePacket.Record(10, 10, 10, 10, 10))
+                arrayOf(ServerPlayMultiBlockChangePacket.Record(0, 10, 10, 10, 10))
             )
         )
         example(
             ServerPlayMultiBlockChangePacket(
                 20,
                 40,
-                arrayOf(ServerPlayMultiBlockChangePacket.Record(5, 20, 2, 4, 6))
+                arrayOf(ServerPlayMultiBlockChangePacket.Record(0, 20, 2, 4, 6))
             )
         ) {
             ProtocolVersion.MC1_7_2 {
@@ -35,7 +35,16 @@ class ServerPlayMultiBlockChangeTest : PacketTest<ServerPlayMultiBlockChangePack
 
                 // Block record
                 writeShort((2 and 15 shl 12) or (6 and 15 shl 8) or (4 and 255))
-                writeShort((20 shl 4 and 4095) or (5 and 15))
+                writeShort(20 shl 4 and 4095)
+            }
+            ProtocolVersion.MC1_8 {
+                writeInt(20)
+                writeInt(40)
+                writeVarInt(1)
+
+                // Block record
+                writeShort((2 and 15 shl 12) or (6 and 15 shl 8) or (4 and 255))
+                writeVarInt(20 shl 4 and 4095)
             }
         }
     }

@@ -14,7 +14,16 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  */
 class ServerPlaySpawnPaintingTest : PacketTest<ServerPlaySpawnPaintingPacket>(ServerPlaySpawnPaintingPacket) {
     init {
-        example(ServerPlaySpawnPaintingPacket(0, "Example", 10, 20, 30, ServerPlaySpawnPaintingPacket.Direction.POSITIVE_X)) {
+        example(
+            ServerPlaySpawnPaintingPacket(
+                0,
+                "Example",
+                10,
+                20,
+                30,
+                ServerPlaySpawnPaintingPacket.Direction.POSITIVE_X
+            )
+        ) {
             ProtocolVersion.MC1_7_2 {
                 writeVarInt(0)
                 writeString("Example")
@@ -23,8 +32,23 @@ class ServerPlaySpawnPaintingTest : PacketTest<ServerPlaySpawnPaintingPacket>(Se
                 writeInt(30)
                 writeInt(3)
             }
+            ProtocolVersion.MC1_8 {
+                writeVarInt(0)
+                writeString("Example")
+                writeLong(((10L and 0x3FFFFFFL) shl 38) or ((30L and 0x3FFFFFFL) shl 12) or (20L and 0xFFFL))
+                writeByte(3)
+            }
         }
-        example(ServerPlaySpawnPaintingPacket(100, "Painting", 20, 24, 28, ServerPlaySpawnPaintingPacket.Direction.NEGATIVE_X)) {
+        example(
+            ServerPlaySpawnPaintingPacket(
+                100,
+                "Painting",
+                20,
+                24,
+                28,
+                ServerPlaySpawnPaintingPacket.Direction.NEGATIVE_X
+            )
+        ) {
             ProtocolVersion.MC1_7_2 {
                 writeVarInt(100)
                 writeString("Painting")
@@ -32,6 +56,12 @@ class ServerPlaySpawnPaintingTest : PacketTest<ServerPlaySpawnPaintingPacket>(Se
                 writeInt(24)
                 writeInt(28)
                 writeInt(1)
+            }
+            ProtocolVersion.MC1_8 {
+                writeVarInt(100)
+                writeString("Painting")
+                writeLong(((20L and 0x3FFFFFFL) shl 38) or ((28L and 0x3FFFFFFL) shl 12) or (24L and 0xFFFL))
+                writeByte(1)
             }
         }
     }

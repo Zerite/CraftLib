@@ -93,7 +93,7 @@ class ServerPlaySpawnPlayerTest : PacketTest<ServerPlaySpawnPlayerPacket>(Server
             }
             ProtocolVersion.MC1_8 {
                 writeVarInt(100)
-                writeUUID(UUID(20L, 30L), mode = ProtocolBuffer.UUIDMode.STRING)
+                writeUUID(UUID(20L, 30L), mode = ProtocolBuffer.UUIDMode.RAW)
                 writeInt(1280)
                 writeInt(1280)
                 writeInt(1280)
@@ -120,7 +120,7 @@ class ServerPlaySpawnPlayerTest : PacketTest<ServerPlaySpawnPlayerPacket>(Server
                 0,
                 EntityMetadata()
             ),
-            minimumVersion = ProtocolVersion.MC1_7_6,
+            minimumVersion = ProtocolVersion.MC1_7_2,
             maximumVersion = ProtocolVersion.MC1_7_6
         ) {
             ProtocolVersion.MC1_7_6 {

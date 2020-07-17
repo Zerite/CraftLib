@@ -9,12 +9,12 @@ import dev.zerite.craftlib.nbt.impl.NamedTag
 import dev.zerite.craftlib.protocol.connection.NettyConnection
 import dev.zerite.craftlib.protocol.data.entity.EntityMetadata
 import dev.zerite.craftlib.protocol.data.entity.MetadataValue
+import dev.zerite.craftlib.protocol.data.entity.RotationData
 import dev.zerite.craftlib.protocol.util.ext.toUuid
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.ByteBufInputStream
 import io.netty.buffer.Unpooled
-import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.DataInput
 import java.io.DataInputStream
@@ -271,6 +271,19 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
     fun writeBytes(bytes: ByteArray): ByteBuf = buf.writeBytes(bytes)
 
     /**
+     * Write a byte array into the buffer with the given offset and length.
+     *
+     * @param  bytes     The raw bytes to write.
+     * @param  offset    The offset to begin writing at.
+     * @param  length    The size of the bytes we are writing until.
+     *
+     * @author Koding
+     * @since  0.1.1-SNAPSHOT
+     */
+    @Suppress("UNUSED")
+    fun writeBytes(bytes: ByteArray, offset: Int, length: Int): ByteBuf = buf.writeBytes(bytes, offset, length)
+
+    /**
      * Reads an unsigned short from the buffer and returns it.
      *
      * @author Koding
@@ -387,7 +400,7 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
      * @author Koding
      * @since  0.1.0-SNAPSHOT
      */
-    fun readChat() = readString().apply { println(this) }.chatComponent
+    fun readChat() = readString().chatComponent
 
     /**
      * Writes a chat component to the buffer by converting it
@@ -579,8 +592,8 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
      */
     @Suppress("UNUSED")
     fun readNBT(
-        compressed: Boolean = false,
-        length: ProtocolBuffer.() -> Int = { readShort().toInt() }
+        compressed: Boolean = connection.version <= ProtocolVersion.MC1_7_6,
+        length: ProtocolBuffer.() -> Int = { if (connection.version >= ProtocolVersion.MC1_8) 0 else readShort().toInt() }
     ) = let {
         val i = readerIndex
         if (connection.version >= ProtocolVersion.MC1_8)
@@ -608,8 +621,8 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
     @Suppress("UNUSED")
     fun writeNBT(
         tag: CompoundTag?,
-        compressed: Boolean = false,
-        length: ProtocolBuffer.(Int) -> Unit = { writeShort(it) }
+        compressed: Boolean = connection.version <= ProtocolVersion.MC1_7_6,
+        length: ProtocolBuffer.(Int) -> Unit = { if (connection.version <= ProtocolVersion.MC1_7_6) writeShort(it) }
     ): Any = if (tag == null)
         if (connection.version >= ProtocolVersion.MC1_8) writeByte(0)
         else length(-1)
@@ -632,10 +645,7 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
         if (id >= 0) {
             count = readByte()
             damage = readShort()
-            data = (readNBT(compressed = connection.version <= ProtocolVersion.MC1_7_6) {
-                if (connection.version >= ProtocolVersion.MC1_8) 0
-                else readShort().toInt()
-            })?.tag
+            data = readNBT()?.tag
         }
     }
 
@@ -651,9 +661,7 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
         if (id >= 0) {
             writeByte(count.toInt())
             writeShort(damage.toInt())
-            writeNBT(data, compressed = connection.version <= ProtocolVersion.MC1_7_6) {
-                if (connection.version <= ProtocolVersion.MC1_7_6) writeShort(it)
-            }
+            writeNBT(data)
         }
     }
 
@@ -685,6 +693,11 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
                         readInt(),
                         readInt()
                     )
+                    7 -> RotationData(
+                        readFloat(),
+                        readFloat(),
+                        readFloat()
+                    )
                     else -> continue@loop
                 }
             )
@@ -715,6 +728,12 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
                     writeInt(vec.x)
                     writeInt(vec.y)
                     writeInt(vec.z)
+                }
+                7 -> {
+                    val rotation = value.value as RotationData
+                    writeFloat(rotation.pitch)
+                    writeFloat(rotation.yaw)
+                    writeFloat(rotation.roll)
                 }
             }
         }

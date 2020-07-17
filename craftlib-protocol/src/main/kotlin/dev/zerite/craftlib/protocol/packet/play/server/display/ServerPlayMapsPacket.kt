@@ -20,7 +20,6 @@ data class ServerPlayMapsPacket(
     var rows: Int? = null,
     var x: Int? = null,
     var y: Int? = null,
-    var length: Int? = null,
     var data: ByteArray? = ByteArray(0)
 ) : Packet() {
     companion object : PacketIO<ServerPlayMapsPacket> {
@@ -40,18 +39,21 @@ data class ServerPlayMapsPacket(
                     readByte().toInt()
                 )
             } else arrayOf()
-            val columns = if (version >= ProtocolVersion.MC1_8) buffer.readByte().toInt() else 0
+            val columns = if (version >= ProtocolVersion.MC1_8) buffer.readUnsignedByte().toInt() else 0
 
             return ServerPlayMapsPacket(
                 damage,
                 scale,
                 players,
                 columns,
-                if (columns > 0) buffer.readByte().toInt() else null,
-                if (columns > 0) buffer.readByte().toInt() else null,
-                if (columns > 0) buffer.readByte().toInt() else null,
-                if (columns > 0) buffer.readVarInt() else null,
-                if (columns > 0) buffer.readByteArray() else if (version <= ProtocolVersion.MC1_7_6) buffer.readByteArray { readShort().toInt() } else ByteArray(0)
+                if (columns > 0) buffer.readUnsignedByte().toInt() else null,
+                if (columns > 0) buffer.readUnsignedByte().toInt() else null,
+                if (columns > 0) buffer.readUnsignedByte().toInt() else null,
+                when {
+                    columns > 0 -> buffer.readByteArray()
+                    version <= ProtocolVersion.MC1_7_6 -> buffer.readByteArray { readShort().toInt() }
+                    else -> ByteArray(0)
+                }
             )
         }
 
@@ -75,7 +77,6 @@ data class ServerPlayMapsPacket(
                     buffer.writeByte(packet.rows ?: 0)
                     buffer.writeByte(packet.x ?: 0)
                     buffer.writeByte(packet.y ?: 0)
-                    buffer.writeVarInt(packet.length ?: 0)
                     buffer.writeByteArray(packet.data ?: ByteArray(0))
                 }
             } else buffer.writeByteArray(packet.data ?: ByteArray(0)) { writeShort(it) }
@@ -108,7 +109,6 @@ data class ServerPlayMapsPacket(
         if (rows != other.rows) return false
         if (x != other.x) return false
         if (y != other.y) return false
-        if (length != other.length) return false
         if (data != null) {
             if (other.data == null) return false
             if (!data!!.contentEquals(other.data!!)) return false
@@ -125,7 +125,6 @@ data class ServerPlayMapsPacket(
         result = 31 * result + (rows ?: 0)
         result = 31 * result + (x ?: 0)
         result = 31 * result + (y ?: 0)
-        result = 31 * result + (length ?: 0)
         result = 31 * result + (data?.contentHashCode() ?: 0)
         return result
     }

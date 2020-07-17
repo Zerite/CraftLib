@@ -22,7 +22,22 @@ class ServerPlayWindowItemsTest : PacketTest<ServerPlayWindowItemsPacket>(Server
             ProtocolVersion.MC1_7_2 {
                 writeByte(21)
                 writeShort(1)
-                writeSlot(Slot(42, count = 64))
+
+                // Slot
+                writeShort(42)
+                writeByte(64)
+                writeShort(0)
+                writeShort(-1)
+            }
+            ProtocolVersion.MC1_8 {
+                writeByte(21)
+                writeShort(1)
+
+                // Slot
+                writeShort(42)
+                writeByte(64)
+                writeShort(0)
+                writeByte(0)
             }
         }
     }

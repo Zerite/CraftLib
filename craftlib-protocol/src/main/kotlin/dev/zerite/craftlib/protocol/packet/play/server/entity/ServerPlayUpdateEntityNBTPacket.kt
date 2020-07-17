@@ -25,7 +25,7 @@ data class ServerPlayUpdateEntityNBTPacket(
             connection: NettyConnection
         ) = ServerPlayUpdateEntityNBTPacket(
             buffer.readVarInt(),
-            buffer.readNBT(compressed = true)?.tag ?: CompoundTag()
+            buffer.readNBT(compressed = false)?.tag ?: CompoundTag()
         )
 
         override fun write(
@@ -35,7 +35,7 @@ data class ServerPlayUpdateEntityNBTPacket(
             connection: NettyConnection
         ) {
             buffer.writeVarInt(packet.entityId)
-            buffer.writeNBT(packet.tag, compressed = true)
+            buffer.writeNBT(packet.tag, compressed = false)
         }
     }
 }

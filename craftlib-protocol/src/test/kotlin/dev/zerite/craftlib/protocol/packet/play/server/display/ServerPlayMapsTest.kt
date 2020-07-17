@@ -37,7 +37,6 @@ class ServerPlayMapsTest : PacketTest<ServerPlayMapsPacket>(ServerPlayMapsPacket
                 3,
                 3,
                 3,
-                3,
                 ByteArray(0)
             ), minimumVersion = ProtocolVersion.MC1_8
         ) {
@@ -55,7 +54,6 @@ class ServerPlayMapsTest : PacketTest<ServerPlayMapsPacket>(ServerPlayMapsPacket
                 writeByte(3)
                 writeByte(3)
                 writeByte(3)
-                writeVarInt(3)
                 writeVarInt(0)
             }
         }

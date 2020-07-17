@@ -81,6 +81,19 @@ data class MetadataValue<T>(val id: Int, var value: T) {
         is String -> 4
         is Slot -> 5
         is Vector3 -> 6
+        is RotationData -> 7
         else -> null
     }
 }
+
+/**
+ * Stores rotation information for entity metadata.
+ *
+ * @author Koding
+ * @since  0.1.1-SNAPSHOT
+ */
+data class RotationData(
+    var pitch: Float,
+    var yaw: Float,
+    var roll: Float
+)

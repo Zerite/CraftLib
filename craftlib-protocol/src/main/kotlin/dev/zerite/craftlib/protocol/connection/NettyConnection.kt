@@ -3,6 +3,7 @@ package dev.zerite.craftlib.protocol.connection
 import dev.zerite.craftlib.chat.component.BaseChatComponent
 import dev.zerite.craftlib.chat.component.StringChatComponent
 import dev.zerite.craftlib.protocol.Packet
+import dev.zerite.craftlib.protocol.connection.io.CompressionCodec
 import dev.zerite.craftlib.protocol.connection.io.EncryptionCodec
 import dev.zerite.craftlib.protocol.version.MinecraftProtocol
 import dev.zerite.craftlib.protocol.version.PacketDirection
@@ -69,6 +70,20 @@ open class NettyConnection(val direction: PacketDirection) : SimpleChannelInboun
      * If applicable, the server which this connection is associated with.
      */
     var server: NettyServer? = null
+
+    /**
+     * The threshold which indicates at which point packets will be compressed.
+     */
+    var compressionThreshold: Int = -1
+        set(value) {
+            field = value
+
+            channel.pipeline().apply {
+                if (value >= 0) (get("compression") as? CompressionCodec)?.let { it.threshold = value }
+                    ?: run { addBefore("packet", "compression", CompressionCodec(this@NettyConnection, value)) }
+                else remove("compression")
+            }
+        }
 
     /**
      * Send a packet to the remote connection and optionally listen

@@ -16,13 +16,13 @@ class ServerPlayUpdateEntityNBTTest : PacketTest<ServerPlayUpdateEntityNBTPacket
         example(ServerPlayUpdateEntityNBTPacket(50, CompoundTag())) {
             ProtocolVersion.MC1_8 {
                 writeVarInt(50)
-                writeNBT(CompoundTag(), compressed = true)
+                writeNBT(CompoundTag(), compressed = false)
             }
         }
         example(ServerPlayUpdateEntityNBTPacket(42, compound { "test" to "test" })) {
             ProtocolVersion.MC1_8 {
                 writeVarInt(42)
-                writeNBT(compound { "test" to "test" }, compressed = true)
+                writeNBT(compound { "test" to "test" }, compressed = false)
             }
         }
     }

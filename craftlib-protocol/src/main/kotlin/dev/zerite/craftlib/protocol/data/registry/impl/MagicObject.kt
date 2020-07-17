@@ -11,7 +11,7 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-data class MagicObject(override val name: String, val boundingXZ: Double, val boundingY: Double) : RegistryEntry(name) {
+open class MagicObject(override val name: String, @Suppress("UNUSED") val boundingXZ: Double, @Suppress("UNUSED") val boundingY: Double) : RegistryEntry(name) {
 
     @Suppress("UNUSED")
     companion object : IMinecraftRegistry<MagicObject> by LazyRegistryDelegate({ MagicRegistry.objects }) {
@@ -35,6 +35,9 @@ data class MagicObject(override val name: String, val boundingXZ: Double, val bo
         val THROWN_POTION = MagicObject("Potion", 0.25, 0.25)
         val FALLING_DRAGON_EGG = MagicObject("Falling Dragon Egg", 0.98, 0.98)
         val THROWN_EXP_BOTTLE = MagicObject("Experience Bottle", 0.25, 0.25)
+        val FIREWORK_ROCKET = MagicObject("Firework Rocket", 0.25, 0.25)
+        val LEASH_KNOT = MagicObject("Leash Knot", 0.5, 0.5)
+        val ARMOR_STAND = MagicObject("Armor Stand", 0.5, 2.0)
         val FISHING_FLOAT = MagicObject("Fishing Float", 0.25, 0.25)
     }
 

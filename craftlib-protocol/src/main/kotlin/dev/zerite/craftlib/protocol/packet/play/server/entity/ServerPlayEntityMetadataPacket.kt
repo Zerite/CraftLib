@@ -25,7 +25,7 @@ data class ServerPlayEntityMetadataPacket(
             version: ProtocolVersion,
             connection: NettyConnection
         ) = ServerPlayEntityMetadataPacket(
-            buffer.readInt(),
+            if (version >= ProtocolVersion.MC1_8) buffer.readVarInt() else buffer.readInt(),
             buffer.readMetadata()
         )
 
@@ -35,7 +35,8 @@ data class ServerPlayEntityMetadataPacket(
             packet: ServerPlayEntityMetadataPacket,
             connection: NettyConnection
         ) {
-            buffer.writeInt(packet.entityId)
+            if (version >= ProtocolVersion.MC1_8) buffer.writeVarInt(packet.entityId)
+            else buffer.writeInt(packet.entityId)
             buffer.writeMetadata(packet.metadata)
         }
     }

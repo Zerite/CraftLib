@@ -16,6 +16,9 @@ class ServerPlayDestroyEntitiesTest : PacketTest<ServerPlayDestroyEntitiesPacket
             ProtocolVersion.MC1_7_2 {
                 writeByte(0)
             }
+            ProtocolVersion.MC1_8 {
+                writeVarInt(0)
+            }
         }
         example(ServerPlayDestroyEntitiesPacket(IntArray(3) { it })) {
             ProtocolVersion.MC1_7_2 {
@@ -23,6 +26,12 @@ class ServerPlayDestroyEntitiesTest : PacketTest<ServerPlayDestroyEntitiesPacket
                 writeInt(0)
                 writeInt(1)
                 writeInt(2)
+            }
+            ProtocolVersion.MC1_8 {
+                writeVarInt(3)
+                writeVarInt(0)
+                writeVarInt(1)
+                writeVarInt(2)
             }
         }
     }

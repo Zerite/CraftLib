@@ -24,8 +24,8 @@ data class ServerPlaySetExperiencePacket(
             connection: NettyConnection
         ) = ServerPlaySetExperiencePacket(
             buffer.readFloat(),
-            buffer.readShort().toInt(),
-            buffer.readShort().toInt()
+            if (version >= ProtocolVersion.MC1_8) buffer.readVarInt() else buffer.readShort().toInt(),
+            if (version >= ProtocolVersion.MC1_8) buffer.readVarInt() else buffer.readShort().toInt()
         )
 
         override fun write(
@@ -35,8 +35,14 @@ data class ServerPlaySetExperiencePacket(
             connection: NettyConnection
         ) {
             buffer.writeFloat(packet.experience)
-            buffer.writeShort(packet.level)
-            buffer.writeShort(packet.total)
+
+            if (version >= ProtocolVersion.MC1_8) {
+                buffer.writeVarInt(packet.level)
+                buffer.writeVarInt(packet.total)
+            } else {
+                buffer.writeShort(packet.level)
+                buffer.writeShort(packet.total)
+            }
         }
     }
 }

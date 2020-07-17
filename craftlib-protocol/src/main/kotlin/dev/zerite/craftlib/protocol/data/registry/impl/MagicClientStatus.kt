@@ -12,7 +12,7 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-class MagicClientStatus(name: String) : RegistryEntry(name) {
+open class MagicClientStatus(name: String) : RegistryEntry(name) {
     companion object : IMinecraftRegistry<MagicClientStatus> by LazyRegistryDelegate({ MagicRegistry.clientStatus }) {
         val PERFORM_RESPAWN = MagicClientStatus("Perform Respawn")
         val REQUEST_STATS = MagicClientStatus("Request Statistics")

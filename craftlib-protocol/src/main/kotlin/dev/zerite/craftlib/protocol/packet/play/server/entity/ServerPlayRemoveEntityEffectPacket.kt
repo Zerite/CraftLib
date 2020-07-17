@@ -25,7 +25,7 @@ data class ServerPlayRemoveEntityEffectPacket(
             version: ProtocolVersion,
             connection: NettyConnection
         ) = ServerPlayRemoveEntityEffectPacket(
-            buffer.readInt(),
+            if (version >= ProtocolVersion.MC1_8) buffer.readVarInt() else buffer.readInt(),
             MagicPotionEffect[version, buffer.readByte().toInt()]
         )
 
@@ -35,7 +35,8 @@ data class ServerPlayRemoveEntityEffectPacket(
             packet: ServerPlayRemoveEntityEffectPacket,
             connection: NettyConnection
         ) {
-            buffer.writeInt(packet.entityId)
+            if (version >= ProtocolVersion.MC1_8) buffer.writeVarInt(packet.entityId)
+            else buffer.writeInt(packet.entityId)
             buffer.writeByte(MagicPotionEffect[version, packet.effect, Int::class] ?: 0)
         }
     }

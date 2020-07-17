@@ -30,6 +30,12 @@ class ServerPlayEntityVelocityTest : PacketTest<ServerPlayEntityVelocityPacket>(
                 writeShort(8000)
                 writeShort((1.5 * 8000).roundToInt())
             }
+            ProtocolVersion.MC1_8 {
+                writeVarInt(300)
+                writeShort(0)
+                writeShort(8000)
+                writeShort((1.5 * 8000).roundToInt())
+            }
         }
         example(
             ServerPlayEntityVelocityPacket(
@@ -41,6 +47,12 @@ class ServerPlayEntityVelocityTest : PacketTest<ServerPlayEntityVelocityPacket>(
         ) {
             ProtocolVersion.MC1_7_2 {
                 writeInt(150)
+                writeShort(0)
+                writeShort(0)
+                writeShort(0)
+            }
+            ProtocolVersion.MC1_8 {
+                writeVarInt(150)
                 writeShort(0)
                 writeShort(0)
                 writeShort(0)

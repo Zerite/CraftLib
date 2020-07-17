@@ -24,6 +24,10 @@ class ServerPlayCollectItemTest : PacketTest<ServerPlayCollectItemPacket>(Server
                 writeInt(420)
                 writeInt(69)
             }
+            ProtocolVersion.MC1_8 {
+                writeVarInt(420)
+                writeVarInt(69)
+            }
         }
     }
 

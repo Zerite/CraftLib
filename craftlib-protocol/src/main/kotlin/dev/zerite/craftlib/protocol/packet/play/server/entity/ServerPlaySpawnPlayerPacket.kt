@@ -37,9 +37,15 @@ data class ServerPlaySpawnPlayerPacket(
             connection: NettyConnection
         ) = ServerPlaySpawnPlayerPacket(
             buffer.readVarInt(),
-            buffer.readUUID(mode = ProtocolBuffer.UUIDMode.DASHES.takeIf { version < ProtocolVersion.MC1_7_6 } ?: ProtocolBuffer.UUIDMode.STRING),
-            buffer.readString(),
-            buffer.readData(),
+            buffer.readUUID(
+                mode = when {
+                    version < ProtocolVersion.MC1_7_6 -> ProtocolBuffer.UUIDMode.DASHES
+                    version == ProtocolVersion.MC1_7_6 -> ProtocolBuffer.UUIDMode.STRING
+                    else -> ProtocolBuffer.UUIDMode.RAW
+                }
+            ),
+            if (version >= ProtocolVersion.MC1_8) "Player" else buffer.readString(),
+            if (version >= ProtocolVersion.MC1_8) mutableMapOf() else buffer.readData(),
             buffer.readFixedPoint(),
             buffer.readFixedPoint(),
             buffer.readFixedPoint(),
@@ -56,9 +62,17 @@ data class ServerPlaySpawnPlayerPacket(
             connection: NettyConnection
         ) {
             buffer.writeVarInt(packet.entityId)
-            buffer.writeUUID(packet.uuid, mode = ProtocolBuffer.UUIDMode.DASHES.takeIf { version < ProtocolVersion.MC1_7_6 } ?: ProtocolBuffer.UUIDMode.STRING)
-            buffer.writeString(packet.name)
-            if (version >= ProtocolVersion.MC1_7_6) {
+            buffer.writeUUID(
+                packet.uuid,
+                mode = when {
+                    version < ProtocolVersion.MC1_7_6 -> ProtocolBuffer.UUIDMode.DASHES
+                    version == ProtocolVersion.MC1_7_6 -> ProtocolBuffer.UUIDMode.STRING
+                    else -> ProtocolBuffer.UUIDMode.RAW
+                }
+            )
+            if (version <= ProtocolVersion.MC1_7_6)
+                buffer.writeString(packet.name)
+            if (version == ProtocolVersion.MC1_7_6) {
                 buffer.writeVarInt(packet.data.size)
                 packet.data.forEach { (name, entry) ->
                     buffer.writeString(name)
@@ -76,7 +90,7 @@ data class ServerPlaySpawnPlayerPacket(
         }
 
         private fun ProtocolBuffer.readData() = hashMapOf<String, DataEntry>().also {
-            if (connection.version >= ProtocolVersion.MC1_7_6) {
+            if (connection.version == ProtocolVersion.MC1_7_6) {
                 repeat(readVarInt()) { _ ->
                     it[readString()] = DataEntry(readString(), readString())
                 }

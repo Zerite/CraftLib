@@ -16,19 +16,34 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  */
 data class ServerPlayScoreboardObjectivePacket(
     var name: String,
-    var value: String,
-    var action: RegistryEntry
+    var action: RegistryEntry,
+    var value: String? = "",
+    var type: String? = "integer"
 ) : Packet() {
     companion object : PacketIO<ServerPlayScoreboardObjectivePacket> {
         override fun read(
             buffer: ProtocolBuffer,
             version: ProtocolVersion,
             connection: NettyConnection
-        ) = ServerPlayScoreboardObjectivePacket(
-            buffer.readString(),
-            buffer.readString(),
-            MagicScoreboardAction[version, buffer.readByte().toInt()]
-        )
+        ) = if (version >= ProtocolVersion.MC1_8) {
+            val name = buffer.readString()
+            val mode = MagicScoreboardAction[version, buffer.readByte().toInt()]
+            ServerPlayScoreboardObjectivePacket(
+                name,
+                mode,
+                if (mode == MagicScoreboardAction.CREATE_SCOREBOARD || mode == MagicScoreboardAction.UPDATE_TEXT) buffer.readString() else "",
+                if (mode == MagicScoreboardAction.CREATE_SCOREBOARD || mode == MagicScoreboardAction.UPDATE_TEXT) buffer.readString() else "integer"
+            )
+        } else {
+            val name = buffer.readString()
+            val value = buffer.readString()
+            val mode = MagicScoreboardAction[version, buffer.readByte().toInt()]
+            ServerPlayScoreboardObjectivePacket(
+                name,
+                mode,
+                value
+            )
+        }
 
         override fun write(
             buffer: ProtocolBuffer,
@@ -37,8 +52,17 @@ data class ServerPlayScoreboardObjectivePacket(
             connection: NettyConnection
         ) {
             buffer.writeString(packet.name)
-            buffer.writeString(packet.value)
-            buffer.writeByte(MagicScoreboardAction[version, packet.action, Int::class] ?: 0)
+
+            if (version >= ProtocolVersion.MC1_8) {
+                buffer.writeByte(MagicScoreboardAction[version, packet.action, Int::class] ?: 0)
+                if (packet.action == MagicScoreboardAction.CREATE_SCOREBOARD || packet.action == MagicScoreboardAction.UPDATE_TEXT) {
+                    buffer.writeString(packet.value ?: "")
+                    buffer.writeString(packet.type ?: "integer")
+                }
+            } else {
+                buffer.writeString(packet.value ?: "")
+                buffer.writeByte(MagicScoreboardAction[version, packet.action, Int::class] ?: 0)
+            }
         }
     }
 }

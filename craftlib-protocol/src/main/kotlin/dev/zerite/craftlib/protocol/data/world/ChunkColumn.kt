@@ -1,5 +1,7 @@
 package dev.zerite.craftlib.protocol.data.world
 
+import dev.zerite.craftlib.protocol.util.ext.toByteArray
+import dev.zerite.craftlib.protocol.util.ext.toShortArray
 import dev.zerite.craftlib.protocol.util.ext.trim
 
 /**
@@ -30,7 +32,7 @@ data class ChunkColumn(val x: Int, val z: Int, val chunks: Array<Chunk>, private
          * @author Koding
          * @since  0.1.0-SNAPSHOT
          */
-        fun read(
+        fun readOneSeven(
             data: ByteArray,
             metadata: ChunkMetadata,
             hasSkyLight: Boolean = true,
@@ -40,7 +42,7 @@ data class ChunkColumn(val x: Int, val z: Int, val chunks: Array<Chunk>, private
             return ChunkColumn(
                 metadata.chunkX,
                 metadata.chunkZ,
-                Array(16) { ChunkArrays() }.apply {
+                Array(16) { ChunkArraysOneSeven() }.apply {
                     val masked = (0..15).count { metadata.primaryBitmap and (1 shl it) != 0 }
                     val maskedAdd = (0..15).count { metadata.addBitmap and (1 shl it) != 0 }
                     var i = 0
@@ -114,6 +116,83 @@ data class ChunkColumn(val x: Int, val z: Int, val chunks: Array<Chunk>, private
         }
 
         /**
+         * Reads a chunk column from the buffer whilst accounting for the
+         * provided metadata values.
+         *
+         * @param  data          The data buffer which we are reading from.
+         * @param  metadata      Metadata about the chunk.
+         * @param  hasSkyLight   Whether this chunk data should include skylight.
+         * @param  readBiomes    Whether we should read biome data.
+         *
+         * @author Koding
+         * @since  0.1.1-SNAPSHOT
+         */
+        fun readOneEight(
+            data: ByteArray,
+            metadata: ChunkMetadata,
+            hasSkyLight: Boolean = true,
+            readBiomes: Boolean = metadata.biomes
+        ): ChunkColumn {
+            var marker = 0
+            return ChunkColumn(
+                metadata.chunkX,
+                metadata.chunkZ,
+                Array(16) { ChunkArraysOneEight() }.apply {
+                    forEachIndexed { it, chunk ->
+                        if (metadata.primaryBitmap and (1 shl it) == 0) {
+                            chunk.blockTypes = ShortArray(FULL_BYTE_SIZE)
+                        } else {
+                            chunk.blockTypes = data.copyOfRange(marker, marker + 8192).toShortArray()
+                            marker += 8192
+                        }
+                    }
+
+                    forEachIndexed { it, chunk ->
+                        if (metadata.primaryBitmap and (1 shl it) == 0) {
+                            chunk.blockLight = ByteNibbleArray(ByteArray(HALF_BYTE_SIZE))
+                        } else {
+                            chunk.blockLight = ByteNibbleArray(data.copyOfRange(marker, marker + 2048))
+                            marker += 2048
+                        }
+                    }
+
+                    forEachIndexed { it, chunk ->
+                        if (!hasSkyLight || metadata.primaryBitmap and (1 shl it) == 0) {
+                            chunk.skyLight = ByteNibbleArray(ByteArray(HALF_BYTE_SIZE))
+                        } else {
+                            chunk.skyLight = ByteNibbleArray(data.copyOfRange(marker, marker + 2048))
+                            marker += 2048
+                        }
+                    }
+                }.map {
+                    val blockData = arrayOfNulls<Block?>(16 * 16 * 16)
+
+                    for (y in 0 until 16) {
+                        for (z in 0 until 16) {
+                            for (x in 0 until 16) {
+                                val index = Chunk.index(x, y, z)
+                                if (index > it.blockTypes.size || it.blockTypes.isEmpty()) continue
+
+                                val typeData = it.blockTypes[index].toInt()
+                                val type = typeData shr 4
+                                val meta = typeData and 0xF
+                                val light = it.blockLight[index, 0]
+                                val sky = it.skyLight[index, 0]
+
+                                blockData[index] =
+                                    if (type == 0 && meta == 0 && light == 0 && sky == 0) null
+                                    else Block(type, meta, light, sky).apply { location = BlockLocation(x, y, z) }
+                            }
+                        }
+                    }
+
+                    Chunk(blockData)
+                }.toTypedArray(),
+                if (readBiomes && metadata.primaryBitmap != 0) data.copyOfRange(marker, marker + 256) else ByteArray(16 * 16)
+            )
+        }
+
+        /**
          * Writes a chunk column to the buffer whilst accounting for the
          * provided metadata values.
          *
@@ -124,7 +203,7 @@ data class ChunkColumn(val x: Int, val z: Int, val chunks: Array<Chunk>, private
          * @author Koding
          * @since  0.1.0-SNAPSHOT
          */
-        fun write(
+        fun writeOneSeven(
             column: ChunkColumn,
             hasSkyLight: Boolean = true,
             writeBiomes: Boolean = true
@@ -136,7 +215,7 @@ data class ChunkColumn(val x: Int, val z: Int, val chunks: Array<Chunk>, private
             var outputPos = 0
 
             column.chunks.mapIndexed { i, it ->
-                ChunkArrays().apply {
+                ChunkArraysOneSeven().apply {
                     blockTypes = ByteArray(FULL_BYTE_SIZE)
                     metadata = ByteNibbleArray(ByteArray(HALF_BYTE_SIZE))
                     blockLight = ByteNibbleArray(ByteArray(HALF_BYTE_SIZE))
@@ -207,6 +286,83 @@ data class ChunkColumn(val x: Int, val z: Int, val chunks: Array<Chunk>, private
             }
 
             return ChunkWriteOutput(primaryBitmap, addBitmap, output.trim(outputPos))
+        }
+
+        /**
+         * Writes a chunk column to the buffer whilst accounting for the
+         * provided metadata values.
+         *
+         * @param  column        The chunk column we are writing.
+         * @param  hasSkyLight   Whether this chunk data should include skylight.
+         * @param  writeBiomes   Whether we should write biome data.
+         *
+         * @author Koding
+         * @since  0.1.1-SNAPSHOT
+         */
+        fun writeOneEight(
+            column: ChunkColumn,
+            hasSkyLight: Boolean = true,
+            writeBiomes: Boolean = true
+        ): ChunkWriteOutput {
+            var primaryBitmap = 0
+            val output = ByteArray(196864)
+            var outputPos = 0
+
+            column.chunks.mapIndexed { i, it ->
+                ChunkArraysOneEight().apply {
+                    blockTypes = ShortArray(FULL_BYTE_SIZE)
+                    blockLight = ByteNibbleArray(ByteArray(HALF_BYTE_SIZE))
+                    skyLight = ByteNibbleArray(ByteArray(HALF_BYTE_SIZE))
+                    var foundBlock = false
+
+                    for (y in 0 until 16) {
+                        for (z in 0 until 16) {
+                            for (x in 0 until 16) {
+                                val index = Chunk.index(x, y, z)
+                                val block = it[x, y, z] ?: continue
+
+                                blockTypes[index] = ((block.id shl 4) or (block.metadata and 0xF)).toShort()
+                                blockLight[index] = block.blockLight
+                                skyLight[index] = block.skyLight
+
+                                if (block.id != 0 || block.metadata != 0) foundBlock = true
+                            }
+                        }
+                    }
+
+                    if (foundBlock) primaryBitmap = primaryBitmap or (1 shl i)
+                }
+            }.toTypedArray().apply {
+                forEachIndexed { it, chunk ->
+                    if (primaryBitmap and (1 shl it) != 0) {
+                        System.arraycopy(chunk.blockTypes.toByteArray(), 0, output, outputPos, 8192)
+                        outputPos += 8192
+                    }
+                }
+
+                forEachIndexed { it, chunk ->
+                    if (primaryBitmap and (1 shl it) != 0) {
+                        System.arraycopy(chunk.blockLight.data, 0, output, outputPos, 2048)
+                        outputPos += 2048
+                    }
+                }
+
+                if (hasSkyLight) {
+                    forEachIndexed { it, chunk ->
+                        if (primaryBitmap and (1 shl it) != 0) {
+                            System.arraycopy(chunk.skyLight.data, 0, output, outputPos, 2048)
+                            outputPos += 2048
+                        }
+                    }
+                }
+            }
+
+            if (writeBiomes) {
+                System.arraycopy(column.biomes, 0, output, outputPos, 256)
+                outputPos += 256
+            }
+
+            return ChunkWriteOutput(primaryBitmap, 0, output.trim(outputPos))
         }
     }
 
@@ -312,10 +468,22 @@ data class ChunkWriteOutput(
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-class ChunkArrays {
+class ChunkArraysOneSeven {
     lateinit var blockTypes: ByteArray
     lateinit var metadata: ByteNibbleArray
     lateinit var blockLight: ByteNibbleArray
     lateinit var skyLight: ByteNibbleArray
     lateinit var addArray: ByteNibbleArray
+}
+
+/**
+ * Stores array data about a chunk which we read.
+ *
+ * @author Koding
+ * @since  0.1.1-SNAPSHOT
+ */
+class ChunkArraysOneEight {
+    lateinit var blockTypes: ShortArray
+    lateinit var blockLight: ByteNibbleArray
+    lateinit var skyLight: ByteNibbleArray
 }

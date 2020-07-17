@@ -18,22 +18,20 @@ class ServerPlayEntityTest : PacketTest<ServerPlayEntityPacket>(
 ) {
 
     init {
-        example(
-            ServerPlayEntityPacket(
-                10
-            )
-        ) {
+        example(ServerPlayEntityPacket(10)) {
             ProtocolVersion.MC1_7_2 {
                 writeInt(10)
             }
+            ProtocolVersion.MC1_8 {
+                writeVarInt(10)
+            }
         }
-        example(
-            ServerPlayEntityPacket(
-                42
-            )
-        ) {
+        example(ServerPlayEntityPacket(42)) {
             ProtocolVersion.MC1_7_2 {
                 writeInt(42)
+            }
+            ProtocolVersion.MC1_8 {
+                writeVarInt(42)
             }
         }
     }

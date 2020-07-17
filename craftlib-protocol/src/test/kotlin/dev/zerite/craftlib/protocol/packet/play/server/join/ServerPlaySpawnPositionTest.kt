@@ -24,22 +24,23 @@ class ServerPlaySpawnPositionTest : PacketTest<ServerPlaySpawnPositionPacket>(
         )
         example(
             ServerPlaySpawnPositionPacket(
-                Int.MAX_VALUE,
-                Int.MAX_VALUE,
-                Int.MAX_VALUE
+                30503,
+                10,
+                4382423
             )
         )
         example(
             ServerPlaySpawnPositionPacket(
-                Int.MIN_VALUE,
-                Int.MIN_VALUE,
-                Int.MIN_VALUE
+                10, 20, 30
             )
         ) {
             ProtocolVersion.MC1_7_2 {
-                writeInt(Int.MIN_VALUE)
-                writeInt(Int.MIN_VALUE)
-                writeInt(Int.MIN_VALUE)
+                writeInt(10)
+                writeInt(20)
+                writeInt(30)
+            }
+            ProtocolVersion.MC1_8 {
+                writeLong(((10L and 0x3FFFFFFL) shl 38) or ((30L and 0x3FFFFFFL) shl 12) or (20L and 0xFFFL))
             }
         }
     }

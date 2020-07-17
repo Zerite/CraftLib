@@ -13,13 +13,16 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  */
 class ClientPlayPluginMessageTest : PacketTest<ClientPlayPluginMessagePacket>(ClientPlayPluginMessagePacket) {
     init {
-        example(ClientPlayPluginMessagePacket("MC|Example", ByteArray(0))) {
+        example(ClientPlayPluginMessagePacket("MC|Example", ByteArray(0)), maximumVersion = ProtocolVersion.MC1_7_6) {
             ProtocolVersion.MC1_7_2 {
                 writeString("MC|Example")
                 writeShort(0)
             }
         }
-        example(ClientPlayPluginMessagePacket("MC|Brand", "Vanilla".toByteArray())) {
+        example(
+            ClientPlayPluginMessagePacket("MC|Brand", "Vanilla".toByteArray()),
+            maximumVersion = ProtocolVersion.MC1_7_6
+        ) {
             ProtocolVersion.MC1_7_2 {
                 writeString("MC|Brand")
                 writeShort("Vanilla".toByteArray().size)

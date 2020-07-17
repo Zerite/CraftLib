@@ -3,6 +3,7 @@ package dev.zerite.craftlib.protocol.packet.play.server.entity
 import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
+import dev.zerite.craftlib.protocol.Vector3
 import dev.zerite.craftlib.protocol.connection.NettyConnection
 import dev.zerite.craftlib.protocol.packet.base.EntityIdPacket
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
@@ -30,14 +31,28 @@ data class ServerPlaySpawnPaintingPacket(
             buffer: ProtocolBuffer,
             version: ProtocolVersion,
             connection: NettyConnection
-        ) = ServerPlaySpawnPaintingPacket(
-            buffer.readVarInt(),
-            buffer.readString(13),
-            buffer.readInt(),
-            buffer.readInt(),
-            buffer.readInt(),
-            Direction.values()[buffer.readInt()]
-        )
+        ) = if (version >= ProtocolVersion.MC1_8) {
+            val id = buffer.readVarInt()
+            val title = buffer.readString(13)
+            val position = buffer.readPosition()
+            ServerPlaySpawnPaintingPacket(
+                id,
+                title,
+                position.x,
+                position.y,
+                position.z,
+                Direction.values()[buffer.readUnsignedByte().toInt()]
+            )
+        } else {
+            ServerPlaySpawnPaintingPacket(
+                buffer.readVarInt(),
+                buffer.readString(13),
+                buffer.readInt(),
+                buffer.readInt(),
+                buffer.readInt(),
+                Direction.values()[buffer.readInt()]
+            )
+        }
 
         override fun write(
             buffer: ProtocolBuffer,
@@ -47,10 +62,14 @@ data class ServerPlaySpawnPaintingPacket(
         ) {
             buffer.writeVarInt(packet.entityId)
             buffer.writeString(packet.title)
-            buffer.writeInt(packet.x)
-            buffer.writeInt(packet.y)
-            buffer.writeInt(packet.z)
-            buffer.writeInt(packet.direction.ordinal)
+            if (version >= ProtocolVersion.MC1_8) buffer.writePosition(Vector3(packet.x, packet.y, packet.z))
+            else {
+                buffer.writeInt(packet.x)
+                buffer.writeInt(packet.y)
+                buffer.writeInt(packet.z)
+            }
+            if (version >= ProtocolVersion.MC1_8) buffer.writeByte(packet.direction.ordinal)
+            else buffer.writeInt(packet.direction.ordinal)
         }
     }
 
@@ -61,10 +80,10 @@ data class ServerPlaySpawnPaintingPacket(
      * @author Koding
      * @since  0.1.0-SNAPSHOT
      */
-   enum class Direction {
-       NEGATIVE_Z,
-       NEGATIVE_X,
-       POSITIVE_Z,
-       POSITIVE_X
-   }
+    enum class Direction {
+        NEGATIVE_Z,
+        NEGATIVE_X,
+        POSITIVE_Z,
+        POSITIVE_X
+    }
 }

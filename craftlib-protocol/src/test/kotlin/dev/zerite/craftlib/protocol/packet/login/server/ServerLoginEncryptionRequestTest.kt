@@ -24,6 +24,11 @@ class ServerLoginEncryptionRequestTest :
                 writeByteArray(pair.public.encoded) { writeShort(it) }
                 writeByteArray(secret) { writeShort(it) }
             }
+            ProtocolVersion.MC1_8 {
+                writeString("example")
+                writeByteArray(pair.public.encoded) { writeVarInt(it) }
+                writeByteArray(secret) { writeVarInt(it) }
+            }
         }
     }
 

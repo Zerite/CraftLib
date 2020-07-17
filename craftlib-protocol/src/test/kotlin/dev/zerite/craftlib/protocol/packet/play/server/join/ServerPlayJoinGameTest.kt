@@ -26,7 +26,8 @@ class ServerPlayJoinGameTest : PacketTest<ServerPlayJoinGamePacket>(
                 MagicDimension.OVERWORLD,
                 MagicDifficulty.PEACEFUL,
                 20,
-                "default"
+                "default",
+                false
             )
         )
         example(
@@ -37,7 +38,8 @@ class ServerPlayJoinGameTest : PacketTest<ServerPlayJoinGamePacket>(
                 MagicDimension.OVERWORLD,
                 MagicDifficulty.HARD,
                 21,
-                "default"
+                "default",
+                false
             )
         )
         example(
@@ -48,7 +50,8 @@ class ServerPlayJoinGameTest : PacketTest<ServerPlayJoinGamePacket>(
                 MagicDimension.END,
                 MagicDifficulty.NORMAL,
                 20,
-                "default"
+                "default",
+                false
             )
         ) {
             ProtocolVersion.MC1_7_2 {
@@ -58,6 +61,15 @@ class ServerPlayJoinGameTest : PacketTest<ServerPlayJoinGamePacket>(
                 writeByte(2)
                 writeByte(20)
                 writeString("default")
+            }
+            ProtocolVersion.MC1_8 {
+                writeInt(1)
+                writeByte(2 or 0x8)
+                writeByte(1)
+                writeByte(2)
+                writeByte(20)
+                writeString("default")
+                writeBoolean(false)
             }
         }
     }

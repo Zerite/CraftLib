@@ -26,8 +26,8 @@ data class ClientLoginEncryptionResponsePacket(var secretKey: ByteArray, var ver
             version: ProtocolVersion,
             connection: NettyConnection
         ) = ClientLoginEncryptionResponsePacket(
-            buffer.readByteArray { readShort().toInt() },
-            buffer.readByteArray { readShort().toInt() }
+            buffer.readByteArray { if (version >= ProtocolVersion.MC1_8) readVarInt() else readShort().toInt() },
+            buffer.readByteArray { if (version >= ProtocolVersion.MC1_8) readVarInt() else readShort().toInt() }
         )
 
         override fun write(
@@ -36,8 +36,8 @@ data class ClientLoginEncryptionResponsePacket(var secretKey: ByteArray, var ver
             packet: ClientLoginEncryptionResponsePacket,
             connection: NettyConnection
         ) {
-            buffer.writeByteArray(packet.secretKey) { writeShort(it) }
-            buffer.writeByteArray(packet.verifyToken) { writeShort(it) }
+            buffer.writeByteArray(packet.secretKey) { if (version >= ProtocolVersion.MC1_8) writeVarInt(it) else writeShort(it) }
+            buffer.writeByteArray(packet.verifyToken) { if (version >= ProtocolVersion.MC1_8) writeVarInt(it) else writeShort(it) }
         }
     }
 

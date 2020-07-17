@@ -45,6 +45,13 @@ class ServerPlayEntityRelativeMoveTest :
                 writeByte(96)
                 writeByte(96)
             }
+            ProtocolVersion.MC1_8 {
+                writeVarInt(200)
+                writeByte(96)
+                writeByte(96)
+                writeByte(96)
+                writeBoolean(false)
+            }
         }
     }
 

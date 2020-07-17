@@ -1,5 +1,6 @@
 package dev.zerite.craftlib.protocol.packet.play.client.interaction
 
+import dev.zerite.craftlib.protocol.data.registry.impl.MagicUseEntityType
 import dev.zerite.craftlib.protocol.packet.PacketTest
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
@@ -15,16 +16,27 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  */
 class ClientPlayUseEntityTest : PacketTest<ClientPlayUseEntityPacket>(ClientPlayUseEntityPacket) {
     init {
-        example(ClientPlayUseEntityPacket(100, 1)) {
+        example(ClientPlayUseEntityPacket(100, MagicUseEntityType.ATTACK)) {
             ProtocolVersion.MC1_7_2 {
                 writeInt(100)
                 writeByte(1)
             }
+            ProtocolVersion.MC1_8 {
+                writeVarInt(100)
+                writeVarInt(1)
+            }
         }
-        example(ClientPlayUseEntityPacket(420, 0)) {
+        example(ClientPlayUseEntityPacket(420, MagicUseEntityType.INTERACT_AT)) {
             ProtocolVersion.MC1_7_2 {
                 writeInt(420)
-                writeByte(0)
+                writeByte(2)
+            }
+            ProtocolVersion.MC1_8 {
+                writeVarInt(420)
+                writeVarInt(2)
+                writeFloat(0f)
+                writeFloat(0f)
+                writeFloat(0f)
             }
         }
     }

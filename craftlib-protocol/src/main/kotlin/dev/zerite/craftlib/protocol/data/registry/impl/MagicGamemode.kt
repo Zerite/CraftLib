@@ -18,6 +18,7 @@ open class MagicGamemode(name: String) : RegistryEntry(name) {
         val SURVIVAL = MagicGamemode("Survival")
         val CREATIVE = MagicGamemode("Creative")
         val ADVENTURE = MagicGamemode("Adventure")
+        val SPECTATOR = MagicGamemode("Spectator")
     }
 
 }

@@ -23,12 +23,24 @@ class ServerPlayBlockActionTest : PacketTest<ServerPlayBlockActionPacket>(Server
                 writeByte(4)
                 writeVarInt(1)
             }
+            ProtocolVersion.MC1_8 {
+                writeLong(((100L and 0x3FFFFFFL) shl 38) or ((100L and 0x3FFFFFFL) shl 12) or (100L and 0xFFFL))
+                writeByte(2)
+                writeByte(4)
+                writeVarInt(1)
+            }
         }
         example(ServerPlayBlockActionPacket(50, 80, 110, 4, 8, 0)) {
             ProtocolVersion.MC1_7_2 {
                 writeInt(50)
                 writeShort(80)
                 writeInt(110)
+                writeByte(4)
+                writeByte(8)
+                writeVarInt(0)
+            }
+            ProtocolVersion.MC1_8 {
+                writeLong(((50L and 0x3FFFFFFL) shl 38) or ((110L and 0x3FFFFFFL) shl 12) or (80L and 0xFFFL))
                 writeByte(4)
                 writeByte(8)
                 writeVarInt(0)

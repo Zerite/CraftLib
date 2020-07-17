@@ -23,6 +23,13 @@ class ClientPlayCreativeInventoryActionTest :
                 writeShort(0)
                 writeShort(-1)
             }
+            ProtocolVersion.MC1_8 {
+                writeShort(0)
+                writeShort(0)
+                writeByte(0)
+                writeShort(0)
+                writeByte(0)
+            }
         }
     }
 }

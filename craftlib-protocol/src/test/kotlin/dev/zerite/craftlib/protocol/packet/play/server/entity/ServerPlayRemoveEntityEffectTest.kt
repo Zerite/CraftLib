@@ -18,10 +18,18 @@ class ServerPlayRemoveEntityEffectTest :
                 writeInt(255)
                 writeByte(3)
             }
+            ProtocolVersion.MC1_8 {
+                writeVarInt(255)
+                writeByte(3)
+            }
         }
         example(ServerPlayRemoveEntityEffectPacket(127, MagicPotionEffect.FIRE_RESISTANCE)) {
             ProtocolVersion.MC1_7_2 {
                 writeInt(127)
+                writeByte(12)
+            }
+            ProtocolVersion.MC1_8 {
+                writeVarInt(127)
                 writeByte(12)
             }
         }

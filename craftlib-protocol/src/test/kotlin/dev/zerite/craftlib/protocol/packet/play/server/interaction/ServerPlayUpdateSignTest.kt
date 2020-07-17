@@ -1,5 +1,6 @@
 package dev.zerite.craftlib.protocol.packet.play.server.interaction
 
+import dev.zerite.craftlib.chat.component.StringChatComponent
 import dev.zerite.craftlib.protocol.packet.PacketTest
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
@@ -12,7 +13,16 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  */
 class ServerPlayUpdateSignTest : PacketTest<ServerPlayUpdateSignPacket>(ServerPlayUpdateSignPacket) {
     init {
-        example(ServerPlayUpdateSignPacket(10, 100, 50, "first", "second", "third", "forth")) {
+        example(
+            ServerPlayUpdateSignPacket(
+                10,
+                100,
+                50,
+                StringChatComponent("first"),
+                StringChatComponent("second"),
+                StringChatComponent("third"), StringChatComponent("forth")
+            )
+        ) {
             ProtocolVersion.MC1_7_2 {
                 writeInt(10)
                 writeShort(100)
@@ -22,8 +32,25 @@ class ServerPlayUpdateSignTest : PacketTest<ServerPlayUpdateSignPacket>(ServerPl
                 writeString("third")
                 writeString("forth")
             }
+            ProtocolVersion.MC1_8 {
+                writeLong(((10L and 0x3FFFFFFL) shl 38) or ((50L and 0x3FFFFFFL) shl 12) or (100L and 0xFFFL))
+                writeChat(StringChatComponent("first"))
+                writeChat(StringChatComponent("second"))
+                writeChat(StringChatComponent("third"))
+                writeChat(StringChatComponent("forth"))
+            }
         }
-        example(ServerPlayUpdateSignPacket(50, 50, 50, "line", "line", "line", "line")) {
+        example(
+            ServerPlayUpdateSignPacket(
+                50,
+                50,
+                50,
+                StringChatComponent("line"),
+                StringChatComponent("line"),
+                StringChatComponent("line"),
+                StringChatComponent("line")
+            )
+        ) {
             ProtocolVersion.MC1_7_2 {
                 writeInt(50)
                 writeShort(50)
@@ -32,6 +59,13 @@ class ServerPlayUpdateSignTest : PacketTest<ServerPlayUpdateSignPacket>(ServerPl
                 writeString("line")
                 writeString("line")
                 writeString("line")
+            }
+            ProtocolVersion.MC1_8 {
+                writeLong(((50L and 0x3FFFFFFL) shl 38) or ((50L and 0x3FFFFFFL) shl 12) or (50L and 0xFFFL))
+                writeChat(StringChatComponent("line"))
+                writeChat(StringChatComponent("line"))
+                writeChat(StringChatComponent("line"))
+                writeChat(StringChatComponent("line"))
             }
         }
     }

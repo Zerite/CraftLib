@@ -3,6 +3,7 @@ package dev.zerite.craftlib.protocol.packet.play.server.interaction
 import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
+import dev.zerite.craftlib.protocol.Vector3
 import dev.zerite.craftlib.protocol.connection.NettyConnection
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
@@ -22,7 +23,9 @@ data class ServerPlaySignEditorOpenPacket(
             buffer: ProtocolBuffer,
             version: ProtocolVersion,
             connection: NettyConnection
-        ) = ServerPlaySignEditorOpenPacket(
+        ) = if (version >= ProtocolVersion.MC1_8)
+            buffer.readPosition().let { ServerPlaySignEditorOpenPacket(it.x, it.y, it.z) }
+        else ServerPlaySignEditorOpenPacket(
             buffer.readInt(),
             buffer.readInt(),
             buffer.readInt()
@@ -34,9 +37,12 @@ data class ServerPlaySignEditorOpenPacket(
             packet: ServerPlaySignEditorOpenPacket,
             connection: NettyConnection
         ) {
-            buffer.writeInt(packet.x)
-            buffer.writeInt(packet.y)
-            buffer.writeInt(packet.z)
+            if (version >= ProtocolVersion.MC1_8) buffer.writePosition(Vector3(packet.x, packet.y, packet.z))
+            else {
+                buffer.writeInt(packet.x)
+                buffer.writeInt(packet.y)
+                buffer.writeInt(packet.z)
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 package dev.zerite.craftlib.protocol.packet.play.client.other
 
+import dev.zerite.craftlib.chat.component.StringChatComponent
 import dev.zerite.craftlib.protocol.packet.PacketTest
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
@@ -16,10 +17,10 @@ class ClientPlayUpdateSignTest : PacketTest<ClientPlayUpdateSignPacket>(ClientPl
                 130,
                 90,
                 130,
-                "This",
-                "is",
-                "a",
-                "Test"
+                StringChatComponent("This"),
+                StringChatComponent("is"),
+                StringChatComponent("a"),
+                StringChatComponent("Test")
             )
         ) {
             ProtocolVersion.MC1_7_2 {
@@ -30,6 +31,13 @@ class ClientPlayUpdateSignTest : PacketTest<ClientPlayUpdateSignPacket>(ClientPl
                 writeString("is")
                 writeString("a")
                 writeString("Test")
+            }
+            ProtocolVersion.MC1_8 {
+                writeLong(((130L and 0x3FFFFFFL) shl 38) or ((130L and 0x3FFFFFFL) shl 12) or (90L and 0xFFFL))
+                writeString("{\"text\":\"This\"}")
+                writeString("{\"text\":\"is\"}")
+                writeString("{\"text\":\"a\"}")
+                writeString("{\"text\":\"Test\"}")
             }
         }
     }

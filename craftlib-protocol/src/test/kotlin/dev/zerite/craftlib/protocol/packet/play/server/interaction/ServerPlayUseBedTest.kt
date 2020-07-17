@@ -23,6 +23,10 @@ class ServerPlayUseBedTest : PacketTest<ServerPlayUseBedPacket>(ServerPlayUseBed
                 writeByte(100)
                 writeInt(100)
             }
+            ProtocolVersion.MC1_8 {
+                writeVarInt(100)
+                writeLong(((100L and 0x3FFFFFFL) shl 38) or ((100L and 0x3FFFFFFL) shl 12) or (100L and 0xFFFL))
+            }
         }
     }
 

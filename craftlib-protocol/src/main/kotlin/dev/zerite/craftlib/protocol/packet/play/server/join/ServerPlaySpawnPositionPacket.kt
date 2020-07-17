@@ -3,6 +3,7 @@ package dev.zerite.craftlib.protocol.packet.play.server.join
 import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
+import dev.zerite.craftlib.protocol.Vector3
 import dev.zerite.craftlib.protocol.connection.NettyConnection
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
@@ -23,11 +24,14 @@ data class ServerPlaySpawnPositionPacket(
             buffer: ProtocolBuffer,
             version: ProtocolVersion,
             connection: NettyConnection
-        ) = ServerPlaySpawnPositionPacket(
-            buffer.readInt(),
-            buffer.readInt(),
-            buffer.readInt()
-        )
+        ) = if (version >= ProtocolVersion.MC1_8)
+            buffer.readPosition().let { ServerPlaySpawnPositionPacket(it.x, it.y, it.z) }
+        else
+            ServerPlaySpawnPositionPacket(
+                buffer.readInt(),
+                buffer.readInt(),
+                buffer.readInt()
+            )
 
         override fun write(
             buffer: ProtocolBuffer,
@@ -35,9 +39,12 @@ data class ServerPlaySpawnPositionPacket(
             packet: ServerPlaySpawnPositionPacket,
             connection: NettyConnection
         ) {
-            buffer.writeInt(packet.x)
-            buffer.writeInt(packet.y)
-            buffer.writeInt(packet.z)
+            if (version >= ProtocolVersion.MC1_8) buffer.writePosition(Vector3(packet.x, packet.y, packet.z))
+            else {
+                buffer.writeInt(packet.x)
+                buffer.writeInt(packet.y)
+                buffer.writeInt(packet.z)
+            }
         }
     }
 }

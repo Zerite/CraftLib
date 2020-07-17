@@ -16,10 +16,16 @@ class ClientPlayKeepAliveTest : PacketTest<ClientPlayKeepAlivePacket>(ClientPlay
             ProtocolVersion.MC1_7_2 {
                 writeInt(10)
             }
+            ProtocolVersion.MC1_8 {
+                writeVarInt(10)
+            }
         }
         example(ClientPlayKeepAlivePacket(Int.MAX_VALUE)) {
             ProtocolVersion.MC1_7_2 {
                 writeInt(Int.MAX_VALUE)
+            }
+            ProtocolVersion.MC1_8 {
+                writeVarInt(Int.MAX_VALUE)
             }
         }
     }

@@ -28,6 +28,17 @@ class ServerPlayEntityEquipmentTest : PacketTest<ServerPlayEntityEquipmentPacket
                 writeShort(0)
                 writeShort(-1)
             }
+            ProtocolVersion.MC1_8 {
+                // Entity ID and slot index
+                writeVarInt(50)
+                writeShort(1)
+
+                // Slot
+                writeShort(3)
+                writeByte(64)
+                writeShort(0)
+                writeByte(0)
+            }
         }
     }
 

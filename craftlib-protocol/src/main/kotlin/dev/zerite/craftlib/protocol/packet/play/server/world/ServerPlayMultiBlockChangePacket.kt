@@ -28,10 +28,10 @@ data class ServerPlayMultiBlockChangePacket(
             buffer.readInt(),
             buffer.readInt(),
             buffer.readArray({
-                readShort().toInt().apply { readInt() }
+                if (version >= ProtocolVersion.MC1_8) readVarInt() else readShort().toInt().apply { readInt() }
             }) {
                 val first = readShort().toInt()
-                val second = readShort().toInt()
+                val second = if (version >= ProtocolVersion.MC1_8) readVarInt() else readShort().toInt()
 
                 Record(
                     second and 15,
@@ -52,13 +52,15 @@ data class ServerPlayMultiBlockChangePacket(
             buffer.writeInt(packet.chunkX)
             buffer.writeInt(packet.chunkZ)
             buffer.writeArray(packet.records, {
-                writeShort(it).apply { writeInt(it * 4) }
+                if (version >= ProtocolVersion.MC1_8) writeVarInt(it)
+                else writeShort(it).apply { writeInt(it * 4) }
             }) {
                 // Position
                 writeShort((it.x and 15 shl 12) or (it.z and 15 shl 8) or (it.y and 255))
 
                 // Block data
-                writeShort((it.id shl 4 and 4095) or (it.metadata and 15))
+                if (version >= ProtocolVersion.MC1_8) writeVarInt((it.id shl 4 and 4095) or (it.metadata and 15))
+                else writeShort((it.id shl 4 and 4095) or (it.metadata and 15))
             }
         }
     }

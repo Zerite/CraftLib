@@ -18,11 +18,24 @@ class ServerPlayUpdateScoreTest : PacketTest<ServerPlayUpdateScorePacket>(Server
                 writeString("score")
                 writeInt(5)
             }
+            ProtocolVersion.MC1_8 {
+                writeString("key")
+                writeByte(0)
+                writeString("score")
+                writeVarInt(5)
+            }
         }
-        example(ServerPlayUpdateScorePacket("removed", false)) {
+        example(ServerPlayUpdateScorePacket("removed", false), maximumVersion = ProtocolVersion.MC1_7_6) {
             ProtocolVersion.MC1_7_2 {
                 writeString("removed")
                 writeByte(1)
+            }
+        }
+        example(ServerPlayUpdateScorePacket("removed", false, "value"), minimumVersion = ProtocolVersion.MC1_8) {
+            ProtocolVersion.MC1_8 {
+                writeString("removed")
+                writeByte(1)
+                writeString("value")
             }
         }
     }

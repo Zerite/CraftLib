@@ -18,7 +18,8 @@ data class ServerPlayEntityRelativeMovePacket(
     override var entityId: Int,
     var x: Double,
     var y: Double,
-    var z: Double
+    var z: Double,
+    var onGround: Boolean = false
 ) : EntityIdPacket, Packet() {
     companion object : PacketIO<ServerPlayEntityRelativeMovePacket> {
         override fun read(
@@ -27,10 +28,11 @@ data class ServerPlayEntityRelativeMovePacket(
             connection: NettyConnection
         ) =
             ServerPlayEntityRelativeMovePacket(
-                buffer.readInt(),
+                if (version >= ProtocolVersion.MC1_8) buffer.readVarInt() else buffer.readInt(),
                 buffer.readFixedPoint { readByte().toDouble() },
                 buffer.readFixedPoint { readByte().toDouble() },
-                buffer.readFixedPoint { readByte().toDouble() }
+                buffer.readFixedPoint { readByte().toDouble() },
+                if (version >= ProtocolVersion.MC1_8) buffer.readBoolean() else false
             )
 
         override fun write(
@@ -39,10 +41,13 @@ data class ServerPlayEntityRelativeMovePacket(
             packet: ServerPlayEntityRelativeMovePacket,
             connection: NettyConnection
         ) {
-            buffer.writeInt(packet.entityId)
+            if (version >= ProtocolVersion.MC1_8) buffer.writeVarInt(packet.entityId)
+            else buffer.writeInt(packet.entityId)
             buffer.writeFixedPoint(packet.x) { writeByte(it) }
             buffer.writeFixedPoint(packet.y) { writeByte(it) }
             buffer.writeFixedPoint(packet.z) { writeByte(it) }
+            if (version >= ProtocolVersion.MC1_8)
+                buffer.writeBoolean(packet.onGround)
         }
     }
 }

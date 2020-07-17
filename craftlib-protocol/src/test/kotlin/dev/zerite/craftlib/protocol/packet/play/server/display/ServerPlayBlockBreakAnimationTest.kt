@@ -22,6 +22,11 @@ class ServerPlayBlockBreakAnimationTest :
                 writeInt(21)
                 writeByte(4)
             }
+            ProtocolVersion.MC1_8 {
+                writeVarInt(69)
+                writeLong(((42L and 0x3FFFFFFL) shl 38) or ((21L and 0x3FFFFFFL) shl 12) or (80L and 0xFFFL))
+                writeByte(4)
+            }
         }
         example(ServerPlayBlockBreakAnimationPacket(400, 550, 60, 700, 0)) {
             ProtocolVersion.MC1_7_2 {
@@ -29,6 +34,11 @@ class ServerPlayBlockBreakAnimationTest :
                 writeInt(550)
                 writeInt(60)
                 writeInt(700)
+                writeByte(0)
+            }
+            ProtocolVersion.MC1_8 {
+                writeVarInt(400)
+                writeLong(((550L and 0x3FFFFFFL) shl 38) or ((700L and 0x3FFFFFFL) shl 12) or (60L and 0xFFFL))
                 writeByte(0)
             }
         }

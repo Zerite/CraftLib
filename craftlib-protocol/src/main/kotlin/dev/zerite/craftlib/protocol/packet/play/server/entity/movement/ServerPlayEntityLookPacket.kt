@@ -17,7 +17,8 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
 data class ServerPlayEntityLookPacket(
     override var entityId: Int,
     var yaw: Float,
-    var pitch: Float
+    var pitch: Float,
+    var onGround: Boolean = false
 ) : EntityIdPacket, Packet() {
 
     companion object : PacketIO<ServerPlayEntityLookPacket> {
@@ -27,9 +28,10 @@ data class ServerPlayEntityLookPacket(
             connection: NettyConnection
         ) =
             ServerPlayEntityLookPacket(
-                buffer.readInt(),
+                if (version >= ProtocolVersion.MC1_8) buffer.readVarInt() else buffer.readInt(),
                 buffer.readStepRotation(),
-                buffer.readStepRotation()
+                buffer.readStepRotation(),
+                if (version >= ProtocolVersion.MC1_8) buffer.readBoolean() else false
             )
 
         override fun write(
@@ -38,9 +40,12 @@ data class ServerPlayEntityLookPacket(
             packet: ServerPlayEntityLookPacket,
             connection: NettyConnection
         ) {
-            buffer.writeInt(packet.entityId)
+            if (version >= ProtocolVersion.MC1_8) buffer.writeVarInt(packet.entityId)
+            else buffer.writeInt(packet.entityId)
             buffer.writeStepRotation(packet.yaw)
             buffer.writeStepRotation(packet.pitch)
+            if (version >= ProtocolVersion.MC1_8)
+                buffer.writeBoolean(packet.onGround)
         }
     }
 

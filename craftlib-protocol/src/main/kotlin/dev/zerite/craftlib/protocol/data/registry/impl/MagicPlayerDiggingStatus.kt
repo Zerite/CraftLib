@@ -11,7 +11,7 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-class MagicPlayerDiggingStatus(name: String) : RegistryEntry(name) {
+open class MagicPlayerDiggingStatus(name: String) : RegistryEntry(name) {
     companion object :
         IMinecraftRegistry<MagicPlayerDiggingStatus> by LazyRegistryDelegate({ MagicRegistry.playerDiggingStatus }) {
         val STARTED_DIGGING = MagicPlayerDiggingStatus("Started Digging")

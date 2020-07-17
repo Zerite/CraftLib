@@ -11,7 +11,7 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-class MagicEntityStatus(name: String) : RegistryEntry(name) {
+open class MagicEntityStatus(name: String) : RegistryEntry(name) {
 
     @Suppress("UNUSED")
     companion object : IMinecraftRegistry<MagicEntityStatus> by LazyRegistryDelegate({ MagicRegistry.entityStatus }) {

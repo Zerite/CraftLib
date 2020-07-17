@@ -12,9 +12,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @since  0.1.0-SNAPSHOT
  */
 class ServerPlayEntityLookRelativeMoveTest :
-    PacketTest<ServerPlayEntityLookRelativeMovePacket>(
-        ServerPlayEntityLookRelativeMovePacket
-    ) {
+    PacketTest<ServerPlayEntityLookRelativeMovePacket>(ServerPlayEntityLookRelativeMovePacket) {
 
     init {
         example(
@@ -35,6 +33,15 @@ class ServerPlayEntityLookRelativeMoveTest :
                 writeByte(45)
                 writeByte(90)
             }
+            ProtocolVersion.MC1_8 {
+                writeVarInt(69)
+                writeByte(32)
+                writeByte(32)
+                writeByte(32)
+                writeByte(45)
+                writeByte(90)
+                writeBoolean(false)
+            }
         }
         example(
             ServerPlayEntityLookRelativeMovePacket(
@@ -53,6 +60,15 @@ class ServerPlayEntityLookRelativeMoveTest :
                 writeByte(64)
                 writeByte(100)
                 writeByte(127)
+            }
+            ProtocolVersion.MC1_8 {
+                writeVarInt(42)
+                writeByte(64)
+                writeByte(64)
+                writeByte(64)
+                writeByte(100)
+                writeByte(127)
+                writeBoolean(false)
             }
         }
     }

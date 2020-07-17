@@ -21,6 +21,10 @@ class ServerPlayChatMessageTest : PacketTest<ServerPlayChatMessagePacket>(Server
             ProtocolVersion.MC1_7_2 {
                 writeChat(chat { string("writing test") + ChatColor.BLUE })
             }
+            ProtocolVersion.MC1_8 {
+                writeChat(chat { string("writing test") + ChatColor.BLUE })
+                writeByte(0)
+            }
         }
     }
 

@@ -27,7 +27,8 @@ data class ServerPlayJoinGamePacket(
     var dimension: RegistryEntry,
     var difficulty: RegistryEntry,
     var maxPlayers: Int,
-    var levelType: String
+    var levelType: String,
+    var reducedDebugInfo: Boolean
 ) : EntityIdPacket, Packet() {
 
     companion object : PacketIO<ServerPlayJoinGamePacket> {
@@ -45,7 +46,8 @@ data class ServerPlayJoinGamePacket(
                 MagicDimension[version, buffer.readByte().toInt()],
                 MagicDifficulty[version, buffer.readUnsignedByte().toInt()],
                 buffer.readUnsignedByte().toInt(),
-                buffer.readString()
+                buffer.readString(),
+                if (version >= ProtocolVersion.MC1_8) buffer.readBoolean() else false
             )
         }
 
@@ -64,6 +66,8 @@ data class ServerPlayJoinGamePacket(
             buffer.writeByte(MagicDifficulty[version, packet.difficulty, Int::class] ?: 0)
             buffer.writeByte(packet.maxPlayers)
             buffer.writeString(packet.levelType)
+            if (version >= ProtocolVersion.MC1_8)
+                buffer.writeBoolean(packet.reducedDebugInfo)
         }
     }
 

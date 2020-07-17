@@ -3,6 +3,7 @@ package dev.zerite.craftlib.protocol.packet.play.server.display
 import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
+import dev.zerite.craftlib.protocol.Vector3
 import dev.zerite.craftlib.protocol.connection.NettyConnection
 import dev.zerite.craftlib.protocol.packet.base.EntityIdPacket
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
@@ -27,13 +28,25 @@ data class ServerPlayBlockBreakAnimationPacket(
             buffer: ProtocolBuffer,
             version: ProtocolVersion,
             connection: NettyConnection
-        ) = ServerPlayBlockBreakAnimationPacket(
-            buffer.readVarInt(),
-            buffer.readInt(),
-            buffer.readInt(),
-            buffer.readInt(),
-            buffer.readByte().toInt()
-        )
+        ) = if (version >= ProtocolVersion.MC1_8) {
+            val entityId = buffer.readVarInt()
+            val position = buffer.readPosition()
+            ServerPlayBlockBreakAnimationPacket(
+                entityId,
+                position.x,
+                position.y,
+                position.z,
+                buffer.readByte().toInt()
+            )
+        } else {
+            ServerPlayBlockBreakAnimationPacket(
+                buffer.readVarInt(),
+                buffer.readInt(),
+                buffer.readInt(),
+                buffer.readInt(),
+                buffer.readByte().toInt()
+            )
+        }
 
         override fun write(
             buffer: ProtocolBuffer,
@@ -42,9 +55,12 @@ data class ServerPlayBlockBreakAnimationPacket(
             connection: NettyConnection
         ) {
             buffer.writeVarInt(packet.entityId)
-            buffer.writeInt(packet.x)
-            buffer.writeInt(packet.y)
-            buffer.writeInt(packet.z)
+            if (version >= ProtocolVersion.MC1_8) buffer.writePosition(Vector3(packet.x, packet.y, packet.z))
+            else {
+                buffer.writeInt(packet.x)
+                buffer.writeInt(packet.y)
+                buffer.writeInt(packet.z)
+            }
             buffer.writeByte(packet.stage)
         }
     }

@@ -27,8 +27,8 @@ data class ServerLoginEncryptionRequestPacket(
             connection: NettyConnection
         ) = ServerLoginEncryptionRequestPacket(
             buffer.readString(),
-            buffer.readByteArray { readShort().toInt() }.asPublicKey(),
-            buffer.readByteArray { readShort().toInt() }
+            buffer.readByteArray { if (version >= ProtocolVersion.MC1_8) readVarInt() else readShort().toInt() }.asPublicKey(),
+            buffer.readByteArray { if (version >= ProtocolVersion.MC1_8) readVarInt() else readShort().toInt() }
         )
 
         override fun write(
@@ -38,8 +38,8 @@ data class ServerLoginEncryptionRequestPacket(
             connection: NettyConnection
         ) {
             buffer.writeString(packet.serverId)
-            buffer.writeByteArray(packet.publicKey.encoded) { writeShort(it) }
-            buffer.writeByteArray(packet.verifyToken) { writeShort(it) }
+            buffer.writeByteArray(packet.publicKey.encoded) { if (version >= ProtocolVersion.MC1_8) writeVarInt(it) else writeShort(it) }
+            buffer.writeByteArray(packet.verifyToken) { if (version >= ProtocolVersion.MC1_8) writeVarInt(it) else writeShort(it) }
         }
     }
 

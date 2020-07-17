@@ -36,6 +36,10 @@ class ServerPlayEntityHeadLookTest : PacketTest<ServerPlayEntityHeadLookPacket>(
                 writeInt(42)
                 writeByte(32)
             }
+            ProtocolVersion.MC1_8 {
+                writeVarInt(42)
+                writeByte(32)
+            }
         }
     }
 

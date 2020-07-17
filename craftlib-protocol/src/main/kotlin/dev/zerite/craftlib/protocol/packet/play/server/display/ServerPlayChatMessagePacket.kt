@@ -5,6 +5,8 @@ import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
+import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
+import dev.zerite.craftlib.protocol.data.registry.impl.MagicChatPosition
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
 /**
@@ -13,13 +15,19 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-data class ServerPlayChatMessagePacket(var message: BaseChatComponent) : Packet() {
+data class ServerPlayChatMessagePacket(
+    var message: BaseChatComponent,
+    var position: RegistryEntry = MagicChatPosition.CHAT
+) : Packet() {
     companion object : PacketIO<ServerPlayChatMessagePacket> {
         override fun read(
             buffer: ProtocolBuffer,
             version: ProtocolVersion,
             connection: NettyConnection
-        ) = ServerPlayChatMessagePacket(buffer.readChat())
+        ) = ServerPlayChatMessagePacket(
+            buffer.readChat(),
+            if (version >= ProtocolVersion.MC1_8) MagicChatPosition[version, buffer.readByte().toInt()] else MagicChatPosition.CHAT
+        )
 
         override fun write(
             buffer: ProtocolBuffer,
@@ -28,6 +36,8 @@ data class ServerPlayChatMessagePacket(var message: BaseChatComponent) : Packet(
             connection: NettyConnection
         ) {
             buffer.writeChat(packet.message)
+            if (version >= ProtocolVersion.MC1_8)
+                buffer.writeByte(MagicChatPosition[version, packet.position, Int::class] ?: 0)
         }
     }
 }

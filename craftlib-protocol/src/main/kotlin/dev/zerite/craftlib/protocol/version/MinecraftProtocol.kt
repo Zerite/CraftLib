@@ -11,23 +11,18 @@ import dev.zerite.craftlib.protocol.packet.login.client.ClientLoginEncryptionRes
 import dev.zerite.craftlib.protocol.packet.login.client.ClientLoginStartPacket
 import dev.zerite.craftlib.protocol.packet.login.server.ServerLoginDisconnectPacket
 import dev.zerite.craftlib.protocol.packet.login.server.ServerLoginEncryptionRequestPacket
+import dev.zerite.craftlib.protocol.packet.login.server.ServerLoginSetCompressionPacket
 import dev.zerite.craftlib.protocol.packet.login.server.ServerLoginSuccessPacket
 import dev.zerite.craftlib.protocol.packet.play.client.display.ClientPlayAnimationPacket
 import dev.zerite.craftlib.protocol.packet.play.client.display.ClientPlayChatMessagePacket
-import dev.zerite.craftlib.protocol.packet.play.client.interaction.ClientPlayEntityActionPacket
-import dev.zerite.craftlib.protocol.packet.play.client.interaction.ClientPlayPlayerBlockPlacementPacket
-import dev.zerite.craftlib.protocol.packet.play.client.interaction.ClientPlayPlayerDiggingPacket
-import dev.zerite.craftlib.protocol.packet.play.client.interaction.ClientPlayUseEntityPacket
+import dev.zerite.craftlib.protocol.packet.play.client.interaction.*
 import dev.zerite.craftlib.protocol.packet.play.client.inventory.*
 import dev.zerite.craftlib.protocol.packet.play.client.other.*
 import dev.zerite.craftlib.protocol.packet.play.client.player.*
 import dev.zerite.craftlib.protocol.packet.play.server.display.*
 import dev.zerite.craftlib.protocol.packet.play.server.entity.*
 import dev.zerite.craftlib.protocol.packet.play.server.entity.movement.*
-import dev.zerite.craftlib.protocol.packet.play.server.interaction.ServerPlayCollectItemPacket
-import dev.zerite.craftlib.protocol.packet.play.server.interaction.ServerPlaySignEditorOpenPacket
-import dev.zerite.craftlib.protocol.packet.play.server.interaction.ServerPlayUpdateSignPacket
-import dev.zerite.craftlib.protocol.packet.play.server.interaction.ServerPlayUseBedPacket
+import dev.zerite.craftlib.protocol.packet.play.server.interaction.*
 import dev.zerite.craftlib.protocol.packet.play.server.inventory.*
 import dev.zerite.craftlib.protocol.packet.play.server.join.ServerPlayJoinGamePacket
 import dev.zerite.craftlib.protocol.packet.play.server.join.ServerPlaySpawnPositionPacket
@@ -157,6 +152,12 @@ object MinecraftProtocol : AbstractProtocol() {
             }
             ClientPlayPluginMessagePacket {
                 ProtocolVersion.MC1_7_2 to 0x17
+            }
+            ClientPlaySpectatePacket {
+                ProtocolVersion.MC1_8 to 0x18
+            }
+            ClientPlayResourcePackStatusPacket {
+                ProtocolVersion.MC1_8 to 0x19
             }
         }
         clientbound {
@@ -355,6 +356,33 @@ object MinecraftProtocol : AbstractProtocol() {
             ServerPlayDisconnectPacket {
                 ProtocolVersion.MC1_7_2 to 0x40
             }
+            ServerPlayServerDifficultyPacket {
+                ProtocolVersion.MC1_8 to 0x41
+            }
+            ServerPlayCombatEventPacket {
+                ProtocolVersion.MC1_8 to 0x42
+            }
+            ServerPlayCameraPacket {
+                ProtocolVersion.MC1_8 to 0x43
+            }
+            ServerPlayWorldBorderPacket {
+                ProtocolVersion.MC1_8 to 0x44
+            }
+            ServerPlayTitlePacket {
+                ProtocolVersion.MC1_8 to 0x45
+            }
+            ServerPlaySetCompressionPacket {
+                ProtocolVersion.MC1_8 to 0x46
+            }
+            ServerPlayPlayerListHeaderFooterPacket {
+                ProtocolVersion.MC1_8 to 0x47
+            }
+            ServerPlayResourcePackSendPacket {
+                ProtocolVersion.MC1_8 to 0x48
+            }
+            ServerPlayUpdateEntityNBTPacket {
+                ProtocolVersion.MC1_8 to 0x49
+            }
         }
     }
 
@@ -402,6 +430,9 @@ object MinecraftProtocol : AbstractProtocol() {
             }
             ServerLoginSuccessPacket {
                 ProtocolVersion.MC1_7_2 to 0x02
+            }
+            ServerLoginSetCompressionPacket {
+                ProtocolVersion.MC1_8 to 0x03
             }
         }
     }

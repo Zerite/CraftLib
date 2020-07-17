@@ -32,6 +32,15 @@ class ServerPlayEntityTeleportTest : PacketTest<ServerPlayEntityTeleportPacket>(
                 writeByte(90)
                 writeByte(45)
             }
+            ProtocolVersion.MC1_8 {
+                writeVarInt(200)
+                writeInt(0)
+                writeInt(2 * 32)
+                writeInt(4 * 32)
+                writeByte(90)
+                writeByte(45)
+                writeBoolean(false)
+            }
         }
         example(
             ServerPlayEntityTeleportPacket(
@@ -50,6 +59,15 @@ class ServerPlayEntityTeleportTest : PacketTest<ServerPlayEntityTeleportPacket>(
                 writeInt(20 * 32)
                 writeByte(45)
                 writeByte(90)
+            }
+            ProtocolVersion.MC1_8 {
+                writeVarInt(100)
+                writeInt(20 * 32)
+                writeInt(20 * 32)
+                writeInt(20 * 32)
+                writeByte(45)
+                writeByte(90)
+                writeBoolean(false)
             }
         }
     }

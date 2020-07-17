@@ -11,7 +11,7 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-class MagicTeamFriendlyFire(name: String) : RegistryEntry(name) {
+open class MagicTeamFriendlyFire(name: String) : RegistryEntry(name) {
     companion object :
         IMinecraftRegistry<MagicTeamFriendlyFire> by LazyRegistryDelegate({ MagicRegistry.teamFriendlyFire }) {
         val OFF = MagicTeamFriendlyFire("Off")

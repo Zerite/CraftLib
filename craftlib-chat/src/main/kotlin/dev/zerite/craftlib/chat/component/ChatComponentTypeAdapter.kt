@@ -148,7 +148,7 @@ class ChatComponentTypeAdapter : TypeAdapter<BaseChatComponent>() {
             this["hoverEvent"]?.asJsonObject?.let {
                 base.hoverEvent = HoverEvent(
                     HoverEvent.Action.valueOf(it["action"].asString.toUpperCase()),
-                    it["value"].asJsonObject.asComponent()
+                    it["value"].asComponent()
                 )
             }
 

@@ -3,6 +3,7 @@ package dev.zerite.craftlib.protocol.packet.play.server.world
 import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
+import dev.zerite.craftlib.protocol.Vector3
 import dev.zerite.craftlib.protocol.connection.NettyConnection
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
@@ -32,14 +33,27 @@ data class ServerPlayEffectPacket(
             buffer: ProtocolBuffer,
             version: ProtocolVersion,
             connection: NettyConnection
-        ) = ServerPlayEffectPacket(
-            buffer.readInt(),
-            buffer.readInt(),
-            buffer.readByte().toInt(),
-            buffer.readInt(),
-            buffer.readInt(),
-            buffer.readBoolean()
-        )
+        ) = if (version >= ProtocolVersion.MC1_8) {
+            val id = buffer.readInt()
+            val position = buffer.readPosition()
+            ServerPlayEffectPacket(
+                id,
+                position.x,
+                position.y,
+                position.z,
+                buffer.readInt(),
+                buffer.readBoolean()
+            )
+        } else {
+            ServerPlayEffectPacket(
+                buffer.readInt(),
+                buffer.readInt(),
+                buffer.readByte().toInt(),
+                buffer.readInt(),
+                buffer.readInt(),
+                buffer.readBoolean()
+            )
+        }
 
         override fun write(
             buffer: ProtocolBuffer,
@@ -48,9 +62,12 @@ data class ServerPlayEffectPacket(
             connection: NettyConnection
         ) {
             buffer.writeInt(packet.id)
-            buffer.writeInt(packet.x)
-            buffer.writeByte(packet.y)
-            buffer.writeInt(packet.z)
+            if (version >= ProtocolVersion.MC1_8) buffer.writePosition(Vector3(packet.x, packet.y, packet.z))
+            else {
+                buffer.writeInt(packet.x)
+                buffer.writeByte(packet.y)
+                buffer.writeInt(packet.z)
+            }
             buffer.writeInt(packet.data)
             buffer.writeBoolean(packet.broadcast)
         }

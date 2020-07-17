@@ -61,6 +61,17 @@ data class EntityMetadata(private val values: HashMap<Int, MetadataValue<out Any
     operator fun plusAssign(value: MetadataValue<out Any>) {
         values[value.id] = value
     }
+
+    /**
+     * Removes a value from the list.
+     *
+     * @param  value       The key to remove.
+     * @author Koding
+     * @since  0.1.1-SNAPSHOT
+     */
+    operator fun minusAssign(value: Int) {
+        values.remove(value)
+    }
 }
 
 /**
@@ -81,6 +92,19 @@ data class MetadataValue<T>(val id: Int, var value: T) {
         is String -> 4
         is Slot -> 5
         is Vector3 -> 6
+        is RotationData -> 7
         else -> null
     }
 }
+
+/**
+ * Stores rotation information for entity metadata.
+ *
+ * @author Koding
+ * @since  0.1.1-SNAPSHOT
+ */
+data class RotationData(
+    var pitch: Float,
+    var yaw: Float,
+    var roll: Float
+)

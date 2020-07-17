@@ -1,9 +1,6 @@
 package dev.zerite.craftlib.protocol.packet.play.client.interaction
 
-import dev.zerite.craftlib.protocol.Packet
-import dev.zerite.craftlib.protocol.PacketIO
-import dev.zerite.craftlib.protocol.ProtocolBuffer
-import dev.zerite.craftlib.protocol.Slot
+import dev.zerite.craftlib.protocol.*
 import dev.zerite.craftlib.protocol.connection.NettyConnection
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
@@ -38,16 +35,30 @@ data class ClientPlayPlayerBlockPlacementPacket(
             buffer: ProtocolBuffer,
             version: ProtocolVersion,
             connection: NettyConnection
-        ) = ClientPlayPlayerBlockPlacementPacket(
-            buffer.readInt(),
-            buffer.readUnsignedByte().toInt(),
-            buffer.readInt(),
-            buffer.readByte().toInt(),
-            buffer.readSlot(),
-            buffer.readByte().toInt(),
-            buffer.readByte().toInt(),
-            buffer.readByte().toInt()
-        )
+        ) = if (version >= ProtocolVersion.MC1_8) {
+            val position = buffer.readPosition()
+            ClientPlayPlayerBlockPlacementPacket(
+                position.x,
+                position.y,
+                position.z,
+                buffer.readByte().toInt(),
+                buffer.readSlot(),
+                buffer.readByte().toInt(),
+                buffer.readByte().toInt(),
+                buffer.readByte().toInt()
+            )
+        } else {
+            ClientPlayPlayerBlockPlacementPacket(
+                buffer.readInt(),
+                buffer.readUnsignedByte().toInt(),
+                buffer.readInt(),
+                buffer.readByte().toInt(),
+                buffer.readSlot(),
+                buffer.readByte().toInt(),
+                buffer.readByte().toInt(),
+                buffer.readByte().toInt()
+            )
+        }
 
         override fun write(
             buffer: ProtocolBuffer,
@@ -55,9 +66,12 @@ data class ClientPlayPlayerBlockPlacementPacket(
             packet: ClientPlayPlayerBlockPlacementPacket,
             connection: NettyConnection
         ) {
-            buffer.writeInt(packet.x)
-            buffer.writeByte(packet.y)
-            buffer.writeInt(packet.z)
+            if (version >= ProtocolVersion.MC1_8) buffer.writePosition(Vector3(packet.x, packet.y, packet.z))
+            else {
+                buffer.writeInt(packet.x)
+                buffer.writeByte(packet.y)
+                buffer.writeInt(packet.z)
+            }
             buffer.writeByte(packet.direction)
             buffer.writeSlot(packet.heldItem)
             buffer.writeByte(packet.cursorX)

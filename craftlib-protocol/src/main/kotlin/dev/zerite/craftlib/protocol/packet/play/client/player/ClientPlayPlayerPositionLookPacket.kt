@@ -29,7 +29,7 @@ data class ClientPlayPlayerPositionLookPacket(
         ): ClientPlayPlayerPositionLookPacket = ClientPlayPlayerPositionLookPacket(
             buffer.readDouble(),
             buffer.readDouble(),
-            buffer.readDouble(),
+            if (version >= ProtocolVersion.MC1_8) 0.0 else buffer.readDouble(),
             buffer.readDouble(),
             buffer.readFloat(),
             buffer.readFloat(),
@@ -44,7 +44,8 @@ data class ClientPlayPlayerPositionLookPacket(
         ) {
             buffer.writeDouble(packet.x)
             buffer.writeDouble(packet.y)
-            buffer.writeDouble(packet.stance)
+            if (version <= ProtocolVersion.MC1_7_6)
+                buffer.writeDouble(packet.stance)
             buffer.writeDouble(packet.z)
             buffer.writeFloat(packet.yaw)
             buffer.writeFloat(packet.pitch)

@@ -18,7 +18,22 @@ class ServerPlaySetSlotTest : PacketTest<ServerPlaySetSlotPacket>(ServerPlaySetS
             ProtocolVersion.MC1_7_2 {
                 writeByte(0)
                 writeShort(10)
-                writeSlot(Slot(82, count = 3))
+
+                // Slot
+                writeShort(82)
+                writeByte(3)
+                writeShort(0)
+                writeShort(-1)
+            }
+            ProtocolVersion.MC1_8 {
+                writeByte(0)
+                writeShort(10)
+
+                // Slot
+                writeShort(82)
+                writeByte(3)
+                writeShort(0)
+                writeByte(0)
             }
         }
     }

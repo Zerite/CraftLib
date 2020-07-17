@@ -9,11 +9,15 @@ import dev.zerite.craftlib.nbt.impl.NamedTag
 import dev.zerite.craftlib.protocol.connection.NettyConnection
 import dev.zerite.craftlib.protocol.data.entity.EntityMetadata
 import dev.zerite.craftlib.protocol.data.entity.MetadataValue
+import dev.zerite.craftlib.protocol.data.entity.RotationData
 import dev.zerite.craftlib.protocol.util.ext.toUuid
+import dev.zerite.craftlib.protocol.version.ProtocolVersion
 import io.netty.buffer.ByteBuf
+import io.netty.buffer.ByteBufInputStream
 import io.netty.buffer.Unpooled
-import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
+import java.io.DataInput
+import java.io.DataInputStream
 import java.util.*
 import kotlin.math.floor
 import kotlin.math.roundToInt
@@ -43,8 +47,11 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
     /**
      * Returns the readers saved index.
      */
-    val readerIndex: Int
+    var readerIndex: Int
         get() = buf.readerIndex()
+        set(value) {
+            buf.readerIndex(value)
+        }
 
     /**
      * Read a VarInt from the buffer.
@@ -96,6 +103,58 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
 
             writeByte(temp)
         } while (current != 0)
+    }
+
+    /**
+     * Read a VarLong from the buffer.
+     *
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    fun readVarLong(): Long {
+        var amount = 0
+        var result = 0L
+        var read: Long
+
+        do {
+            read = readByte().toLong()
+
+            // Discard most significant bit as it's not part of the value
+            val value = read and 0b01111111
+
+            // Create space for this part of the value and add it
+            result = result or (value shl (7 * amount++))
+
+            if (amount > 10) error("VarLong has too many bytes (only 10 allowed)")
+        } while ((read and 0b10000000L) != 0L) // If the most significant bit is set we have to read another byte
+
+        return result
+    }
+
+    /**
+     * Writes a VarInt into the buffer.
+     *
+     * @param  value      The value which should be written.
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    fun writeVarLong(value: Long) {
+        var current: Long = value
+
+        do {
+            // Get the value we're supposed to write
+            var temp = current and 0b01111111L
+
+            // Discard the part of the value we're writing now
+            current = current ushr 7
+
+            // Set the most significant bit if we need to write any more bytes
+            if (current != 0L) {
+                temp = temp or 0b10000000L
+            }
+
+            writeByte(temp.toInt())
+        } while (current != 0L)
     }
 
     /**
@@ -210,6 +269,19 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
      */
     @Suppress("UNUSED")
     fun writeBytes(bytes: ByteArray): ByteBuf = buf.writeBytes(bytes)
+
+    /**
+     * Write a byte array into the buffer with the given offset and length.
+     *
+     * @param  bytes     The raw bytes to write.
+     * @param  offset    The offset to begin writing at.
+     * @param  length    The size of the bytes we are writing until.
+     *
+     * @author Koding
+     * @since  0.1.1-SNAPSHOT
+     */
+    @Suppress("UNUSED")
+    fun writeBytes(bytes: ByteArray, offset: Int, length: Int): ByteBuf = buf.writeBytes(bytes, offset, length)
 
     /**
      * Reads an unsigned short from the buffer and returns it.
@@ -520,13 +592,19 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
      */
     @Suppress("UNUSED")
     fun readNBT(
-        compressed: Boolean = false,
-        length: ProtocolBuffer.() -> Int = { readShort().toInt() }
-    ) = length().let { len ->
-        if (len < 0) null
-        else ByteArrayInputStream(readByteArray(len)).let {
-            if (compressed) NBTIO.readCompressed(it)
-            else NBTIO.read(it)
+        compressed: Boolean = connection.version <= ProtocolVersion.MC1_7_6,
+        length: ProtocolBuffer.() -> Int = { if (connection.version >= ProtocolVersion.MC1_8) 0 else readShort().toInt() }
+    ) = let {
+        val i = readerIndex
+        if (connection.version >= ProtocolVersion.MC1_8)
+            readByte().toInt().takeIf { it != 0 } ?: return@let null
+        readerIndex = i
+        length().let { len ->
+            if (len < 0) null
+            else ByteBufInputStream(buf).let {
+                if (compressed) NBTIO.readCompressed(it)
+                else NBTIO.read(DataInputStream(it) as DataInput)
+            }
         }
     }
 
@@ -543,9 +621,11 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
     @Suppress("UNUSED")
     fun writeNBT(
         tag: CompoundTag?,
-        compressed: Boolean = false,
-        length: ProtocolBuffer.(Int) -> Unit = { writeShort(it) }
-    ) = if (tag == null) length(-1)
+        compressed: Boolean = connection.version <= ProtocolVersion.MC1_7_6,
+        length: ProtocolBuffer.(Int) -> Unit = { if (connection.version <= ProtocolVersion.MC1_7_6) writeShort(it) }
+    ): Any = if (tag == null)
+        if (connection.version >= ProtocolVersion.MC1_8) writeByte(0)
+        else length(-1)
     else {
         val out = ByteArrayOutputStream()
         NamedTag("", tag).let {
@@ -565,7 +645,7 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
         if (id >= 0) {
             count = readByte()
             damage = readShort()
-            data = readNBT(compressed = true)?.tag
+            data = readNBT()?.tag
         }
     }
 
@@ -581,7 +661,7 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
         if (id >= 0) {
             writeByte(count.toInt())
             writeShort(damage.toInt())
-            writeNBT(data, compressed = true)
+            writeNBT(data)
         }
     }
 
@@ -613,6 +693,11 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
                         readInt(),
                         readInt()
                     )
+                    7 -> RotationData(
+                        readFloat(),
+                        readFloat(),
+                        readFloat()
+                    )
                     else -> continue@loop
                 }
             )
@@ -643,6 +728,12 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
                     writeInt(vec.x)
                     writeInt(vec.y)
                     writeInt(vec.z)
+                }
+                7 -> {
+                    val rotation = value.value as RotationData
+                    writeFloat(rotation.pitch)
+                    writeFloat(rotation.yaw)
+                    writeFloat(rotation.roll)
                 }
             }
         }
@@ -739,6 +830,30 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
             writeShort(data.speedZ ?: 0)
         }
     }
+
+    /**
+     * Reads a position long from the buffer.
+     *
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    fun readPosition() = readLong().let {
+        Vector3(
+            (it shr 38).toInt(),
+            (it and 0xFFF).toInt(),
+            (it shl 26 shr 38).toInt()
+        )
+    }
+
+    /**
+     * Writes a position long into the buffer.
+     *
+     * @param  position        The position to write into the buffer.
+     * @author Koding
+     * @since  0.1.1-SNAPSHOT
+     */
+    fun writePosition(position: Vector3) =
+        writeLong(((position.x.toLong() and 0x3FFFFFFL) shl 38) or ((position.z.toLong() and 0x3FFFFFFL) shl 12) or (position.y.toLong() and 0xFFFL))
 
     /**
      * Set of modes which the UUIDs should be written using.

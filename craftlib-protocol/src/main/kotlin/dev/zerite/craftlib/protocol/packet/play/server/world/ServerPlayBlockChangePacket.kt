@@ -3,6 +3,7 @@ package dev.zerite.craftlib.protocol.packet.play.server.world
 import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
+import dev.zerite.craftlib.protocol.Vector3
 import dev.zerite.craftlib.protocol.connection.NettyConnection
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
@@ -25,13 +26,25 @@ data class ServerPlayBlockChangePacket(
             buffer: ProtocolBuffer,
             version: ProtocolVersion,
             connection: NettyConnection
-        ) = ServerPlayBlockChangePacket(
-            buffer.readInt(),
-            buffer.readUnsignedByte().toInt(),
-            buffer.readInt(),
-            buffer.readVarInt(),
-            buffer.readUnsignedByte().toInt()
-        )
+        ) = if (version >= ProtocolVersion.MC1_8) {
+            val position = buffer.readPosition()
+            val id = buffer.readVarInt()
+            ServerPlayBlockChangePacket(
+                position.x,
+                position.y,
+                position.z,
+                id shr 4,
+                id and 0xF
+            )
+        } else {
+            ServerPlayBlockChangePacket(
+                buffer.readInt(),
+                buffer.readUnsignedByte().toInt(),
+                buffer.readInt(),
+                buffer.readVarInt(),
+                buffer.readUnsignedByte().toInt()
+            )
+        }
 
         override fun write(
             buffer: ProtocolBuffer,
@@ -39,11 +52,16 @@ data class ServerPlayBlockChangePacket(
             packet: ServerPlayBlockChangePacket,
             connection: NettyConnection
         ) {
-            buffer.writeInt(packet.x)
-            buffer.writeByte(packet.y)
-            buffer.writeInt(packet.z)
-            buffer.writeVarInt(packet.type)
-            buffer.writeByte(packet.metadata)
+            if (version >= ProtocolVersion.MC1_8) {
+                buffer.writePosition(Vector3(packet.x, packet.y, packet.z))
+                buffer.writeVarInt((packet.type shl 4) or (packet.metadata and 0xF))
+            } else {
+                buffer.writeInt(packet.x)
+                buffer.writeByte(packet.y)
+                buffer.writeInt(packet.z)
+                buffer.writeVarInt(packet.type)
+                buffer.writeByte(packet.metadata)
+            }
         }
     }
 }

@@ -27,6 +27,12 @@ class ServerPlayEffectTest : PacketTest<ServerPlayEffectPacket>(ServerPlayEffect
                 writeInt(1)
                 writeBoolean(true)
             }
+            ProtocolVersion.MC1_8 {
+                writeInt(1000)
+                writeLong(((100L and 0x3FFFFFFL) shl 38) or ((1000L and 0x3FFFFFFL) shl 12) or (120L and 0xFFFL))
+                writeInt(1)
+                writeBoolean(true)
+            }
         }
         example(ServerPlayEffectPacket(20, 20, 20, 20, 20, false)) {
             ProtocolVersion.MC1_7_2 {
@@ -34,6 +40,12 @@ class ServerPlayEffectTest : PacketTest<ServerPlayEffectPacket>(ServerPlayEffect
                 writeInt(20)
                 writeByte(20)
                 writeInt(20)
+                writeInt(20)
+                writeBoolean(false)
+            }
+            ProtocolVersion.MC1_8 {
+                writeInt(20)
+                writeLong(((20L and 0x3FFFFFFL) shl 38) or ((20L and 0x3FFFFFFL) shl 12) or (20L and 0xFFFL))
                 writeInt(20)
                 writeBoolean(false)
             }

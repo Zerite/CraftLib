@@ -20,7 +20,10 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  */
 class ServerPlayChunkDataTest : PacketTest<ServerPlayChunkDataPacket>(ServerPlayChunkDataPacket) {
     init {
-        example(ServerPlayChunkDataPacket(ChunkColumn(42, 42, Array(16) { Chunk() }, ByteArray(16 * 16) { 1 }), true))
+        example(
+            ServerPlayChunkDataPacket(ChunkColumn(42, 42, Array(16) { Chunk() }, ByteArray(16 * 16) { 1 }), true),
+            maximumVersion = ProtocolVersion.MC1_8
+        )
         example(
             ServerPlayChunkDataPacket(
                 ChunkColumn(
@@ -41,7 +44,7 @@ class ServerPlayChunkDataTest : PacketTest<ServerPlayChunkDataPacket>(ServerPlay
         val column = ChunkColumn(20, 21, Array(16) { Chunk() }, byteArrayOf())
         example(ServerPlayChunkDataPacket(column, true)) {
             ProtocolVersion.MC1_7_2 {
-                val bytes = ChunkColumn.write(column).output.deflated()
+                val bytes = ChunkColumn.writeOneSeven(column).output.deflated()
 
                 // Coords
                 writeInt(20)
@@ -54,6 +57,15 @@ class ServerPlayChunkDataTest : PacketTest<ServerPlayChunkDataPacket>(ServerPlay
 
                 // Compressed data
                 writeInt(bytes.size)
+                writeBytes(bytes)
+            }
+            ProtocolVersion.MC1_8 {
+                val bytes = ChunkColumn.writeOneEight(column).output
+                writeInt(20)
+                writeInt(21)
+                writeBoolean(true)
+                writeShort(0)
+                writeVarInt(bytes.size)
                 writeBytes(bytes)
             }
         }

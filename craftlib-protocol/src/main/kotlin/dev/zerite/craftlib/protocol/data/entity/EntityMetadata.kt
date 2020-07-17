@@ -61,6 +61,17 @@ data class EntityMetadata(private val values: HashMap<Int, MetadataValue<out Any
     operator fun plusAssign(value: MetadataValue<out Any>) {
         values[value.id] = value
     }
+
+    /**
+     * Removes a value from the list.
+     *
+     * @param  value       The key to remove.
+     * @author Koding
+     * @since  0.1.1-SNAPSHOT
+     */
+    operator fun minusAssign(value: Int) {
+        values.remove(value)
+    }
 }
 
 /**

@@ -1,5 +1,6 @@
 package dev.zerite.craftlib.protocol.util.ext
 
+import io.netty.buffer.Unpooled
 import java.io.ByteArrayOutputStream
 import java.io.DataInputStream
 import java.io.DataOutputStream
@@ -70,4 +71,25 @@ fun ByteArray.inflated(size: Int) =
 fun ByteArray.trim(length: Int) =
     ByteArray(length).also {
         System.arraycopy(this, 0, it, 0, length)
+    }
+
+/**
+ * Converts this byte array into a short array.
+ *
+ * @author Koding
+ * @since  0.1.1-SNAPSHOT
+ */
+fun ByteArray.toShortArray() =
+    Unpooled.wrappedBuffer(this).let { Array(size / 2) { _ -> it.readShortLE() }.toShortArray() }
+
+/**
+ * Converts this short array into a byte array.
+ *
+ * @author Koding
+ * @since  0.1.1-SNAPSHOT
+ */
+fun ShortArray.toByteArray(): ByteArray =
+    Unpooled.buffer(size * 2).let { buf ->
+        forEach { buf.writeShortLE(it.toInt()) }
+        buf.array()
     }

@@ -35,13 +35,17 @@ data class ServerPlayChunkDataPacket(
                 buffer.readInt(),
                 buffer.readInt(),
                 buffer.readBoolean(),
-                buffer.readShort().toInt(),
-                buffer.readShort().toInt()
+                if (version >= ProtocolVersion.MC1_8) buffer.readUnsignedShort() else buffer.readShort().toInt(),
+                if (version >= ProtocolVersion.MC1_8) 0 else buffer.readShort().toInt()
             )
 
             return ServerPlayChunkDataPacket(
-                buffer.readByteArray { readInt() }.inflated(196864)
-                    .let { ChunkColumn.read(it, metadata, hasSkyLight = true) },
+                if (version >= ProtocolVersion.MC1_8) {
+                    ChunkColumn.readOneEight(buffer.readByteArray(), metadata, hasSkyLight = true)
+                } else {
+                    buffer.readByteArray { readInt() }.inflated(196864)
+                        .let { ChunkColumn.readOneSeven(it, metadata, hasSkyLight = true) }
+                },
                 metadata.biomes
             )
         }
@@ -52,13 +56,18 @@ data class ServerPlayChunkDataPacket(
             packet: ServerPlayChunkDataPacket,
             connection: NettyConnection
         ) {
-            val (primaryBitmask, addBitmask, bytes) = ChunkColumn.write(packet.column, writeBiomes = packet.groundUp)
+            val (primaryBitmask, addBitmask, bytes) = if (version >= ProtocolVersion.MC1_8)
+                ChunkColumn.writeOneEight(packet.column, writeBiomes = packet.groundUp)
+            else ChunkColumn.writeOneSeven(packet.column, writeBiomes = packet.groundUp)
+
             buffer.writeInt(packet.column.x)
             buffer.writeInt(packet.column.z)
             buffer.writeBoolean(packet.groundUp)
             buffer.writeShort(primaryBitmask)
-            buffer.writeShort(addBitmask)
-            buffer.writeByteArray(bytes.deflated()) { writeInt(it) }
+            if (version <= ProtocolVersion.MC1_7_6)
+                buffer.writeShort(addBitmask)
+            if (version >= ProtocolVersion.MC1_8) buffer.writeByteArray(bytes)
+            else buffer.writeByteArray(bytes.deflated()) { writeInt(it) }
         }
     }
 }

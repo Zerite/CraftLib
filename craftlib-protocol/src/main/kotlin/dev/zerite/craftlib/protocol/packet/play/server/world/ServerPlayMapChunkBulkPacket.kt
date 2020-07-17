@@ -28,14 +28,42 @@ data class ServerPlayMapChunkBulkPacket(
             buffer: ProtocolBuffer,
             version: ProtocolVersion,
             connection: NettyConnection
-        ): ServerPlayMapChunkBulkPacket {
+        ) = if (version >= ProtocolVersion.MC1_8) {
+            val skyLight = buffer.readBoolean()
+            val meta = buffer.readArray {
+                ChunkMetadata(
+                    readInt(),
+                    readInt(),
+                    true,
+                    readUnsignedShort(),
+                    0
+                )
+            }
+
+            ServerPlayMapChunkBulkPacket(
+                skyLight,
+                Array(meta.size) {
+                    val metadata = meta[it]
+
+                    var primarySize = 0
+                    for (chunkIndex in 0..15)
+                        primarySize += metadata.primaryBitmap shr chunkIndex and 1
+
+                    var dataLength = 10240 * primarySize + 256
+                    if (skyLight) dataLength += 2048 * primarySize
+
+                    val chunkBytes = buffer.readByteArray(length = dataLength)
+                    ChunkColumn.readOneEight(chunkBytes, metadata, hasSkyLight = skyLight)
+                }
+            )
+        } else {
             val columns = buffer.readShort()
             val length = buffer.readInt()
             val skyLight = buffer.readBoolean()
             val data = buffer.readByteArray(length = length).inflated(196864 * columns)
 
             var readerIndex = 0
-            return ServerPlayMapChunkBulkPacket(
+            ServerPlayMapChunkBulkPacket(
                 skyLight,
                 Array(columns.toInt()) {
                     val meta = ChunkMetadata(
@@ -62,7 +90,7 @@ data class ServerPlayMapChunkBulkPacket(
                     System.arraycopy(data, readerIndex, chunkBytes, 0, dataLength)
                     readerIndex += dataLength
 
-                    ChunkColumn.read(chunkBytes, meta, hasSkyLight = skyLight)
+                    ChunkColumn.readOneSeven(chunkBytes, meta, hasSkyLight = skyLight)
                 }
             )
         }
@@ -77,22 +105,33 @@ data class ServerPlayMapChunkBulkPacket(
             var bytesPosition = 0
 
             val output = packet.columns.map {
-                it to ChunkColumn.write(it, hasSkyLight = packet.skyLight).apply {
+                it to (if (version >= ProtocolVersion.MC1_8) ChunkColumn.writeOneEight(it, hasSkyLight = packet.skyLight)
+                else ChunkColumn.writeOneSeven(it, hasSkyLight = packet.skyLight)).apply {
                     System.arraycopy(output, 0, bytes, bytesPosition, output.size)
                     bytesPosition += output.size
                 }
             }.toTypedArray()
 
-            buffer.writeShort(packet.columns.size)
-            buffer.writeInt(bytesPosition)
-            buffer.writeBoolean(packet.skyLight)
-            buffer.writeBytes(bytes.trim(bytesPosition).deflated())
+            if (version >= ProtocolVersion.MC1_8) {
+                buffer.writeBoolean(packet.skyLight)
+                buffer.writeArray(output) { (col, out) ->
+                    writeInt(col.x)
+                    writeInt(col.z)
+                    writeShort(out.primaryBitmask)
+                }
+                buffer.writeBytes(bytes.trim(bytesPosition))
+            } else {
+                buffer.writeShort(packet.columns.size)
+                buffer.writeInt(bytesPosition)
+                buffer.writeBoolean(packet.skyLight)
+                buffer.writeBytes(bytes.trim(bytesPosition).deflated())
 
-            buffer.writeArray(output, { }) { (col, out) ->
-                writeInt(col.x)
-                writeInt(col.z)
-                writeShort(out.primaryBitmask)
-                writeShort(out.addBitmask)
+                buffer.writeArray(output, { }) { (col, out) ->
+                    writeInt(col.x)
+                    writeInt(col.z)
+                    writeShort(out.primaryBitmask)
+                    writeShort(out.addBitmask)
+                }
             }
         }
     }

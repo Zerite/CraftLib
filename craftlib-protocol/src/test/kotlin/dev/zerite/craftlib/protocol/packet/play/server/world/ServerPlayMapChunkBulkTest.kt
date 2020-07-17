@@ -45,7 +45,7 @@ class ServerPlayMapChunkBulkTest : PacketTest<ServerPlayMapChunkBulkPacket>(Serv
         val column = ChunkColumn(20, 21, Array(16) { Chunk() }, byteArrayOf())
         example(ServerPlayMapChunkBulkPacket(true, arrayOf(column))) {
             ProtocolVersion.MC1_7_2 {
-                val compressed = ChunkColumn.write(column, hasSkyLight = true).output.deflated()
+                val compressed = ChunkColumn.writeOneSeven(column, hasSkyLight = true).output.deflated()
 
                 writeShort(1)
                 writeInt(compressed.size)
@@ -56,6 +56,17 @@ class ServerPlayMapChunkBulkTest : PacketTest<ServerPlayMapChunkBulkPacket>(Serv
                 writeInt(21)
                 writeShort(0)
                 writeShort(0)
+            }
+            ProtocolVersion.MC1_8 {
+                val bytes = ChunkColumn.writeOneEight(column, hasSkyLight = true).output
+                writeBoolean(true)
+                writeVarInt(1)
+
+                writeInt(20)
+                writeInt(21)
+                writeShort(0)
+
+                writeBytes(bytes)
             }
         }
     }

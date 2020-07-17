@@ -97,7 +97,7 @@ class MinecraftRegistry<T : RegistryEntry> : IMinecraftRegistry<T> {
      */
     override operator fun get(version: ProtocolVersion, magic: RegistryEntry) =
         if (magic is UnknownRegistryEntry<*>) magic.raw
-        else versionsInt[version]?.get(magic)?.apply { println("value : $this, map : ${versionsInt[version]}") } ?: UnknownRegistryEntry(-1)
+        else versionsInt[version]?.get(magic) ?: UnknownRegistryEntry(-1)
 
     /**
      * Gets the magic value for the provided enum at the

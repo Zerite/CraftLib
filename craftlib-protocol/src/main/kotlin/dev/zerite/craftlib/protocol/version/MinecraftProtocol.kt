@@ -260,9 +260,9 @@ object MinecraftProtocol : AbstractProtocol() {
             ServerPlayEntityPropertiesPacket {
                 ProtocolVersion.MC1_7_2 to 0x20
             }
-//            ServerPlayChunkDataPacket {
-//                ProtocolVersion.MC1_7_2 to 0x21
-//            }
+            ServerPlayChunkDataPacket {
+                ProtocolVersion.MC1_7_2 to 0x21
+            }
             ServerPlayMultiBlockChangePacket {
                 ProtocolVersion.MC1_7_2 to 0x22
             }
@@ -275,9 +275,9 @@ object MinecraftProtocol : AbstractProtocol() {
             ServerPlayBlockBreakAnimationPacket {
                 ProtocolVersion.MC1_7_2 to 0x25
             }
-//            ServerPlayMapChunkBulkPacket {
-//                ProtocolVersion.MC1_7_2 to 0x26
-//            }
+            ServerPlayMapChunkBulkPacket {
+                ProtocolVersion.MC1_7_2 to 0x26
+            }
             ServerPlayExplosionPacket {
                 ProtocolVersion.MC1_7_2 to 0x27
             }

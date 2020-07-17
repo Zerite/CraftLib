@@ -11,7 +11,7 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
  * @author Koding
  * @since  0.1.1-SNAPSHOT
  */
-class MagicParticleType(name: String, val argumentCount: Int = 0) : RegistryEntry(name) {
+open class MagicParticleType(name: String, val argumentCount: Int = 0) : RegistryEntry(name) {
 
     companion object : IMinecraftRegistry<MagicParticleType> by LazyRegistryDelegate({ MagicRegistry.particleType }) {
         val EXPLOSION_NORMAL = MagicParticleType("Normal Explosion")

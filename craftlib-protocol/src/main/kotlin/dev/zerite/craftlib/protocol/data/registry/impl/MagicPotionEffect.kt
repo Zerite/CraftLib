@@ -12,7 +12,7 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-data class MagicPotionEffect(override val name: String, val positive: Boolean) : RegistryEntry(name) {
+open class MagicPotionEffect(override val name: String, val positive: Boolean) : RegistryEntry(name) {
     companion object : IMinecraftRegistry<MagicPotionEffect> by LazyRegistryDelegate({ MagicRegistry.potionEffect }) {
         val SPEED = MagicPotionEffect("Speed", true)
         val SLOWNESS = MagicPotionEffect("Slowness", false)

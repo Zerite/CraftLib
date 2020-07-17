@@ -11,13 +11,15 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-class MagicMobType(
+open class MagicMobType(
     name: String,
     @Suppress("UNUSED") val boundingXZ: Double,
     @Suppress("UNUSED") val boundingY: Double
 ) : RegistryEntry(name) {
 
     companion object : IMinecraftRegistry<MagicMobType> by LazyRegistryDelegate({ MagicRegistry.mobType }) {
+        val MOB = MagicMobType("Mob", 0.0, 0.0)
+        val MONSTER = MagicMobType("Monster", 0.0, 0.0)
         val CREEPER = MagicMobType("Creeper", 0.6, 1.8)
         val SKELETON = MagicMobType("Skeleton", 0.6, 1.8)
         val SPIDER = MagicMobType("Spider", 1.4, 0.9)
@@ -35,6 +37,8 @@ class MagicMobType(
         val WITHER = MagicMobType("Wither", 0.0, 0.0)
         val BAT = MagicMobType("Bat", 0.0, 0.0)
         val WITCH = MagicMobType("Witch", 0.0, 0.0)
+        val ENDERMITE = MagicMobType("Endermite", 0.4, 0.3)
+        val GUARDIAN = MagicMobType("Guardian", 0.85, 0.85)
         val PIG = MagicMobType("Pig", 0.9, 0.9)
         val SHEEP = MagicMobType("Sheep", 0.6, 1.3)
         val COW = MagicMobType("Cow", 0.9, 1.3)
@@ -46,6 +50,7 @@ class MagicMobType(
         val OCELOT = MagicMobType("Ocelot", 0.0, 0.0)
         val IRON_GOLEM = MagicMobType("Iron Golem", 0.0, 0.0)
         val HORSE = MagicMobType("Horse", 0.0, 0.0)
+        val RABBIT = MagicMobType("Rabbit", 0.6, 0.7)
         val VILLAGER = MagicMobType("Villager", 0.0, 0.0)
     }
 

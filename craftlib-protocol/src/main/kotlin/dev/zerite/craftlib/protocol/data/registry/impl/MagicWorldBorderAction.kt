@@ -11,7 +11,7 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
  * @author Koding
  * @since  0.1.1-SNAPSHOT
  */
-class MagicWorldBorderAction(name: String) : RegistryEntry(name) {
+open class MagicWorldBorderAction(name: String) : RegistryEntry(name) {
 
     companion object :
         IMinecraftRegistry<MagicWorldBorderAction> by LazyRegistryDelegate({ MagicRegistry.worldBorderAction }) {

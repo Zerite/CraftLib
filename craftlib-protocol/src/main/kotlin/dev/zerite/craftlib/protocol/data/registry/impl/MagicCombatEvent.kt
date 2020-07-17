@@ -11,7 +11,7 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
  * @author Koding
  * @since  0.1.1-SNAPSHOT
  */
-class MagicCombatEvent(name: String) : RegistryEntry(name) {
+open class MagicCombatEvent(name: String) : RegistryEntry(name) {
 
     companion object : IMinecraftRegistry<MagicCombatEvent> by LazyRegistryDelegate({ MagicRegistry.combatEvent }) {
         val ENTER_COMBAT = MagicCombatEvent("Enter Combat")

@@ -16,9 +16,9 @@ class MinecraftRegistry<T : RegistryEntry> : IMinecraftRegistry<T> {
     /**
      * Stores the version values for each enums mappings.
      */
-    private val rawVersions = hashMapOf<ProtocolVersion, HashMap<Any, T>>()
-    private val versions = hashMapOf<ProtocolVersion, HashMap<Any, T>>()
-    private val versionsInt = hashMapOf<ProtocolVersion, HashMap<T, Any>>()
+    private val rawVersions = hashMapOf<ProtocolVersion, HashMap<T, Any>>()
+    private val versions = hashMapOf<ProtocolVersion, Map<Any, T>>()
+    private val versionsInt = hashMapOf<ProtocolVersion, Map<T, Any>>()
 
     /**
      * Creates an enum builder for the provided protocol version for
@@ -39,11 +39,15 @@ class MinecraftRegistry<T : RegistryEntry> : IMinecraftRegistry<T> {
      * @author Koding
      * @since  0.1.0-SNAPSHOT
      */
-    fun rebuild() = ProtocolState.SideData.runForAllProtocols(
-        rawVersions.map { it.key to it.value }.sortedBy { it.first }.toTypedArray()
-    ) { version, map ->
-        versions[version] = map
-        versionsInt[version] = HashMap(map.map { it.value to it.key }.toMap())
+    fun rebuild() {
+        val values = hashMapOf<T, Any>()
+        ProtocolState.SideData.runForAllProtocols(
+            rawVersions.map { it.key to it.value }.sortedBy { it.first }.toTypedArray()
+        ) { version, map ->
+            values.putAll(map)
+            versions[version] = values.map { it.value to it.key }.toMap()
+            versionsInt[version] = values.toMap()
+        }
     }
 
     /**
@@ -93,7 +97,7 @@ class MinecraftRegistry<T : RegistryEntry> : IMinecraftRegistry<T> {
      */
     override operator fun get(version: ProtocolVersion, magic: RegistryEntry) =
         if (magic is UnknownRegistryEntry<*>) magic.raw
-        else versionsInt[version]?.get(magic) ?: UnknownRegistryEntry(-1)
+        else versionsInt[version]?.get(magic)?.apply { println("value : $this, map : ${versionsInt[version]}") } ?: UnknownRegistryEntry(-1)
 
     /**
      * Gets the magic value for the provided enum at the
@@ -121,7 +125,7 @@ class VersionEntryBuilder<T : RegistryEntry> {
     /**
      * The mappings for this enum to use.
      */
-    val mappings = hashMapOf<Any, T>()
+    val mappings = hashMapOf<T, Any>()
 
     /**
      * Maps the enum value to the index provided.
@@ -131,7 +135,7 @@ class VersionEntryBuilder<T : RegistryEntry> {
      * @since  0.1.0-SNAPSHOT
      */
     infix fun T.to(value: Any) {
-        mappings[value] = this
+        mappings[this] = value
     }
 }
 

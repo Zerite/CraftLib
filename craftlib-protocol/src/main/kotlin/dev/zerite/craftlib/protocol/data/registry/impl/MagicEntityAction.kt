@@ -11,7 +11,7 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-class MagicEntityAction(name: String) : RegistryEntry(name) {
+open class MagicEntityAction(name: String) : RegistryEntry(name) {
     companion object : IMinecraftRegistry<MagicEntityAction> by LazyRegistryDelegate({ MagicRegistry.entityAction }) {
         val CROUCH = MagicEntityAction("Crouch")
         val UNCROUCH = MagicEntityAction("Uncrouch")

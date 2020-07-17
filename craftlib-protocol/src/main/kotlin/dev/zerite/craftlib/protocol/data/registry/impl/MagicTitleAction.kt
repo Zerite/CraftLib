@@ -11,7 +11,7 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
  * @author Koding
  * @since  0.1.1-SNAPSHOT
  */
-class MagicTitleAction(name: String) : RegistryEntry(name) {
+open class MagicTitleAction(name: String) : RegistryEntry(name) {
 
     companion object : IMinecraftRegistry<MagicTitleAction> by LazyRegistryDelegate({ MagicRegistry.titleAction }) {
         val TITLE = MagicTitleAction("Title")

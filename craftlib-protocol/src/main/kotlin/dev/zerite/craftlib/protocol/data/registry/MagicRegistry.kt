@@ -45,9 +45,6 @@ object MagicRegistry {
             MagicGamemode.ADVENTURE to 2
         }
         ProtocolVersion.MC1_8 {
-            MagicGamemode.SURVIVAL to 0
-            MagicGamemode.CREATIVE to 1
-            MagicGamemode.ADVENTURE to 2
             MagicGamemode.SPECTATOR to 3
         }
     }
@@ -134,6 +131,11 @@ object MagicRegistry {
             MagicObject.FALLING_DRAGON_EGG to 74
             MagicObject.THROWN_EXP_BOTTLE to 75
             MagicObject.FISHING_FLOAT to 90
+        }
+        ProtocolVersion.MC1_8 {
+            MagicObject.FIREWORK_ROCKET to 76
+            MagicObject.LEASH_KNOT to 77
+            MagicObject.ARMOR_STAND to 78
         }
     }
 
@@ -380,6 +382,13 @@ object MagicRegistry {
             MagicMobType.IRON_GOLEM to 99
             MagicMobType.HORSE to 100
             MagicMobType.VILLAGER to 120
+        }
+        ProtocolVersion.MC1_8 {
+            MagicMobType.MOB to 48
+            MagicMobType.MONSTER to 49
+            MagicMobType.ENDERMITE to 67
+            MagicMobType.GUARDIAN to 68
+            MagicMobType.RABBIT to 101
         }
     }
 

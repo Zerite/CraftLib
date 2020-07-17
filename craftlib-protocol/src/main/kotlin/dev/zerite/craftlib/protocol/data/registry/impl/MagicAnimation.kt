@@ -11,7 +11,7 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-class MagicAnimation(name: String) : RegistryEntry(name) {
+open class MagicAnimation(name: String) : RegistryEntry(name) {
 
     companion object : IMinecraftRegistry<MagicAnimation> by LazyRegistryDelegate({ MagicRegistry.animation }) {
         val SWING_ARM = MagicAnimation("Swing Arm")

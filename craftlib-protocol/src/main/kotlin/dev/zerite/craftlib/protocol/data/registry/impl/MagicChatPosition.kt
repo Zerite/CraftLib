@@ -11,7 +11,7 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
  * @author Koding
  * @since  0.1.1-SNAPSHOT
  */
-class MagicChatPosition(name: String) : RegistryEntry(name) {
+open class MagicChatPosition(name: String) : RegistryEntry(name) {
 
     companion object : IMinecraftRegistry<MagicChatPosition> by LazyRegistryDelegate({ MagicRegistry.chatPosition }) {
         val CHAT = MagicChatPosition("Chat")

@@ -12,7 +12,7 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-class MagicScoreboardPosition(name: String) : RegistryEntry(name) {
+open class MagicScoreboardPosition(name: String) : RegistryEntry(name) {
     companion object :
         IMinecraftRegistry<MagicScoreboardPosition> by LazyRegistryDelegate({ MagicRegistry.scoreboardPosition }) {
         val LIST = MagicScoreboardPosition("Player List")

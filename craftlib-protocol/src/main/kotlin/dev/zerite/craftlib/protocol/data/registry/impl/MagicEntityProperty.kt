@@ -11,7 +11,7 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-class MagicEntityProperty(
+open class MagicEntityProperty(
     name: String,
     @Suppress("UNUSED") val default: Double,
     @Suppress("UNUSED") val min: Double,

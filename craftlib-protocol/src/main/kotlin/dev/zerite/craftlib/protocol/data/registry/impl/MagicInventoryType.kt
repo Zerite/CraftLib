@@ -12,7 +12,7 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-class MagicInventoryType(name: String) : RegistryEntry(name) {
+open class MagicInventoryType(name: String) : RegistryEntry(name) {
     @Suppress("UNUSED")
     companion object : IMinecraftRegistry<MagicInventoryType> by LazyRegistryDelegate({ MagicRegistry.inventoryType }) {
         val CHEST = MagicInventoryType("Chest")

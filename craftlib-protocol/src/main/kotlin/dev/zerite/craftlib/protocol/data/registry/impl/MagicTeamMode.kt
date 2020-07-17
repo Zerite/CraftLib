@@ -11,7 +11,7 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-class MagicTeamMode(name: String) : RegistryEntry(name) {
+open class MagicTeamMode(name: String) : RegistryEntry(name) {
     companion object : IMinecraftRegistry<MagicTeamMode> by LazyRegistryDelegate({ MagicRegistry.teamMode }) {
         val CREATE_TEAM = MagicTeamMode("Create Team")
         val REMOVE_TEAM = MagicTeamMode("Remove Team")

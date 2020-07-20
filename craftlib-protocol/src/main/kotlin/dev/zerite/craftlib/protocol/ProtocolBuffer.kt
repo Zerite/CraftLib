@@ -158,6 +158,33 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
     }
 
     /**
+     * Read a VarShort from the buffer.
+     *
+     * @author Koding
+     * @since  0.1.2
+     */
+    fun readVarShort(): Int {
+        var low = readUnsignedShort()
+        var high = 0
+        if (low and 0x8000 != 0) {
+            low = low and 0x7FFF
+            high = readUnsignedByte().toInt()
+        }
+        return ((high and 0xFF) shl 15) or low
+    }
+
+    /**
+     * Writes a VarShort into the buffer.
+     */
+    fun writeVarShort(value: Int) {
+        var low = value and 0x7FFF
+        val high = (value and 0x7F8000) shr 15
+        if (high != 0) low = low or 0x8000
+        writeShort(low)
+        if (high != 0) writeByte(high)
+    }
+
+    /**
      * Reads a byte array from the buffer.
      *
      * @param  max       The maximum length of this array.

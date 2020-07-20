@@ -37,9 +37,9 @@ data class ClientPlayUseEntityPacket(
             return ClientPlayUseEntityPacket(
                 target,
                 type,
-                buffer.takeIf { type == MagicUseEntityType.INTERACT_AT }?.readFloat() ?: 0f,
-                buffer.takeIf { type == MagicUseEntityType.INTERACT_AT }?.readFloat() ?: 0f,
-                buffer.takeIf { type == MagicUseEntityType.INTERACT_AT }?.readFloat() ?: 0f
+                buffer.takeIf { version >= ProtocolVersion.MC1_8 && type == MagicUseEntityType.INTERACT_AT }?.readFloat() ?: 0f,
+                buffer.takeIf { version >= ProtocolVersion.MC1_8 && type == MagicUseEntityType.INTERACT_AT }?.readFloat() ?: 0f,
+                buffer.takeIf { version >= ProtocolVersion.MC1_8 && type == MagicUseEntityType.INTERACT_AT }?.readFloat() ?: 0f
             )
         }
 
@@ -55,7 +55,7 @@ data class ClientPlayUseEntityPacket(
             if (version >= ProtocolVersion.MC1_8) buffer.writeVarInt(MagicUseEntityType[version, packet.type, Int::class] ?: 0)
             else buffer.writeByte(MagicUseEntityType[version, packet.type, Int::class] ?: 0)
 
-            if (packet.type == MagicUseEntityType.INTERACT_AT) {
+            if (version >= ProtocolVersion.MC1_8 && packet.type == MagicUseEntityType.INTERACT_AT) {
                 buffer.writeFloat(packet.targetX)
                 buffer.writeFloat(packet.targetY)
                 buffer.writeFloat(packet.targetZ)

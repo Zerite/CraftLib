@@ -1,5 +1,6 @@
 package dev.zerite.craftlib.protocol.packet.play.server.world
 
+import dev.zerite.craftlib.protocol.Vector3
 import dev.zerite.craftlib.protocol.packet.PacketTest
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
@@ -29,7 +30,7 @@ class ServerPlayEffectTest : PacketTest<ServerPlayEffectPacket>(ServerPlayEffect
             }
             ProtocolVersion.MC1_8 {
                 writeInt(1000)
-                writeLong(((100L and 0x3FFFFFFL) shl 38) or ((1000L and 0x3FFFFFFL) shl 12) or (120L and 0xFFFL))
+                writePosition(Vector3(100, 120, 1000))
                 writeInt(1)
                 writeBoolean(true)
             }
@@ -45,7 +46,7 @@ class ServerPlayEffectTest : PacketTest<ServerPlayEffectPacket>(ServerPlayEffect
             }
             ProtocolVersion.MC1_8 {
                 writeInt(20)
-                writeLong(((20L and 0x3FFFFFFL) shl 38) or ((20L and 0x3FFFFFFL) shl 12) or (20L and 0xFFFL))
+                writePosition(Vector3(20, 20, 20))
                 writeInt(20)
                 writeBoolean(false)
             }

@@ -840,8 +840,8 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
     fun readPosition() = readLong().let {
         Vector3(
             (it shr 38).toInt(),
-            (it and 0xFFF).toInt(),
-            (it shl 26 shr 38).toInt()
+            ((it shr 26) and 0xFFF).toInt(),
+            (it and 0x3FFFFFFL).toInt()
         )
     }
 
@@ -853,7 +853,7 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
      * @since  0.1.1-SNAPSHOT
      */
     fun writePosition(position: Vector3) =
-        writeLong(((position.x.toLong() and 0x3FFFFFFL) shl 38) or ((position.z.toLong() and 0x3FFFFFFL) shl 12) or (position.y.toLong() and 0xFFFL))
+        writeLong(((position.x.toLong() and 0x3FFFFFFL) shl 38) or ((position.y.toLong() and 0xFFFL) shl 26) or (position.z.toLong() and 0x3FFFFFFL))
 
     /**
      * Set of modes which the UUIDs should be written using.

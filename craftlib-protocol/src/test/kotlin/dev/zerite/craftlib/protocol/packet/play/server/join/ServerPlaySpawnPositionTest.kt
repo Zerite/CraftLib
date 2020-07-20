@@ -1,5 +1,6 @@
 package dev.zerite.craftlib.protocol.packet.play.server.join
 
+import dev.zerite.craftlib.protocol.Vector3
 import dev.zerite.craftlib.protocol.packet.PacketTest
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
@@ -40,7 +41,7 @@ class ServerPlaySpawnPositionTest : PacketTest<ServerPlaySpawnPositionPacket>(
                 writeInt(30)
             }
             ProtocolVersion.MC1_8 {
-                writeLong(((10L and 0x3FFFFFFL) shl 38) or ((30L and 0x3FFFFFFL) shl 12) or (20L and 0xFFFL))
+                writePosition(Vector3(10, 20, 30))
             }
         }
     }

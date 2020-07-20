@@ -1,5 +1,6 @@
 package dev.zerite.craftlib.protocol.packet.play.server.world
 
+import dev.zerite.craftlib.protocol.Vector3
 import dev.zerite.craftlib.protocol.packet.PacketTest
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
@@ -24,7 +25,7 @@ class ServerPlayBlockActionTest : PacketTest<ServerPlayBlockActionPacket>(Server
                 writeVarInt(1)
             }
             ProtocolVersion.MC1_8 {
-                writeLong(((100L and 0x3FFFFFFL) shl 38) or ((100L and 0x3FFFFFFL) shl 12) or (100L and 0xFFFL))
+                writePosition(Vector3(100, 100, 100))
                 writeByte(2)
                 writeByte(4)
                 writeVarInt(1)
@@ -40,7 +41,7 @@ class ServerPlayBlockActionTest : PacketTest<ServerPlayBlockActionPacket>(Server
                 writeVarInt(0)
             }
             ProtocolVersion.MC1_8 {
-                writeLong(((50L and 0x3FFFFFFL) shl 38) or ((110L and 0x3FFFFFFL) shl 12) or (80L and 0xFFFL))
+                writePosition(Vector3(50, 80, 110))
                 writeByte(4)
                 writeByte(8)
                 writeVarInt(0)

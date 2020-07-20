@@ -1,5 +1,6 @@
 package dev.zerite.craftlib.protocol.packet.play.server.entity
 
+import dev.zerite.craftlib.protocol.Vector3
 import dev.zerite.craftlib.protocol.packet.PacketTest
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
@@ -35,7 +36,7 @@ class ServerPlaySpawnPaintingTest : PacketTest<ServerPlaySpawnPaintingPacket>(Se
             ProtocolVersion.MC1_8 {
                 writeVarInt(0)
                 writeString("Example")
-                writeLong(((10L and 0x3FFFFFFL) shl 38) or ((30L and 0x3FFFFFFL) shl 12) or (20L and 0xFFFL))
+                writePosition(Vector3(10, 20, 30))
                 writeByte(3)
             }
         }
@@ -60,7 +61,7 @@ class ServerPlaySpawnPaintingTest : PacketTest<ServerPlaySpawnPaintingPacket>(Se
             ProtocolVersion.MC1_8 {
                 writeVarInt(100)
                 writeString("Painting")
-                writeLong(((20L and 0x3FFFFFFL) shl 38) or ((28L and 0x3FFFFFFL) shl 12) or (24L and 0xFFFL))
+                writePosition(Vector3(20, 24, 28))
                 writeByte(1)
             }
         }

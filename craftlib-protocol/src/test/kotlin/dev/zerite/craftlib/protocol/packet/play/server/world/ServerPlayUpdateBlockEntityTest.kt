@@ -1,6 +1,7 @@
 package dev.zerite.craftlib.protocol.packet.play.server.world
 
 import dev.zerite.craftlib.nbt.compound
+import dev.zerite.craftlib.protocol.Vector3
 import dev.zerite.craftlib.protocol.data.registry.impl.MagicBlockEntityUpdateAction
 import dev.zerite.craftlib.protocol.packet.PacketTest
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
@@ -43,7 +44,7 @@ class ServerPlayUpdateBlockEntityTest :
                 writeNBT(compound { "type" to "Zombie" }, compressed = true)
             }
             ProtocolVersion.MC1_8 {
-                writeLong(((20L and 0x3FFFFFFL) shl 38) or ((20L and 0x3FFFFFFL) shl 12) or (20L and 0xFFFL))
+                writePosition(Vector3(20, 20, 20))
                 writeByte(1)
                 writeNBT(compound { "type" to "Zombie" }, compressed = false)
             }

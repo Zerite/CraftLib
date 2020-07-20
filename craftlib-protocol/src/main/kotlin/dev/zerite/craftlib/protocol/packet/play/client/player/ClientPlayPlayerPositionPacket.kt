@@ -32,13 +32,17 @@ data class ClientPlayPlayerPositionPacket(
             buffer: ProtocolBuffer,
             version: ProtocolVersion,
             connection: NettyConnection
-        ) = ClientPlayPlayerPositionPacket(
-            buffer.readDouble(),
-            buffer.readDouble(),
-            if (version >= ProtocolVersion.MC1_8) 0.0 else buffer.readDouble(),
-            buffer.readDouble(),
-            buffer.readBoolean()
-        )
+        ): ClientPlayPlayerPositionPacket {
+            val x = buffer.readDouble()
+            val y = buffer.readDouble()
+            return ClientPlayPlayerPositionPacket(
+                x,
+                y,
+                if (version >= ProtocolVersion.MC1_8) y + 1.5 else buffer.readDouble(),
+                buffer.readDouble(),
+                buffer.readBoolean()
+            )
+        }
 
         override fun write(
             buffer: ProtocolBuffer,

@@ -1,5 +1,6 @@
 package dev.zerite.craftlib.protocol.packet.play.server.interaction
 
+import dev.zerite.craftlib.protocol.Vector3
 import dev.zerite.craftlib.protocol.packet.PacketTest
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
@@ -25,7 +26,7 @@ class ServerPlayUseBedTest : PacketTest<ServerPlayUseBedPacket>(ServerPlayUseBed
             }
             ProtocolVersion.MC1_8 {
                 writeVarInt(100)
-                writeLong(((100L and 0x3FFFFFFL) shl 38) or ((100L and 0x3FFFFFFL) shl 12) or (100L and 0xFFFL))
+                writePosition(Vector3(100, 100, 100))
             }
         }
     }

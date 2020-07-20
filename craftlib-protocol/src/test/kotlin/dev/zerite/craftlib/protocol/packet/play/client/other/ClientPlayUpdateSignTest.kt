@@ -1,6 +1,7 @@
 package dev.zerite.craftlib.protocol.packet.play.client.other
 
 import dev.zerite.craftlib.chat.component.StringChatComponent
+import dev.zerite.craftlib.protocol.Vector3
 import dev.zerite.craftlib.protocol.packet.PacketTest
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
@@ -33,7 +34,7 @@ class ClientPlayUpdateSignTest : PacketTest<ClientPlayUpdateSignPacket>(ClientPl
                 writeString("Test")
             }
             ProtocolVersion.MC1_8 {
-                writeLong(((130L and 0x3FFFFFFL) shl 38) or ((130L and 0x3FFFFFFL) shl 12) or (90L and 0xFFFL))
+                writePosition(Vector3(130, 90, 130))
                 writeString("{\"text\":\"This\"}")
                 writeString("{\"text\":\"is\"}")
                 writeString("{\"text\":\"a\"}")

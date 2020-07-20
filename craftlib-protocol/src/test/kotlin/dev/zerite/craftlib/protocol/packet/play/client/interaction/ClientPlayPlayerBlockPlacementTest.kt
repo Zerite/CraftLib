@@ -1,6 +1,7 @@
 package dev.zerite.craftlib.protocol.packet.play.client.interaction
 
 import dev.zerite.craftlib.protocol.Slot
+import dev.zerite.craftlib.protocol.Vector3
 import dev.zerite.craftlib.protocol.packet.PacketTest
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
@@ -42,7 +43,7 @@ class ClientPlayPlayerBlockPlacementTest :
                 writeByte(7)
             }
             ProtocolVersion.MC1_8 {
-                writeLong(((100L and 0x3FFFFFFL) shl 38) or ((64L and 0x3FFFFFFL) shl 12) or (50L and 0xFFFL))
+                writePosition(Vector3(100, 50, 64))
                 writeByte(0)
 
                 // Item

@@ -52,6 +52,9 @@ open class MagicMobType(
         val HORSE = MagicMobType("Horse", 0.0, 0.0)
         val RABBIT = MagicMobType("Rabbit", 0.6, 0.7)
         val VILLAGER = MagicMobType("Villager", 0.0, 0.0)
+
+        @Suppress("UNUSED")
+        val PLAYER = MagicMobType("Player", 0.0, 0.0)
     }
 
 }

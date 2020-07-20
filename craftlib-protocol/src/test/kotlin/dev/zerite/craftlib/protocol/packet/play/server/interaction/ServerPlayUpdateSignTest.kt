@@ -1,6 +1,7 @@
 package dev.zerite.craftlib.protocol.packet.play.server.interaction
 
 import dev.zerite.craftlib.chat.component.StringChatComponent
+import dev.zerite.craftlib.protocol.Vector3
 import dev.zerite.craftlib.protocol.packet.PacketTest
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
@@ -33,7 +34,7 @@ class ServerPlayUpdateSignTest : PacketTest<ServerPlayUpdateSignPacket>(ServerPl
                 writeString("forth")
             }
             ProtocolVersion.MC1_8 {
-                writeLong(((10L and 0x3FFFFFFL) shl 38) or ((50L and 0x3FFFFFFL) shl 12) or (100L and 0xFFFL))
+                writePosition(Vector3(10, 100, 50))
                 writeChat(StringChatComponent("first"))
                 writeChat(StringChatComponent("second"))
                 writeChat(StringChatComponent("third"))
@@ -61,7 +62,7 @@ class ServerPlayUpdateSignTest : PacketTest<ServerPlayUpdateSignPacket>(ServerPl
                 writeString("line")
             }
             ProtocolVersion.MC1_8 {
-                writeLong(((50L and 0x3FFFFFFL) shl 38) or ((50L and 0x3FFFFFFL) shl 12) or (50L and 0xFFFL))
+                writePosition(Vector3(50, 50, 50))
                 writeChat(StringChatComponent("line"))
                 writeChat(StringChatComponent("line"))
                 writeChat(StringChatComponent("line"))

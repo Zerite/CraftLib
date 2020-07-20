@@ -1,5 +1,7 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.3.72' apply false
+    id "io.codearte.nexus-staging" version "0.21.2"
+    id "com.bmuschko.nexus" version "2.3.1" apply false
 }
 
 ext {
@@ -9,12 +11,14 @@ ext {
 }
 
 group 'dev.zerite.craftlib'
-version '0.1.1-SNAPSHOT'
+version '0.1.1'
 
 subprojects {
     apply plugin: 'java'
     apply plugin: 'maven-publish'
     apply plugin: 'org.jetbrains.kotlin.jvm'
+    apply plugin: 'signing'
+    apply plugin: 'com.bmuschko.nexus'
 
     group rootProject.group
     version rootProject.version
@@ -30,15 +34,9 @@ subprojects {
     dependencies {
         api "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
         testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
-//        testImplementation 'junit:junit:4.12'
         testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
         testImplementation "org.junit.platform:junit-platform-runner:$junitRunnerVersion"
         testImplementation "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
-    }
-
-    task sourcesJar(type: Jar, dependsOn: classes) {
-        classifier 'sources'
-        from sourceSets.main.allSource
     }
 
     jar {
@@ -48,12 +46,63 @@ subprojects {
         )
     }
 
+    extraArchive {
+        sources = true
+        tests = true
+        javadoc = true
+    }
+
     publishing {
         publications {
             maven(MavenPublication) {
                 from components.java
-                artifact sourcesJar
             }
         }
+    }
+
+    modifyPom {
+        project {
+            name project.name
+            description project.description
+            url 'https://zerite.dev/'
+            inceptionYear '2020'
+
+            scm {
+                url 'https://github.com/zerite/craftlib'
+                connection 'scm:https://github.com/zerite/craftlib.git'
+                developerConnection 'scm:git://github.com/zerite/craftlib.git'
+            }
+
+            licenses {
+                license {
+                    name 'GNU Lesser General Public License v3.0'
+                    url 'https://www.gnu.org/licenses/lgpl-3.0.txt'
+                    distribution 'repo'
+                }
+            }
+
+            developers {
+                developer {
+                    id 'kodingdev'
+                    name 'Koding Dev'
+                    email 'koding@zerite.dev'
+                }
+            }
+        }
+    }
+
+    nexus {
+        sign = true
+        repositoryUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+        snapshotRepositoryUrl = 'https://oss.sonatype.org/content/repositories/snapshots/'
+    }
+}
+
+def profile = project.findProperty('craftlib.stagingProfileId') ?: System.getenv('STAGING_PROFILE_ID')
+
+if (profile != null) {
+    nexusStaging {
+        packageGroup = "dev.zerite.craftlib"
+        stagingProfileId = profile
     }
 }

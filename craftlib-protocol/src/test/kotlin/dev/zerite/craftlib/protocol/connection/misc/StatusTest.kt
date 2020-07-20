@@ -1,7 +1,9 @@
-package dev.zerite.craftlib.protocol.connection
+package dev.zerite.craftlib.protocol.connection.misc
 
 import dev.zerite.craftlib.chat.dsl.chat
 import dev.zerite.craftlib.protocol.Packet
+import dev.zerite.craftlib.protocol.connection.NettyConnection
+import dev.zerite.craftlib.protocol.connection.PacketHandler
 import dev.zerite.craftlib.protocol.packet.handshake.client.ClientHandshakePacket
 import dev.zerite.craftlib.protocol.packet.status.client.ClientStatusPingPacket
 import dev.zerite.craftlib.protocol.packet.status.client.ClientStatusRequestPacket

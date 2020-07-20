@@ -1,6 +1,7 @@
 package dev.zerite.craftlib.protocol.connection
 
 import dev.zerite.craftlib.chat.component.StringChatComponent
+import dev.zerite.craftlib.protocol.util.IFlagged
 import io.netty.channel.ServerChannel
 
 /**
@@ -10,7 +11,14 @@ import io.netty.channel.ServerChannel
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-open class NettyServer {
+open class NettyServer : IFlagged {
+
+    /**
+     * Stores flags which the user can assign to the connection allowing for
+     * custom data to be easily transferred across instances.
+     */
+    override val flags = hashMapOf<String, Any>()
+
     /**
      * Reference to the server channel object backing this.
      */

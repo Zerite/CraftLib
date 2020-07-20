@@ -5,6 +5,7 @@ import dev.zerite.craftlib.chat.component.StringChatComponent
 import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.connection.io.CompressionCodec
 import dev.zerite.craftlib.protocol.connection.io.EncryptionCodec
+import dev.zerite.craftlib.protocol.util.IFlagged
 import dev.zerite.craftlib.protocol.version.MinecraftProtocol
 import dev.zerite.craftlib.protocol.version.PacketDirection
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
@@ -17,12 +18,13 @@ import javax.crypto.SecretKey
 
 /**
  * Instance of a connection to a remote server using Netty.
+ * The direction refers to which direction packets will be encoded in.
  *
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
 @Suppress("UNUSED")
-open class NettyConnection(val direction: PacketDirection) : SimpleChannelInboundHandler<Packet>() {
+open class NettyConnection(val direction: PacketDirection) : SimpleChannelInboundHandler<Packet>(), IFlagged {
 
     companion object {
         /**
@@ -30,6 +32,12 @@ open class NettyConnection(val direction: PacketDirection) : SimpleChannelInboun
          */
         val attribute: AttributeKey<NettyConnection> = AttributeKey.valueOf("connection")
     }
+
+    /**
+     * Stores flags which the user can assign to the connection allowing for
+     * custom data to be easily transferred across instances.
+     */
+    override val flags = hashMapOf<String, Any>()
 
     /**
      * True when this connection has been terminated.

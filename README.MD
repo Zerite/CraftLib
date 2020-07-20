@@ -1,9 +1,10 @@
 ## CraftLib
-Minecraft, as a dependency.
+The entire Minecraft codebase as a library, with protocol, NBT and chat support.
 
-[![Issues](https://img.shields.io/github/issues/Zerite/CraftLib?style=flat-square&label=Issues)](https://github.com/Zerite/CraftLib/issues)
-[![License](https://img.shields.io/github/license/Zerite/CraftLib?style=flat-square&label=License)](https://github.com/Zerite/CraftLib/blob/master/LICENSE)
-[![Latest Stable](https://img.shields.io/github/v/release/Zerite/CraftLib?style=flat-square&label=Latest%20Stable)](https://github.com/Zerite/CraftLib/releases)
+[![Issues](https://img.shields.io/github/issues/Zerite/CraftLib?style=flat-square&label=Issues&logo=github&logoColor=white)](https://github.com/Zerite/CraftLib/issues)
+[![License](https://img.shields.io/github/license/Zerite/CraftLib?style=flat-square&label=License&logo=read-the-docs&logoColor=white)](https://github.com/Zerite/CraftLib/blob/master/LICENSE)
+![Latest Version](https://img.shields.io/maven-central/v/dev.zerite.craftlib/craftlib-protocol?color=%2342a5f5&label=Latest%20Version&logo=gradle&style=flat-square&logoColor=white)
+![Support](https://img.shields.io/badge/Support-1.7.x%20--%201.8.x-yellow?style=flat-square)
 
 #### Contents
 1. [What IS CraftLib?](#1-what-is-craftlib)
@@ -13,40 +14,24 @@ Minecraft, as a dependency.
 #### 1. What IS CraftLib?
 CraftLib is a simple Kotlin library which aims to *completely recreate* many of
 the essential concepts of Minecraft.
-This includes **the full REST API, protocol, NBT, chat, localization** and more to come!
+This includes **protocol, NBT, chat, localization** and more to come!
 
 #### 2. Using it.
-To include CraftLib into your project, add our **[GitHub Registry](https://github.com/Zerite/CraftLib/packages)** to your project.
-Upon a release being published, we will automatically build and publish the version
-to our package registry. 
+To include CraftLib into your project, add the Maven Central repository to your project.
+Then add the appropriate dependency notation for your build system to include our package.
 
-**Only these** are stable, and all other releases should be considered **beta software**.
-
-##### Package Registry
-[View Packages](https://github.com/Zerite/CraftLib/packages)
-
-```xml
-<repository>
-    <id>craftlib</id>
-    <name>CraftLib Package Registry</name>
-    <url>https://maven.pkg.github.com/Zerite/CraftLib</url>
-</repository>
-```
-
-##### Beta Releases
-We release beta versions automatically through our CI system, and they are
-all suffixed with `-beta`.
-They are versioned by the latest short commit hash on the master branch.
-
-**Please note** these are unstable and should not be used in production.
-
-**Example**
+**Maven**
 ```xml
 <dependency>
     <groupId>dev.zerite.craftlib</groupId>
-    <artifactId>craftlib-protocol-beta</artifactId>
-    <version>a4bca49</version>
+    <artifactId>craftlib-protocol</artifactId>
+    <version>0.1.1</version>
 </dependency>
+```
+
+**Gradle**
+```groovy
+compile 'dev.zerite.craftlib:craftlib-protocol:0.1.1'
 ```
 
 #### 3. Special Thanks

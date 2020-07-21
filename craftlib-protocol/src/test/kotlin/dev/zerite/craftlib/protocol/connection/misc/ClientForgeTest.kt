@@ -2,16 +2,29 @@ package dev.zerite.craftlib.protocol.connection.misc
 
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import dev.zerite.craftlib.chat.component.StringChatComponent
 import dev.zerite.craftlib.chat.dsl.chat
 import dev.zerite.craftlib.protocol.Packet
+import dev.zerite.craftlib.protocol.compat.forge.forge
+import dev.zerite.craftlib.protocol.compat.forge.packet.client.ClientForgeHandshakeHelloPacket
+import dev.zerite.craftlib.protocol.compat.forge.packet.global.GlobalForgeHandshakeAcknowledgePacket
+import dev.zerite.craftlib.protocol.compat.forge.packet.global.GlobalForgeHandshakeModListPacket
+import dev.zerite.craftlib.protocol.compat.forge.packet.server.ServerForgeHandshakeHelloPacket
+import dev.zerite.craftlib.protocol.compat.forge.packet.server.ServerForgeHandshakeModIdDataPacket
+import dev.zerite.craftlib.protocol.compat.forge.packet.server.ServerForgeHandshakeRegistryDataPacket
 import dev.zerite.craftlib.protocol.connection.NettyConnection
 import dev.zerite.craftlib.protocol.connection.PacketHandler
 import dev.zerite.craftlib.protocol.packet.handshake.client.ClientHandshakePacket
 import dev.zerite.craftlib.protocol.packet.login.client.ClientLoginEncryptionResponsePacket
 import dev.zerite.craftlib.protocol.packet.login.client.ClientLoginStartPacket
 import dev.zerite.craftlib.protocol.packet.login.server.ServerLoginEncryptionRequestPacket
+import dev.zerite.craftlib.protocol.packet.login.server.ServerLoginSetCompressionPacket
 import dev.zerite.craftlib.protocol.packet.login.server.ServerLoginSuccessPacket
+import dev.zerite.craftlib.protocol.packet.play.client.other.ClientPlayPluginMessagePacket
+import dev.zerite.craftlib.protocol.packet.play.server.other.ServerPlaySetCompressionPacket
 import dev.zerite.craftlib.protocol.packet.play.server.world.ServerPlayMapChunkBulkPacket
+import dev.zerite.craftlib.protocol.packet.status.client.ClientStatusRequestPacket
+import dev.zerite.craftlib.protocol.packet.status.server.ServerStatusResponsePacket
 import dev.zerite.craftlib.protocol.util.Crypto
 import dev.zerite.craftlib.protocol.util.ext.toUuid
 import dev.zerite.craftlib.protocol.version.MinecraftProtocol
@@ -42,7 +55,7 @@ suspend fun main() {
     val disconnectOnError = System.getProperty("client.disconnectOnError")?.toBoolean() ?: false
     val errorInterval = System.getProperty("client.errorInterval")?.toLong() ?: 1000L
     val clientToken = UUID.randomUUID()
-    val version = ProtocolVersion.MC1_7_2
+    val version = ProtocolVersion.MC1_8
 
     var accessToken: String? = null
     var uuid = System.getProperty("client.uuid")?.toUuid() ?: UUID(0, 0)
@@ -87,6 +100,47 @@ suspend fun main() {
         println("Successfully logged in as $username")
     }
 
+    var mods = arrayOf<GlobalForgeHandshakeModListPacket.Mod>()
+
+    MinecraftProtocol.connect(InetAddress.getByName(host), port) {
+        debug = debugNetty
+        connectSync = true
+
+        handler = object : PacketHandler {
+            override fun connected(connection: NettyConnection) {
+                // Set the connection values
+                connection.version = version
+                connection.state = MinecraftProtocol.HANDSHAKE
+                connection.forge = true
+
+                // Send the handshake packet
+                connection.send(
+                    ClientHandshakePacket(
+                        version,
+                        "localhost",
+                        25566,
+                        MinecraftProtocol.STATUS
+                    )
+                ) {
+                    // Change the state to login
+                    connection.state = MinecraftProtocol.STATUS
+
+                    // Send the login start packet
+                    connection.send(ClientStatusRequestPacket())
+                }
+            }
+
+            override fun received(connection: NettyConnection, packet: Packet) {
+                if (packet is ServerStatusResponsePacket) {
+                    packet.response.modInfo?.modList?.forEach {
+                        mods += GlobalForgeHandshakeModListPacket.Mod(it.modId, it.version)
+                    } ?: error("Server is not using Forge")
+                    connection.close(StringChatComponent("Disconnecting"))
+                }
+            }
+        }
+    }
+
     // Connect to localhost
     MinecraftProtocol.connect(InetAddress.getByName(host), port) {
         // Set debug
@@ -111,6 +165,7 @@ suspend fun main() {
                 // Set the connection values
                 connection.version = version
                 connection.state = MinecraftProtocol.HANDSHAKE
+                connection.forge = true
 
                 // Send the handshake packet
                 connection.send(
@@ -139,6 +194,41 @@ suspend fun main() {
                 if (debugLogging && packet !is ServerPlayMapChunkBulkPacket) println("[S->C]: $packet")
 
                 when (packet) {
+                    is ServerForgeHandshakeHelloPacket -> {
+                        connection.send(
+                            ClientPlayPluginMessagePacket.register(
+                                version,
+                                "FML|HS",
+                                "FML",
+                                "FML|MP",
+                                "FML",
+                                "FORGE"
+                            )
+                        )
+                        connection.send(ClientForgeHandshakeHelloPacket(packet.version))
+                        connection.send(GlobalForgeHandshakeModListPacket(mods))
+                    }
+                    is GlobalForgeHandshakeModListPacket -> connection.send(
+                        GlobalForgeHandshakeAcknowledgePacket(
+                            GlobalForgeHandshakeAcknowledgePacket.WAITING_SERVER_DATA
+                        )
+                    )
+                    is ServerForgeHandshakeModIdDataPacket -> connection.send(
+                        GlobalForgeHandshakeAcknowledgePacket(
+                            GlobalForgeHandshakeAcknowledgePacket.WAITING_SERVER_COMPLETE
+                        )
+                    )
+                    is ServerForgeHandshakeRegistryDataPacket -> if (!packet.hasMore) connection.send(
+                        GlobalForgeHandshakeAcknowledgePacket(GlobalForgeHandshakeAcknowledgePacket.WAITING_SERVER_COMPLETE)
+                    )
+                    is GlobalForgeHandshakeAcknowledgePacket -> when (packet.phase) {
+                        GlobalForgeHandshakeAcknowledgePacket.WAITING_ACK -> connection.send(
+                            GlobalForgeHandshakeAcknowledgePacket(GlobalForgeHandshakeAcknowledgePacket.PENDING_COMPLETE)
+                        )
+                        GlobalForgeHandshakeAcknowledgePacket.COMPLETE_SERVER -> connection.send(
+                            GlobalForgeHandshakeAcknowledgePacket(GlobalForgeHandshakeAcknowledgePacket.COMPLETE_CLIENT)
+                        )
+                    }
                     is ServerLoginEncryptionRequestPacket -> {
                         if (accessToken == null) error("Can't connect to online mode servers without authentication")
                         val secret = Crypto.newSecretKey()
@@ -187,6 +277,8 @@ suspend fun main() {
                             connection.enableEncryption(secret)
                         }
                     }
+                    is ServerLoginSetCompressionPacket -> connection.compressionThreshold = packet.threshold
+                    is ServerPlaySetCompressionPacket -> connection.compressionThreshold = packet.threshold
                     is ServerLoginSuccessPacket -> connection.state = MinecraftProtocol.PLAY
                 }
             }

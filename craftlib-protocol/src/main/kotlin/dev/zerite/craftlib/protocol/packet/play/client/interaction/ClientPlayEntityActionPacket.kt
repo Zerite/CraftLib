@@ -28,7 +28,8 @@ data class ClientPlayEntityActionPacket(
             connection: NettyConnection
         ) = ClientPlayEntityActionPacket(
             if (version >= ProtocolVersion.MC1_8) buffer.readVarInt() else buffer.readInt(),
-            MagicEntityAction[version, if (version >= ProtocolVersion.MC1_8) buffer.readVarInt() else buffer.readByte().toInt()],
+            MagicEntityAction[version, if (version >= ProtocolVersion.MC1_8) buffer.readVarInt() else buffer.readByte()
+                .toInt()],
             if (version >= ProtocolVersion.MC1_8) buffer.readVarInt() else buffer.readInt()
         )
 
@@ -40,11 +41,11 @@ data class ClientPlayEntityActionPacket(
         ) {
             if (version >= ProtocolVersion.MC1_8) {
                 buffer.writeVarInt(packet.entityId)
-                buffer.writeVarInt(MagicEntityAction[version, packet.action, Int::class] ?: 0)
+                buffer.writeVarInt(MagicEntityAction[version, packet.action, Int::class.java] ?: 0)
                 buffer.writeVarInt(packet.jumpBoost)
             } else {
                 buffer.writeInt(packet.entityId)
-                buffer.writeByte(MagicEntityAction[version, packet.action, Int::class] ?: 0)
+                buffer.writeByte(MagicEntityAction[version, packet.action, Int::class.java] ?: 0)
                 buffer.writeInt(packet.jumpBoost)
             }
         }

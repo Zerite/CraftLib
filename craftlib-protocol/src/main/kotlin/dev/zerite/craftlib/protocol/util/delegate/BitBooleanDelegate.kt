@@ -1,3 +1,4 @@
+@file:JvmName("BitBooleanUtil")
 package dev.zerite.craftlib.protocol.util.delegate
 
 import dev.zerite.craftlib.protocol.util.ext.clearBit

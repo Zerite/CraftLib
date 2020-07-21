@@ -36,7 +36,7 @@ data class ClientPlayResourcePackStatusPacket(
             connection: NettyConnection
         ) {
             buffer.writeString(packet.hash)
-            buffer.writeVarInt(MagicResourcePackResult[version, packet.result, Int::class] ?: 0)
+            buffer.writeVarInt(MagicResourcePackResult[version, packet.result, Int::class.java] ?: 0)
         }
     }
 }

@@ -43,9 +43,9 @@ data class ServerPlayRespawnPacket(
             packet: ServerPlayRespawnPacket,
             connection: NettyConnection
         ) {
-            buffer.writeInt(MagicDimension[version, packet.dimension, Int::class] ?: 0)
-            buffer.writeByte(MagicDifficulty[version, packet.difficulty, Int::class] ?: 0)
-            buffer.writeByte(MagicGamemode[version, packet.gamemode, Int::class] ?: 0)
+            buffer.writeInt(MagicDimension[version, packet.dimension, Int::class.java] ?: 0)
+            buffer.writeByte(MagicDifficulty[version, packet.difficulty, Int::class.java] ?: 0)
+            buffer.writeByte(MagicGamemode[version, packet.gamemode, Int::class.java] ?: 0)
             buffer.writeString(packet.levelType)
         }
     }

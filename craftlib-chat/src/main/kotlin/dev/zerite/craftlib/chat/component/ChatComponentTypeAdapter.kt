@@ -1,3 +1,4 @@
+@file:JvmName("ChatComponentUtil")
 package dev.zerite.craftlib.chat.component
 
 import com.google.gson.*
@@ -239,11 +240,13 @@ private val gson = GsonBuilder()
  * Converts the string from JSON format into a
  * chat component.
  */
+@get:JvmName("toComponent")
 val String.chatComponent: BaseChatComponent
     get() = gson.fromJson(this, BaseChatComponent::class.java)
 
 /**
  * Converts the chat component into JSON format.
  */
+@get:JvmName("toJson")
 val BaseChatComponent.json: String
     get() = gson.toJson(this)

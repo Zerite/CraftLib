@@ -54,7 +54,7 @@ data class ClientPlayPlayerDiggingPacket(
             packet: ClientPlayPlayerDiggingPacket,
             connection: NettyConnection
         ) {
-            buffer.writeByte(MagicPlayerDiggingStatus[version, packet.status, Int::class] ?: 0)
+            buffer.writeByte(MagicPlayerDiggingStatus[version, packet.status, Int::class.java] ?: 0)
             if (version >= ProtocolVersion.MC1_8) buffer.writePosition(Vector3(packet.x, packet.y, packet.z))
             else {
                 buffer.writeInt(packet.x)

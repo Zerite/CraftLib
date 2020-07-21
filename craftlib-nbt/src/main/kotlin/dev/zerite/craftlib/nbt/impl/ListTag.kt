@@ -15,6 +15,7 @@ import java.io.DataOutput
 @Suppress("UNUSED")
 data class ListTag<T : NBTTag>(val value: MutableList<T> = arrayListOf()) : NBTTag {
     companion object : TagIO<ListTag<NBTTag>> {
+        @JvmStatic
         override fun read(input: DataInput): ListTag<NBTTag> {
             val type = input.readByte().toInt()
             val size = input.readInt()
@@ -30,7 +31,8 @@ data class ListTag<T : NBTTag>(val value: MutableList<T> = arrayListOf()) : NBTT
      * Returns the size of this list.
      */
     @Suppress("UNUSED")
-    val size get() = value.size
+    val size
+        get() = value.size
 
     /**
      * Creates a new list tag with the value appended to it and

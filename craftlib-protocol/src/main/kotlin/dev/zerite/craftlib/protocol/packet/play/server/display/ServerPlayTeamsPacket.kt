@@ -62,18 +62,18 @@ data class ServerPlayTeamsPacket(
             connection: NettyConnection
         ) {
             buffer.writeString(packet.name)
-            buffer.writeByte(MagicTeamMode[version, packet.mode, Int::class] ?: 0)
+            buffer.writeByte(MagicTeamMode[version, packet.mode, Int::class.java] ?: 0)
 
             if (packet.mode == MagicTeamMode.CREATE_TEAM || packet.mode == MagicTeamMode.UPDATE_INFO) {
                 buffer.writeString(packet.displayName ?: "")
                 buffer.writeString(packet.prefix ?: "")
                 buffer.writeString(packet.suffix ?: "")
-                buffer.writeByte(packet.friendlyFire?.let { MagicTeamFriendlyFire[version, it, Int::class] } ?: 0)
+                buffer.writeByte(packet.friendlyFire?.let { MagicTeamFriendlyFire[version, it, Int::class.java] } ?: 0)
 
                 if (version >= ProtocolVersion.MC1_8) {
                     buffer.writeString(
                         MagicTeamNameTagVisibility[version, packet.nameTagVisibility
-                            ?: MagicTeamNameTagVisibility.ALWAYS, String::class] ?: "always"
+                            ?: MagicTeamNameTagVisibility.ALWAYS, String::class.java] ?: "always"
                     )
                     buffer.writeByte(packet.color ?: 16)
                 }

@@ -9,6 +9,8 @@ import dev.zerite.craftlib.protocol.packet.status.client.ClientStatusPingPacket
 import dev.zerite.craftlib.protocol.packet.status.client.ClientStatusRequestPacket
 import dev.zerite.craftlib.protocol.version.MinecraftProtocol
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.net.InetAddress
 
 /**
@@ -18,7 +20,8 @@ import java.net.InetAddress
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-fun main() {
+@Suppress("BlockingMethodInNonBlockingContext")
+suspend fun main() {
     // Get the parameters
     val host = System.getProperty("client.host") ?: "127.0.0.1"
     val port = System.getProperty("client.port")?.toIntOrNull() ?: 25566

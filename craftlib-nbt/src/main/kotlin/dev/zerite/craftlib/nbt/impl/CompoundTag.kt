@@ -15,6 +15,7 @@ import java.io.DataOutput
 @Suppress("UNUSED")
 data class CompoundTag(val value: MutableMap<String, NBTTag> = mutableMapOf()) : NBTTag {
     companion object : TagIO<CompoundTag> {
+        @JvmStatic
         override fun read(input: DataInput): CompoundTag {
             var type = input.readByte().toInt()
             val tag = CompoundTag()
@@ -32,7 +33,8 @@ data class CompoundTag(val value: MutableMap<String, NBTTag> = mutableMapOf()) :
      * Returns the size of this tag.
      */
     @Suppress("UNUSED")
-    val size get() = value.size
+    val size
+        get() = value.size
 
     /**
      * Appends the values of one compound tag to this one and
@@ -91,7 +93,7 @@ data class CompoundTag(val value: MutableMap<String, NBTTag> = mutableMapOf()) :
      * @author Koding
      * @since  0.1.0-SNAPSHOT
      */
-    inline operator fun <reified  T : NBTTag> get(key: String, default: T): T = get(key) ?: default
+    inline operator fun <reified T : NBTTag> get(key: String, default: T): T = get(key) ?: default
 
     /**
      * Adds a value into the tag.

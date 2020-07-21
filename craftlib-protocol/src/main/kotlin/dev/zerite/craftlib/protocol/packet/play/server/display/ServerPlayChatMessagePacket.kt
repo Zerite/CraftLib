@@ -15,7 +15,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-data class ServerPlayChatMessagePacket(
+data class ServerPlayChatMessagePacket @JvmOverloads constructor(
     var message: BaseChatComponent,
     var position: RegistryEntry = MagicChatPosition.CHAT
 ) : Packet() {
@@ -26,7 +26,8 @@ data class ServerPlayChatMessagePacket(
             connection: NettyConnection
         ) = ServerPlayChatMessagePacket(
             buffer.readChat(),
-            if (version >= ProtocolVersion.MC1_8) MagicChatPosition[version, buffer.readByte().toInt()] else MagicChatPosition.CHAT
+            if (version >= ProtocolVersion.MC1_8) MagicChatPosition[version, buffer.readByte()
+                .toInt()] else MagicChatPosition.CHAT
         )
 
         override fun write(
@@ -37,7 +38,7 @@ data class ServerPlayChatMessagePacket(
         ) {
             buffer.writeChat(packet.message)
             if (version >= ProtocolVersion.MC1_8)
-                buffer.writeByte(MagicChatPosition[version, packet.position, Int::class] ?: 0)
+                buffer.writeByte(MagicChatPosition[version, packet.position, Int::class.java] ?: 0)
         }
     }
 }

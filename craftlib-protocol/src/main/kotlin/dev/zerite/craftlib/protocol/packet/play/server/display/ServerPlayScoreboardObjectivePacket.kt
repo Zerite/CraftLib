@@ -14,7 +14,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-data class ServerPlayScoreboardObjectivePacket(
+data class ServerPlayScoreboardObjectivePacket @JvmOverloads constructor(
     var name: String,
     var action: RegistryEntry,
     var value: String? = "",
@@ -54,14 +54,14 @@ data class ServerPlayScoreboardObjectivePacket(
             buffer.writeString(packet.name)
 
             if (version >= ProtocolVersion.MC1_8) {
-                buffer.writeByte(MagicScoreboardAction[version, packet.action, Int::class] ?: 0)
+                buffer.writeByte(MagicScoreboardAction[version, packet.action, Int::class.java] ?: 0)
                 if (packet.action == MagicScoreboardAction.CREATE_SCOREBOARD || packet.action == MagicScoreboardAction.UPDATE_TEXT) {
                     buffer.writeString(packet.value ?: "")
                     buffer.writeString(packet.type ?: "integer")
                 }
             } else {
                 buffer.writeString(packet.value ?: "")
-                buffer.writeByte(MagicScoreboardAction[version, packet.action, Int::class] ?: 0)
+                buffer.writeByte(MagicScoreboardAction[version, packet.action, Int::class.java] ?: 0)
             }
         }
     }

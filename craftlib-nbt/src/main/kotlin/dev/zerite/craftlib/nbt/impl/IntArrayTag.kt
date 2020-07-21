@@ -14,6 +14,7 @@ import java.io.DataOutput
 @Suppress("UNUSED")
 data class IntArrayTag(var value: IntArray) : NBTTag {
     companion object : TagIO<IntArrayTag> {
+        @JvmStatic
         override fun read(input: DataInput) = IntArrayTag(IntArray(input.readInt()) { input.readInt() })
     }
 

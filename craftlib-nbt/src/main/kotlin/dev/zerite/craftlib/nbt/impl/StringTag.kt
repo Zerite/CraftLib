@@ -13,6 +13,7 @@ import java.io.DataOutput
  */
 data class StringTag(var value: String) : NBTTag {
     companion object : TagIO<StringTag> {
+        @JvmStatic
         override fun read(input: DataInput) = StringTag(input.readUTF())
     }
 

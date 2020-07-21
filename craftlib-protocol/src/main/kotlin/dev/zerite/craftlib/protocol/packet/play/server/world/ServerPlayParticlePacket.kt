@@ -14,7 +14,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-data class ServerPlayParticlePacket(
+data class ServerPlayParticlePacket @JvmOverloads constructor(
     var type: RegistryEntry,
     var longDistance: Boolean,
     var x: Float,
@@ -68,8 +68,9 @@ data class ServerPlayParticlePacket(
             packet: ServerPlayParticlePacket,
             connection: NettyConnection
         ) {
-            if (version >= ProtocolVersion.MC1_8) buffer.writeInt(MagicParticleType[version, packet.type, Int::class] ?: 0)
-            else buffer.writeString(MagicParticleType[version, packet.type, String::class] ?: "")
+            if (version >= ProtocolVersion.MC1_8)
+                buffer.writeInt(MagicParticleType[version, packet.type, Int::class.java] ?: 0)
+            else buffer.writeString(MagicParticleType[version, packet.type, String::class.java] ?: "")
             if (version >= ProtocolVersion.MC1_8)
                 buffer.writeBoolean(packet.longDistance)
             buffer.writeFloat(packet.x)

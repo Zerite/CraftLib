@@ -35,7 +35,7 @@ data class ServerPlayChangeGameStatePacket(
             packet: ServerPlayChangeGameStatePacket,
             connection: NettyConnection
         ) {
-            buffer.writeByte(MagicGameStateReason[version, packet.reason, Int::class] ?: 0)
+            buffer.writeByte(MagicGameStateReason[version, packet.reason, Int::class.java] ?: 0)
             buffer.writeFloat(packet.value)
         }
     }

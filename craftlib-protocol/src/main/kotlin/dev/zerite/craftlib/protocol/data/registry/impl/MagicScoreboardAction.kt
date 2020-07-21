@@ -15,8 +15,13 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
 open class MagicScoreboardAction(name: String) : RegistryEntry(name) {
     companion object :
         IMinecraftRegistry<MagicScoreboardAction> by LazyRegistryDelegate({ MagicRegistry.scoreboardAction }) {
+        @JvmField
         val CREATE_SCOREBOARD = MagicScoreboardAction("Create Scoreboard")
+
+        @JvmField
         val REMOVE_SCOREBOARD = MagicScoreboardAction("Remove Scoreboard")
+
+        @JvmField
         val UPDATE_TEXT = MagicScoreboardAction("Update Display Text")
     }
 }

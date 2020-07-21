@@ -59,8 +59,11 @@ data class ServerPlayUpdateBlockEntityPacket(
                 buffer.writeShort(packet.y)
                 buffer.writeInt(packet.z)
             }
-            buffer.writeByte(MagicBlockEntityUpdateAction[version, packet.action, Int::class] ?: 1)
-            buffer.writeNBT(packet.nbt, compressed = version <= ProtocolVersion.MC1_7_6) { if (version <= ProtocolVersion.MC1_7_6) writeShort(it) }
+            buffer.writeByte(MagicBlockEntityUpdateAction[version, packet.action, Int::class.java] ?: 1)
+            buffer.writeNBT(
+                packet.nbt,
+                compressed = version <= ProtocolVersion.MC1_7_6
+            ) { if (version <= ProtocolVersion.MC1_7_6) writeShort(it) }
         }
     }
 }

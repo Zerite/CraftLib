@@ -1,3 +1,4 @@
+@file:JvmName("NumberUtil")
 package dev.zerite.craftlib.protocol.util.ext
 
 /**

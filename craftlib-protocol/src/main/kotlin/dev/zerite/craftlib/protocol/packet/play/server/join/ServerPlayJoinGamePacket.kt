@@ -59,11 +59,11 @@ data class ServerPlayJoinGamePacket(
         ) {
             buffer.writeInt(packet.entityId)
             buffer.writeByte(
-                (MagicGamemode[version, packet.gamemode, Int::class] ?: 0) or
+                (MagicGamemode[version, packet.gamemode, Int::class.java] ?: 0) or
                         (if (packet.hardcore) 0x8 else 0x0)
             )
-            buffer.writeByte(MagicDimension[version, packet.dimension, Int::class] ?: 0)
-            buffer.writeByte(MagicDifficulty[version, packet.difficulty, Int::class] ?: 0)
+            buffer.writeByte(MagicDimension[version, packet.dimension, Int::class.java] ?: 0)
+            buffer.writeByte(MagicDifficulty[version, packet.difficulty, Int::class.java] ?: 0)
             buffer.writeByte(packet.maxPlayers)
             buffer.writeString(packet.levelType)
             if (version >= ProtocolVersion.MC1_8)

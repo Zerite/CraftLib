@@ -19,7 +19,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-data class ClientPlayUseEntityPacket(
+data class ClientPlayUseEntityPacket @JvmOverloads constructor(
     override var entityId: Int,
     var type: RegistryEntry,
     var targetX: Float = 0f,
@@ -33,13 +33,18 @@ data class ClientPlayUseEntityPacket(
             connection: NettyConnection
         ): ClientPlayUseEntityPacket {
             val target = if (version >= ProtocolVersion.MC1_8) buffer.readVarInt() else buffer.readInt()
-            val type = MagicUseEntityType[version, if (version >= ProtocolVersion.MC1_8) buffer.readVarInt() else buffer.readByte().toInt()]
+            val type =
+                MagicUseEntityType[version, if (version >= ProtocolVersion.MC1_8) buffer.readVarInt() else buffer.readByte()
+                    .toInt()]
             return ClientPlayUseEntityPacket(
                 target,
                 type,
-                buffer.takeIf { version >= ProtocolVersion.MC1_8 && type == MagicUseEntityType.INTERACT_AT }?.readFloat() ?: 0f,
-                buffer.takeIf { version >= ProtocolVersion.MC1_8 && type == MagicUseEntityType.INTERACT_AT }?.readFloat() ?: 0f,
-                buffer.takeIf { version >= ProtocolVersion.MC1_8 && type == MagicUseEntityType.INTERACT_AT }?.readFloat() ?: 0f
+                buffer.takeIf { version >= ProtocolVersion.MC1_8 && type == MagicUseEntityType.INTERACT_AT }
+                    ?.readFloat() ?: 0f,
+                buffer.takeIf { version >= ProtocolVersion.MC1_8 && type == MagicUseEntityType.INTERACT_AT }
+                    ?.readFloat() ?: 0f,
+                buffer.takeIf { version >= ProtocolVersion.MC1_8 && type == MagicUseEntityType.INTERACT_AT }
+                    ?.readFloat() ?: 0f
             )
         }
 
@@ -52,8 +57,9 @@ data class ClientPlayUseEntityPacket(
             if (version >= ProtocolVersion.MC1_8) buffer.writeVarInt(packet.entityId)
             else buffer.writeInt(packet.entityId)
 
-            if (version >= ProtocolVersion.MC1_8) buffer.writeVarInt(MagicUseEntityType[version, packet.type, Int::class] ?: 0)
-            else buffer.writeByte(MagicUseEntityType[version, packet.type, Int::class] ?: 0)
+            if (version >= ProtocolVersion.MC1_8)
+                buffer.writeVarInt(MagicUseEntityType[version, packet.type, Int::class.java] ?: 0)
+            else buffer.writeByte(MagicUseEntityType[version, packet.type, Int::class.java] ?: 0)
 
             if (version >= ProtocolVersion.MC1_8 && packet.type == MagicUseEntityType.INTERACT_AT) {
                 buffer.writeFloat(packet.targetX)

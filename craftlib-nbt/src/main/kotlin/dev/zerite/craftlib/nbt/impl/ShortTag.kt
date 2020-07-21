@@ -13,6 +13,7 @@ import java.io.DataOutput
  */
 data class ShortTag(var value: Short) : NBTTag {
     companion object : TagIO<ShortTag> {
+        @JvmStatic
         override fun read(input: DataInput) = ShortTag(input.readShort())
     }
 

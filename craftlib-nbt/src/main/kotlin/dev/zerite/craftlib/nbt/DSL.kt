@@ -1,3 +1,5 @@
+@file:JvmName("NBTUtil")
+
 package dev.zerite.craftlib.nbt
 
 import dev.zerite.craftlib.nbt.impl.*
@@ -89,7 +91,8 @@ fun compound(build: CompoundTagBuilder.() -> Unit) = CompoundTagBuilder().apply(
  * @since  0.1.0-SNAPSHOT
  */
 @Suppress("UNUSED")
-inline fun <reified T : NBTTag> list(build: ListTagBuilder<T>.() -> Unit) = ListTagBuilder(T::class.java).apply(build).build()
+inline fun <reified T : NBTTag> list(build: ListTagBuilder<T>.() -> Unit) =
+    ListTagBuilder(T::class.java).apply(build).build()
 
 /**
  * Creates a named NBT tag with the given name.
@@ -126,6 +129,8 @@ fun <T : NBTTag> tag(obj: Any, clazz: Class<T>): T = clazz.cast(obj.asTag)
 /**
  * Converts an object into a NBT tag.
  */
+@get:Throws(IllegalStateException::class)
+@get:JvmName("asTag")
 @Suppress("USELESS_CAST")
 val Any?.asTag: NBTTag
     get() = when (this) {

@@ -2,6 +2,7 @@ package dev.zerite.craftlib.nbt
 
 import dev.zerite.craftlib.nbt.impl.CompoundTag
 import dev.zerite.craftlib.nbt.impl.LongTag
+import kotlinx.coroutines.runBlocking
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
@@ -15,18 +16,19 @@ import kotlin.test.assertEquals
  * @since  0.1.0-SNAPSHOT
  */
 class NBTIOTest {
-    private fun <T> getInputStream(resourceName: String, handler: (InputStream) -> T) =
-        NBTIOTest::class.java.getResourceAsStream("/$resourceName")?.use(handler)
-            ?: error("Failed to find resource: $resourceName")
+    private fun <T> getInputStream(resourceName: String, handler: suspend (InputStream) -> T) =
+        NBTIOTest::class.java.getResourceAsStream("/$resourceName")?.use {
+            runBlocking { handler(it) }
+        } ?: error("Failed to find resource: $resourceName")
 
-    private fun writeToByteArray(tag: NBTTag, compressed: Boolean): ByteArray {
+    private suspend fun writeToByteArray(tag: NBTTag, compressed: Boolean): ByteArray {
         val out = ByteArrayOutputStream()
         if (compressed) NBTIO.writeCompressed(tag, out)
         else NBTIO.write(tag, out)
         return out.toByteArray()
     }
 
-    private fun testWrite(tag: NBTTag, compressed: Boolean) {
+    private suspend fun testWrite(tag: NBTTag, compressed: Boolean) {
         val outputTag = ByteArrayInputStream(writeToByteArray(tag, compressed)).let {
             if (compressed) NBTIO.readCompressed(it)
             else NBTIO.read(it)
@@ -41,10 +43,14 @@ class NBTIOTest {
         }
 
     @Test
-    fun `Test writing hello_world`() = testWrite(expectedHelloWorld, false)
+    fun `Test writing hello_world`() = runBlocking {
+        testWrite(expectedHelloWorld, false)
+    }
 
     @Test
-    fun `Test writing compressed hello_world`() = testWrite(expectedHelloWorld, true)
+    fun `Test writing compressed hello_world`() = runBlocking {
+        testWrite(expectedHelloWorld, true)
+    }
 
     @Test
     fun `Test reading big test`() =
@@ -53,10 +59,14 @@ class NBTIOTest {
         }
 
     @Test
-    fun `Test writing big test`() = testWrite(expectedBigTest, false)
+    fun `Test writing big test`() = runBlocking {
+        testWrite(expectedBigTest, false)
+    }
 
     @Test
-    fun `Test writing compressed big test`() = testWrite(expectedBigTest, true)
+    fun `Test writing compressed big test`() = runBlocking {
+        testWrite(expectedBigTest, true)
+    }
 
     @Test
     fun `Test reading player-nan-value`() =
@@ -65,10 +75,14 @@ class NBTIOTest {
         }
 
     @Test
-    fun `Test writing player-nan-value`() = testWrite(expectedPlayerNanValue, false)
+    fun `Test writing player-nan-value`() = runBlocking {
+        testWrite(expectedPlayerNanValue, false)
+    }
 
     @Test
-    fun `Test writing compressed player-nan-value`() = testWrite(expectedPlayerNanValue, true)
+    fun `Test writing compressed player-nan-value`() = runBlocking {
+        testWrite(expectedPlayerNanValue, true)
+    }
 
     companion object {
         private val expectedHelloWorld = named("hello world", compound {
@@ -122,8 +136,10 @@ class NBTIOTest {
                     "name" to "Compound tag #1"
                 }
             }
-            "byteArrayTest (the first 1000 values of (n*n*255+n*7)%100, starting with n=0 (0, 62, 34, 16, 8, ...))" to ByteArray(1000) {
-                ((it * it * 255 + it * 7 ) % 100).toByte()
+            "byteArrayTest (the first 1000 values of (n*n*255+n*7)%100, starting with n=0 (0, 62, 34, 16, 8, ...))" to ByteArray(
+                1000
+            ) {
+                ((it * it * 255 + it * 7) % 100).toByte()
             }
             "shortTest" to 32767.toShort()
         })

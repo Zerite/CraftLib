@@ -32,7 +32,7 @@ data class ClientPlayClientStatusPacket(
             packet: ClientPlayClientStatusPacket,
             connection: NettyConnection
         ) {
-            buffer.writeByte(MagicClientStatus[version, packet.actionId, Int::class] ?: 0)
+            buffer.writeByte(MagicClientStatus[version, packet.actionId, Int::class.java] ?: 0)
         }
     }
 }

@@ -36,7 +36,7 @@ data class ServerPlayAnimationPacket(
             connection: NettyConnection
         ) {
             buffer.writeVarInt(packet.entityId)
-            buffer.writeByte(MagicAnimation[version, packet.animation, Int::class] ?: 0)
+            buffer.writeByte(MagicAnimation[version, packet.animation, Int::class.java] ?: 0)
         }
     }
 }

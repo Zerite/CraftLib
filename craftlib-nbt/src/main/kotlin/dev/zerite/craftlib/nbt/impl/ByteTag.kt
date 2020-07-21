@@ -13,6 +13,7 @@ import java.io.DataOutput
  */
 data class ByteTag(var value: Byte) : NBTTag {
     companion object : TagIO<ByteTag> {
+        @JvmStatic
         override fun read(input: DataInput) = ByteTag(input.readByte())
     }
 

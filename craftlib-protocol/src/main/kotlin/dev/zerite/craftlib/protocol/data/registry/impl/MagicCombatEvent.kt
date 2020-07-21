@@ -14,8 +14,13 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
 open class MagicCombatEvent(name: String) : RegistryEntry(name) {
 
     companion object : IMinecraftRegistry<MagicCombatEvent> by LazyRegistryDelegate({ MagicRegistry.combatEvent }) {
+        @JvmField
         val ENTER_COMBAT = MagicCombatEvent("Enter Combat")
+
+        @JvmField
         val END_COMBAT = MagicCombatEvent("End Combat")
+
+        @JvmField
         val ENTITY_DEAD = MagicCombatEvent("Entity Dead")
     }
 

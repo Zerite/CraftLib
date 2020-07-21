@@ -30,7 +30,8 @@ import java.util.*
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-fun main() {
+@Suppress("BlockingMethodInNonBlockingContext")
+suspend fun main() {
     // Get the parameters
     val host = System.getProperty("client.host") ?: "127.0.0.1"
     val port = System.getProperty("client.port")?.toIntOrNull() ?: 25566
@@ -175,7 +176,13 @@ fun main() {
                         }
 
                         // Send response packet
-                        connection.send(ClientLoginEncryptionResponsePacket(packet.publicKey, secret, packet.verifyToken)) {
+                        connection.send(
+                            ClientLoginEncryptionResponsePacket(
+                                packet.publicKey,
+                                secret,
+                                packet.verifyToken
+                            )
+                        ) {
                             connection.enableEncryption(secret)
                         }
                     }

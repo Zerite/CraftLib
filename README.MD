@@ -1,10 +1,12 @@
+![Header](https://repository-images.githubusercontent.com/269539676/88c5b100-c869-11ea-80a5-85c6002d5ca2)
+
 ## CraftLib
 The entire Minecraft codebase as a library, with protocol, NBT and chat support.
 
 [![Issues](https://img.shields.io/github/issues/Zerite/CraftLib?style=flat-square&label=Issues&logo=github&logoColor=white)](https://github.com/Zerite/CraftLib/issues)
 [![License](https://img.shields.io/github/license/Zerite/CraftLib?style=flat-square&label=License&logo=read-the-docs&logoColor=white)](https://github.com/Zerite/CraftLib/blob/master/LICENSE)
 ![Latest Version](https://img.shields.io/maven-central/v/dev.zerite.craftlib/craftlib-protocol?color=%2342a5f5&label=Latest%20Version&logo=gradle&style=flat-square&logoColor=white)
-![Support](https://img.shields.io/badge/Support-1.7.x%20--%201.8.x-yellow?style=flat-square)
+![Support](https://img.shields.io/badge/Support-1.7.x%20--%201.8.x-yellow?style=flat-square&logo=minetest&logoColor=white)
 
 #### Contents
 1. [What IS CraftLib?](#1-what-is-craftlib)
@@ -16,9 +18,16 @@ CraftLib is a simple Kotlin library which aims to *completely recreate* many of
 the essential concepts of Minecraft.
 This includes **protocol, NBT, chat, localization** and more to come!
 
+This library includes full support for Kotlin's features out of the box with
+additional functions being introduced to ensure Java interoperability is simple
+and straightforward.
+
 #### 2. Using it.
 To include CraftLib into your project, add the Maven Central repository to your project.
 Then add the appropriate dependency notation for your build system to include our package.
+
+**Note:** The wiki is currently a *WIP*. This file will be updated accordingly once it is
+sufficiently complete.
 
 **Maven**
 ```xml
@@ -35,6 +44,15 @@ compile 'dev.zerite.craftlib:craftlib-protocol:0.1.1'
 ```
 
 #### 3. Special Thanks
+##### MCDevs
+[![Wiki.vg](https://wiki.vg/images/c/cf/120px-Logotemp.png)](https://wiki.vg/Main_Page)
+
+A **HUGE** thank you to the team at [#mcdevs](ircs://chat.freenode.net:6697/mcdevs) and their [wiki](https://wiki.vg/Main_Page).
+Without their work documenting the Minecraft codebase, this project wouldn't be possible.
+Some comments from their wiki pages (particularly [protocol](https://wiki.vg/Protocol)) have been used 
+throughout the codebase and all rights to those texts belong to their team.
+
+##### YourKit
 [![YourKit Java Profiler](https://www.yourkit.com/images/yklogo.png)](https://www.yourkit.com)
 
 YourKit supports open source projects with innovative and intelligent tools

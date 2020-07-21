@@ -13,6 +13,7 @@ import java.io.DataOutput
  */
 data class FloatTag(var value: Float) : NBTTag {
     companion object : TagIO<FloatTag> {
+        @JvmStatic
         override fun read(input: DataInput) = FloatTag(input.readFloat())
     }
 

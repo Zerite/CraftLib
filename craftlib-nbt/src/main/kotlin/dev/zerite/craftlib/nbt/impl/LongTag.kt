@@ -13,6 +13,7 @@ import java.io.DataOutput
  */
 data class LongTag(var value: Long) : NBTTag {
     companion object : TagIO<LongTag> {
+        @JvmStatic
         override fun read(input: DataInput) = LongTag(input.readLong())
     }
 

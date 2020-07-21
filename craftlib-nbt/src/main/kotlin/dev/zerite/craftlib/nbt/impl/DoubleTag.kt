@@ -13,6 +13,7 @@ import java.io.DataOutput
  */
 data class DoubleTag(var value: Double) : NBTTag {
     companion object : TagIO<DoubleTag> {
+        @JvmStatic
         override fun read(input: DataInput) = DoubleTag(input.readDouble())
     }
 

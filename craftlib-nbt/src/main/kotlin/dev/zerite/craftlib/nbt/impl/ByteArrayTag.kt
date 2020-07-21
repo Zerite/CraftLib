@@ -13,7 +13,9 @@ import java.io.DataOutput
  */
 data class ByteArrayTag(var value: ByteArray) : NBTTag {
     companion object : TagIO<ByteArrayTag> {
-        override fun read(input: DataInput) = ByteArrayTag(ByteArray(input.readInt()).apply { input.readFully(this) })
+        @JvmStatic
+        override fun read(input: DataInput) =
+            ByteArrayTag(ByteArray(input.readInt()).apply { input.readFully(this) })
     }
 
     /**

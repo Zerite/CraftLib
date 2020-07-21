@@ -1,6 +1,7 @@
 description = 'Full Minecraft protocol wrapper'
 
 dependencies {
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$coroutinesVersion"
     api "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
     api 'io.netty:netty-all:4.1.51.Final'
     api project(':craftlib-chat')

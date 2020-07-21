@@ -15,6 +15,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.ByteBufInputStream
 import io.netty.buffer.Unpooled
+import kotlinx.coroutines.runBlocking
 import java.io.ByteArrayOutputStream
 import java.io.DataInput
 import java.io.DataInputStream
@@ -602,8 +603,10 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
         length().let { len ->
             if (len < 0) null
             else ByteBufInputStream(buf).let {
-                if (compressed) NBTIO.readCompressed(it)
-                else NBTIO.read(DataInputStream(it) as DataInput)
+                runBlocking {
+                    if (compressed) NBTIO.readCompressed(it)
+                    else NBTIO.read(DataInputStream(it) as DataInput)
+                }
             }
         }
     }
@@ -629,8 +632,10 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
     else {
         val out = ByteArrayOutputStream()
         NamedTag("", tag).let {
-            if (compressed) NBTIO.writeCompressed(it, out)
-            else NBTIO.write(it, out)
+            runBlocking {
+                if (compressed) NBTIO.writeCompressed(it, out)
+                else NBTIO.write(it, out)
+            }
         }
         writeByteArray(out.toByteArray()) { length(it) }
     }

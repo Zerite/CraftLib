@@ -1,3 +1,4 @@
+@file:JvmName("ForgeCompatUtil")
 package dev.zerite.craftlib.protocol.compat.forge
 
 import dev.zerite.craftlib.protocol.connection.NettyConnection

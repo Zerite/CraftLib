@@ -1,7 +1,6 @@
 package dev.zerite.craftlib.protocol.version
 
 import dev.zerite.craftlib.protocol.PacketIO
-import kotlin.reflect.KClass
 import kotlin.reflect.jvm.javaType
 
 /**
@@ -10,7 +9,7 @@ import kotlin.reflect.jvm.javaType
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-data class ProtocolState(val name: String, val id: Int) {
+data class ProtocolState(val name: String, val id: Any) {
 
     /**
      * Side data for each packet direction.

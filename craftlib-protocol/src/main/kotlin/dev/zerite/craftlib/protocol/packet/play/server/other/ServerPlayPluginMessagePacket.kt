@@ -45,6 +45,38 @@ data class ServerPlayPluginMessagePacket(var channel: String, var data: ByteArra
                     else writeShort(it)
             }
         }
+
+        /**
+         * Creates a register packet given the protocol version and plugin channels.
+         *
+         * @param  version        The version to build the packet for.
+         * @param  items          The plugin channels to include.
+         *
+         * @author Koding
+         * @since  0.1.2
+         */
+        @JvmStatic
+        @Suppress("UNUSED")
+        fun register(version: ProtocolVersion, vararg items: String) = ServerPlayPluginMessagePacket(
+            if (version >= ProtocolVersion.MC1_13) "minecraft:register" else "REGISTER",
+            items.joinToString(separator = "\u0000").toByteArray()
+        )
+
+        /**
+         * Creates a register packet given the protocol version and plugin channels.
+         *
+         * @param  version        The version to build the packet for.
+         * @param  items          The plugin channels to include.
+         *
+         * @author Koding
+         * @since  0.1.2
+         */
+        @JvmStatic
+        @Suppress("UNUSED")
+        fun unregister(version: ProtocolVersion, vararg items: String) = ServerPlayPluginMessagePacket(
+            if (version >= ProtocolVersion.MC1_13) "minecraft:unregister" else "UNREGISTER",
+            items.joinToString(separator = "\u0000").toByteArray()
+        )
     }
 
     override fun equals(other: Any?): Boolean {

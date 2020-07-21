@@ -1,5 +1,6 @@
 package dev.zerite.craftlib.protocol.data.other
 
+import com.google.gson.annotations.SerializedName
 import dev.zerite.craftlib.chat.component.BaseChatComponent
 import dev.zerite.craftlib.chat.component.StringChatComponent
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
@@ -15,7 +16,48 @@ data class StatusResponse @JvmOverloads constructor(
     var version: StatusVersion = StatusVersion("CraftLib", ProtocolVersion.MC1_7_2),
     var players: StatusPlayers = StatusPlayers(1, 0),
     var description: BaseChatComponent = StringChatComponent(""),
-    var favicon: String? = null
+    var favicon: String? = null,
+    @SerializedName("modinfo") var modInfo: StatusModInfo? = null
+)
+
+/**
+ * Stores the mod info which was present in the status response.
+ *
+ * @author Koding
+ * @since  0.1.2
+ */
+data class StatusModInfo @JvmOverloads constructor(
+    var type: String = "FML",
+    var modList: Array<StatusMod> = arrayOf()
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as StatusModInfo
+
+        if (type != other.type) return false
+        if (!modList.contentEquals(other.modList)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = type.hashCode()
+        result = 31 * result + modList.contentHashCode()
+        return result
+    }
+}
+
+/**
+ * Stores a single mod which can be received in the status response.
+ *
+ * @author Koding
+ * @since  0.1.2
+ */
+data class StatusMod(
+    @SerializedName("modid") var modId: String,
+    var version: String
 )
 
 /**

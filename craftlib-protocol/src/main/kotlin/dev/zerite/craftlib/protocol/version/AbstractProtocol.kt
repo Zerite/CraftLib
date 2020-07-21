@@ -12,7 +12,7 @@ abstract class AbstractProtocol {
     /**
      * The mapped protocol states for this object.
      */
-    private val mapped = hashMapOf<Int, ProtocolState>()
+    private val mapped = hashMapOf<Any, ProtocolState>()
 
     /**
      * Gets a protocol state given its ID.
@@ -21,8 +21,7 @@ abstract class AbstractProtocol {
      * @author Koding
      * @since  0.1.0-SNAPSHOT
      */
-    @Throws(IllegalStateException::class)
-    operator fun get(id: Int) = mapped[id] ?: error("Unknown connection state $id")
+    operator fun get(id: Any) = mapped[id]
 
     /**
      * Builds a protocol state given the parameters.
@@ -34,7 +33,7 @@ abstract class AbstractProtocol {
      * @author Koding
      * @since  0.1.0-SNAPSHOT
      */
-    protected fun protocol(name: String, id: Int, block: ProtocolState.() -> Unit) =
+    protected fun protocol(name: String, id: Any, block: ProtocolState.() -> Unit) =
         ProtocolState(name, id).apply(block).apply { mapped[id] = this }
 
 }

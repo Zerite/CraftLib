@@ -71,6 +71,7 @@ object MinecraftProtocol : AbstractProtocol() {
      * The initial state for all new connections, only listening
      * for a packet from the client.
      */
+    @JvmField
     val HANDSHAKE = protocol("Handshake", -1) {
         serverbound {
             ClientHandshakePacket {
@@ -83,6 +84,7 @@ object MinecraftProtocol : AbstractProtocol() {
      * State for when the player is successfully authenticated and should
      * be receiving game updates.
      */
+    @JvmField
     val PLAY = protocol("Play", 0) {
         serverbound {
             ClientPlayKeepAlivePacket {
@@ -393,6 +395,7 @@ object MinecraftProtocol : AbstractProtocol() {
     /**
      * Handles packets relating to providing server list info.
      */
+    @JvmField
     val STATUS = protocol("Status", 1) {
         serverbound {
             ClientStatusRequestPacket {
@@ -416,6 +419,7 @@ object MinecraftProtocol : AbstractProtocol() {
      * First state after handshake to begin authenticating with the server and
      * start play.
      */
+    @JvmField
     val LOGIN = protocol("Login", 2) {
         serverbound {
             ClientLoginStartPacket {
@@ -483,7 +487,7 @@ object MinecraftProtocol : AbstractProtocol() {
                     }
                 })
                 .connect(config.address, config.port)
-                .let { if (config.connectSync) it.syncUninterruptibly() }
+                .let { if (config.connectSync) it.channel().closeFuture().syncUninterruptibly() }
         }
 
         return connection

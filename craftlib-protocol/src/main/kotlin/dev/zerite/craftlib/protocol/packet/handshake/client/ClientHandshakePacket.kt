@@ -3,6 +3,7 @@ package dev.zerite.craftlib.protocol.packet.handshake.client
 import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
+import dev.zerite.craftlib.protocol.compat.forge.forge
 import dev.zerite.craftlib.protocol.connection.NettyConnection
 import dev.zerite.craftlib.protocol.version.MinecraftProtocol
 import dev.zerite.craftlib.protocol.version.ProtocolState
@@ -35,7 +36,7 @@ data class ClientHandshakePacket(
             ProtocolVersion[buffer.readVarInt()],
             buffer.readString(),
             buffer.readUnsignedShort(),
-            MinecraftProtocol[buffer.readVarInt()]
+            buffer.readVarInt().let { MinecraftProtocol[it] ?: error("Unknown connection state $it") }
         )
 
         override fun write(
@@ -45,9 +46,11 @@ data class ClientHandshakePacket(
             connection: NettyConnection
         ) {
             buffer.writeVarInt(packet.version.id)
-            buffer.writeString(packet.address)
+            buffer.writeString(packet.address.let {
+                if (connection.forge) "$it\u0000FML\u0000" else it
+            })
             buffer.writeShort(packet.port)
-            buffer.writeVarInt(packet.nextState.id)
+            buffer.writeVarInt((packet.nextState.id as? Int) ?: return)
         }
     }
 }

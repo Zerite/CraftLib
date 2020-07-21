@@ -40,7 +40,7 @@ sufficiently complete.
 
 **Gradle**
 ```groovy
-compile 'dev.zerite.craftlib:craftlib-protocol:0.1.1'
+implementation 'dev.zerite.craftlib:craftlib-protocol:0.1.1'
 ```
 
 #### 3. Special Thanks

@@ -15,9 +15,16 @@ open class MagicTeamNameTagVisibility(name: String) : RegistryEntry(name) {
 
     companion object :
         IMinecraftRegistry<MagicTeamNameTagVisibility> by LazyRegistryDelegate({ MagicRegistry.teamNameTagVisibility }) {
+        @JvmField
         val ALWAYS = MagicTeamNameTagVisibility("Always")
+
+        @JvmField
         val HIDE_FOR_OTHER_TEAMS = MagicTeamNameTagVisibility("Hide For Other Teams")
+
+        @JvmField
         val HIDE_FOR_OWN_TEAM = MagicTeamNameTagVisibility("Hide For Own Team")
+
+        @JvmField
         val NEVER = MagicTeamNameTagVisibility("Never")
     }
 

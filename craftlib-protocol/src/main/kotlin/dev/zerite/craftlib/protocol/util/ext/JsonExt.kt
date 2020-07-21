@@ -1,3 +1,4 @@
+@file:JvmName("JsonUtil")
 package dev.zerite.craftlib.protocol.util.ext
 
 import com.google.gson.Gson

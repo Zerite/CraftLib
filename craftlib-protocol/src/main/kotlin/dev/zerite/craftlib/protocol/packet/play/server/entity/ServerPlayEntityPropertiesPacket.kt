@@ -54,7 +54,7 @@ data class ServerPlayEntityPropertiesPacket(
             if (version >= ProtocolVersion.MC1_8) buffer.writeVarInt(packet.entityId)
             else buffer.writeInt(packet.entityId)
             buffer.writeArray(packet.properties, { writeInt(it) }) { p ->
-                writeString(MagicEntityProperty[version, p.key, String::class] ?: return@writeArray)
+                writeString(MagicEntityProperty[version, p.key, String::class.java] ?: return@writeArray)
                 writeDouble(p.value)
                 writeArray(p.modifiers, { if (version >= ProtocolVersion.MC1_8) writeVarInt(it) else writeShort(it) }) {
                     writeUUID(it.uuid, ProtocolBuffer.UUIDMode.RAW)

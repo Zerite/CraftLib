@@ -1,5 +1,6 @@
 package dev.zerite.craftlib.protocol.version
 
+import kotlinx.coroutines.runBlocking
 import java.net.InetAddress
 import kotlin.test.Test
 import kotlin.test.assertFails
@@ -15,7 +16,9 @@ class MinecraftProtocolTest {
     @Test
     fun `Test Client Connection`() {
         assertFails {
-            MinecraftProtocol.connect(InetAddress.getLocalHost(), 99999)
+            runBlocking {
+                MinecraftProtocol.connect(InetAddress.getLocalHost(), 99999)
+            }
         }
     }
 

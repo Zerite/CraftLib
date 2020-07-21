@@ -28,7 +28,7 @@ data class ServerPlayServerDifficultyPacket(var difficulty: RegistryEntry) : Pac
             packet: ServerPlayServerDifficultyPacket,
             connection: NettyConnection
         ) {
-            buffer.writeByte(MagicDifficulty[version, packet.difficulty, Int::class] ?: 0)
+            buffer.writeByte(MagicDifficulty[version, packet.difficulty, Int::class.java] ?: 0)
         }
     }
 }

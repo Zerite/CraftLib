@@ -15,9 +15,16 @@ open class MagicResourcePackResult(name: String) : RegistryEntry(name) {
 
     companion object :
         IMinecraftRegistry<MagicResourcePackResult> by LazyRegistryDelegate({ MagicRegistry.resourcePackResult }) {
+        @JvmField
         val LOADED = MagicResourcePackResult("Loaded")
+
+        @JvmField
         val DECLINED = MagicResourcePackResult("Declined")
+
+        @JvmField
         val FAILED_DOWNLOAD = MagicResourcePackResult("Failed Download")
+
+        @JvmField
         val ACCEPTED = MagicResourcePackResult("Accepted")
     }
 

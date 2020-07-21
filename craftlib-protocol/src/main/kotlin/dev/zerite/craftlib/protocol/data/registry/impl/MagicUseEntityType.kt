@@ -14,8 +14,13 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
 open class MagicUseEntityType(name: String) : RegistryEntry(name) {
 
     companion object : IMinecraftRegistry<MagicUseEntityType> by LazyRegistryDelegate({ MagicRegistry.useEntityType }) {
+        @JvmField
         val INTERACT = MagicUseEntityType("Interact")
+
+        @JvmField
         val ATTACK = MagicUseEntityType("Attack")
+
+        @JvmField
         val INTERACT_AT = MagicUseEntityType("Interact At")
     }
 

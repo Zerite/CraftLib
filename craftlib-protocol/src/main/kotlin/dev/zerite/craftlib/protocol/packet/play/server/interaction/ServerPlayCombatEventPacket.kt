@@ -14,7 +14,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @author Koding
  * @since  0.1.1-SNAPSHOT
  */
-data class ServerPlayCombatEventPacket(
+data class ServerPlayCombatEventPacket @JvmOverloads constructor(
     var event: RegistryEntry,
     var duration: Int? = null,
     var entityId: Int? = null,
@@ -30,7 +30,9 @@ data class ServerPlayCombatEventPacket(
             val event = MagicCombatEvent[version, buffer.readVarInt()]
             val duration = buffer.takeIf { event == MagicCombatEvent.END_COMBAT }?.readVarInt()
             val playerId = buffer.takeIf { event == MagicCombatEvent.ENTITY_DEAD }?.readVarInt()
-            val entityId = buffer.takeIf { event == MagicCombatEvent.END_COMBAT || event == MagicCombatEvent.ENTITY_DEAD }?.readInt()
+            val entityId =
+                buffer.takeIf { event == MagicCombatEvent.END_COMBAT || event == MagicCombatEvent.ENTITY_DEAD }
+                    ?.readInt()
             return ServerPlayCombatEventPacket(
                 event,
                 duration = duration,
@@ -46,10 +48,11 @@ data class ServerPlayCombatEventPacket(
             packet: ServerPlayCombatEventPacket,
             connection: NettyConnection
         ) {
-            buffer.writeVarInt(MagicCombatEvent[version, packet.event, Int::class] ?: 0)
+            buffer.writeVarInt(MagicCombatEvent[version, packet.event, Int::class.java] ?: 0)
             if (packet.event == MagicCombatEvent.END_COMBAT) buffer.writeVarInt(packet.duration ?: 0)
             if (packet.event == MagicCombatEvent.ENTITY_DEAD) buffer.writeVarInt(packet.playerId ?: 0)
-            if (packet.event == MagicCombatEvent.ENTITY_DEAD || packet.event == MagicCombatEvent.END_COMBAT) buffer.writeInt(packet.entityId ?: 0)
+            if (packet.event == MagicCombatEvent.ENTITY_DEAD || packet.event == MagicCombatEvent.END_COMBAT)
+                buffer.writeInt(packet.entityId ?: 0)
             if (packet.event == MagicCombatEvent.ENTITY_DEAD) buffer.writeString(packet.message ?: "")
         }
     }

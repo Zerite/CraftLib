@@ -15,8 +15,13 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
 open class MagicScoreboardPosition(name: String) : RegistryEntry(name) {
     companion object :
         IMinecraftRegistry<MagicScoreboardPosition> by LazyRegistryDelegate({ MagicRegistry.scoreboardPosition }) {
+        @JvmField
         val LIST = MagicScoreboardPosition("Player List")
+
+        @JvmField
         val SIDEBAR = MagicScoreboardPosition("Sidebar")
+
+        @JvmField
         val BELOW_NAME = MagicScoreboardPosition("Below Name")
     }
 }

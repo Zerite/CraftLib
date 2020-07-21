@@ -16,7 +16,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @since  0.1.0-SNAPSHOT
  */
 @Suppress("UNUSED")
-data class ServerPlayPlayerPositionLookPacket(
+data class ServerPlayPlayerPositionLookPacket @JvmOverloads constructor(
     var x: Double,
     var y: Double,
     var z: Double,

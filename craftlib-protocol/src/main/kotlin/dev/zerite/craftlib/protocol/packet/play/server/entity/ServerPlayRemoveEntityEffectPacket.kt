@@ -37,7 +37,7 @@ data class ServerPlayRemoveEntityEffectPacket(
         ) {
             if (version >= ProtocolVersion.MC1_8) buffer.writeVarInt(packet.entityId)
             else buffer.writeInt(packet.entityId)
-            buffer.writeByte(MagicPotionEffect[version, packet.effect, Int::class] ?: 0)
+            buffer.writeByte(MagicPotionEffect[version, packet.effect, Int::class.java] ?: 0)
         }
     }
 }

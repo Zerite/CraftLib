@@ -34,7 +34,7 @@ data class ServerPlayDisplayScoreboardPacket(
             packet: ServerPlayDisplayScoreboardPacket,
             connection: NettyConnection
         ) {
-            buffer.writeByte(MagicScoreboardPosition[version, packet.position, Int::class] ?: 0)
+            buffer.writeByte(MagicScoreboardPosition[version, packet.position, Int::class.java] ?: 0)
             buffer.writeString(packet.name)
         }
     }

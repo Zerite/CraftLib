@@ -142,7 +142,7 @@ data class ProtocolState(val name: String, val id: Int) {
         operator fun PacketIO<*>.invoke(block: IdListBuilder.() -> Unit) =
             runForAllProtocols(IdListBuilder().apply(block).ids.toTypedArray()) { version, id ->
                 val data = PacketData(id, this)
-                val type = javaClass.kotlin.typeParameter ?: return@runForAllProtocols
+                val type = javaClass.typeParameter ?: return@runForAllProtocols
 
                 classToData.getOrPut(version) { hashMapOf() }[type] = data
                 idToData.getOrPut(version) { hashMapOf() }[id] = data
@@ -151,9 +151,9 @@ data class ProtocolState(val name: String, val id: Int) {
         /**
          * Finds the first type parameter for a class.
          */
-        val KClass<*>.typeParameter: Class<*>?
+        val Class<*>.typeParameter: Class<*>?
             get() = try {
-                supertypes.firstOrNull()
+                kotlin.supertypes.firstOrNull()
                     ?.arguments?.firstOrNull()
                     ?.type?.javaType?.typeName
                     ?.let {

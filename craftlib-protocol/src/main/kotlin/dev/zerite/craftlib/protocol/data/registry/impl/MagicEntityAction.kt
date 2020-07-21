@@ -13,12 +13,25 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
  */
 open class MagicEntityAction(name: String) : RegistryEntry(name) {
     companion object : IMinecraftRegistry<MagicEntityAction> by LazyRegistryDelegate({ MagicRegistry.entityAction }) {
+        @JvmField
         val CROUCH = MagicEntityAction("Crouch")
+
+        @JvmField
         val UNCROUCH = MagicEntityAction("Uncrouch")
+
+        @JvmField
         val LEAVE_BED = MagicEntityAction("Leave Bed")
+
+        @JvmField
         val START_SPRINTING = MagicEntityAction("Start Sprinting")
+
+        @JvmField
         val STOP_SPRINTING = MagicEntityAction("Stop Sprinting")
+
+        @JvmField
         val HORSE_JUMP = MagicEntityAction("Horse Jump")
+
+        @JvmField
         val OPEN_INVENTORY = MagicEntityAction("Open Inventory")
     }
 }

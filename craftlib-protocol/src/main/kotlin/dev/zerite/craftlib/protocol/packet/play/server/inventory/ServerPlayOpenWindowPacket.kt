@@ -18,7 +18,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-data class ServerPlayOpenWindowPacket(
+data class ServerPlayOpenWindowPacket @JvmOverloads constructor(
     var windowId: Int,
     var type: RegistryEntry,
     var title: BaseChatComponent,
@@ -54,10 +54,10 @@ data class ServerPlayOpenWindowPacket(
             buffer.writeByte(packet.windowId)
 
             if (version >= ProtocolVersion.MC1_8) {
-                buffer.writeString(MagicInventoryType[version, packet.type, String::class] ?: "")
+                buffer.writeString(MagicInventoryType[version, packet.type, String::class.java] ?: "")
                 buffer.writeChat(packet.title)
             } else {
-                buffer.writeByte(MagicInventoryType[version, packet.type, Int::class] ?: 0)
+                buffer.writeByte(MagicInventoryType[version, packet.type, Int::class.java] ?: 0)
                 buffer.writeString(packet.title.unformattedText)
             }
 

@@ -15,11 +15,22 @@ open class MagicWorldBorderAction(name: String) : RegistryEntry(name) {
 
     companion object :
         IMinecraftRegistry<MagicWorldBorderAction> by LazyRegistryDelegate({ MagicRegistry.worldBorderAction }) {
+        @JvmField
         val SET_SIZE = MagicWorldBorderAction("Set Size")
+
+        @JvmField
         val LERP_SIZE = MagicWorldBorderAction("Lerp Size")
+
+        @JvmField
         val SET_CENTER = MagicWorldBorderAction("Set Center")
+
+        @JvmField
         val INITIALIZE = MagicWorldBorderAction("Initialize")
+
+        @JvmField
         val SET_WARNING_TIME = MagicWorldBorderAction("Set Warning Time")
+
+        @JvmField
         val SET_WARNING_BLOCKS = MagicWorldBorderAction("Set Warning Blocks")
     }
 

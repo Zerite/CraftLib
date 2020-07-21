@@ -13,7 +13,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-data class ServerPlayEntityTeleportPacket(
+data class ServerPlayEntityTeleportPacket @JvmOverloads constructor(
     override var entityId: Int,
     var x: Double,
     var y: Double,

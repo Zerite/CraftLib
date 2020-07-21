@@ -15,9 +15,16 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
 open class MagicGamemode(name: String) : RegistryEntry(name) {
 
     companion object : IMinecraftRegistry<MagicGamemode> by LazyRegistryDelegate({ MagicRegistry.gamemode }) {
+        @JvmField
         val SURVIVAL = MagicGamemode("Survival")
+
+        @JvmField
         val CREATIVE = MagicGamemode("Creative")
+
+        @JvmField
         val ADVENTURE = MagicGamemode("Adventure")
+
+        @JvmField
         val SPECTATOR = MagicGamemode("Spectator")
     }
 

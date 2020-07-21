@@ -13,7 +13,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @author ChachyDev
  * @since 0.1.0-SNAPSHOT
  */
-data class ClientPlayTabCompletePacket(
+data class ClientPlayTabCompletePacket @JvmOverloads constructor(
     var text: String,
     var lookBlock: Vector3? = null
 ) : Packet() {
@@ -24,7 +24,11 @@ data class ClientPlayTabCompletePacket(
             connection: NettyConnection
         ) = ClientPlayTabCompletePacket(
             buffer.readString(),
-            if (version >= ProtocolVersion.MC1_8) buffer.takeIf { it.readBoolean() }?.readPosition() else Vector3(0, 0, 0)
+            if (version >= ProtocolVersion.MC1_8) buffer.takeIf { it.readBoolean() }?.readPosition() else Vector3(
+                0,
+                0,
+                0
+            )
         )
 
         override fun write(

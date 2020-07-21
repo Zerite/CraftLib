@@ -58,7 +58,7 @@ data class ServerPlaySpawnMobPacket(
             connection: NettyConnection
         ) {
             buffer.writeVarInt(packet.entityId)
-            buffer.writeByte(MagicMobType[version, packet.type, Int::class] ?: 0)
+            buffer.writeByte(MagicMobType[version, packet.type, Int::class.java] ?: 0)
             buffer.writeFixedPoint(packet.x)
             buffer.writeFixedPoint(packet.y)
             buffer.writeFixedPoint(packet.z)

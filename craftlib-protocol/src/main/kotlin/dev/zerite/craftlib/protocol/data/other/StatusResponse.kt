@@ -11,7 +11,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-data class StatusResponse(
+data class StatusResponse @JvmOverloads constructor(
     var version: StatusVersion = StatusVersion("CraftLib", ProtocolVersion.MC1_7_2),
     var players: StatusPlayers = StatusPlayers(1, 0),
     var description: BaseChatComponent = StringChatComponent(""),
@@ -35,7 +35,7 @@ data class StatusVersion(
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-data class StatusPlayers(
+data class StatusPlayers @JvmOverloads constructor(
     var max: Int,
     var online: Int,
     var sample: Array<StatusPlayer>? = null

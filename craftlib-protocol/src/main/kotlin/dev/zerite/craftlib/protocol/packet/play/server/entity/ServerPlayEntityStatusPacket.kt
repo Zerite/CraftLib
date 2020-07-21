@@ -37,7 +37,7 @@ data class ServerPlayEntityStatusPacket(
             connection: NettyConnection
         ) {
             buffer.writeInt(packet.entityId)
-            buffer.writeByte(MagicEntityStatus[version, packet.status, Int::class] ?: 0)
+            buffer.writeByte(MagicEntityStatus[version, packet.status, Int::class.java] ?: 0)
         }
     }
 }

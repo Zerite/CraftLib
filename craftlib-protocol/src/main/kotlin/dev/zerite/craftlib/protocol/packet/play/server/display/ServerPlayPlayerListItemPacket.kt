@@ -84,7 +84,9 @@ data class ServerPlayPlayerListItemPacket(
                                 writeString(p.signature!!)
                         }
                     }
-                    if (packet.action == 0 || packet.action == 1) writeVarInt(MagicGamemode[version, it.gamemode, Int::class] ?: 0)
+                    if (packet.action == 0 || packet.action == 1) writeVarInt(
+                        MagicGamemode[version, it.gamemode, Int::class.java] ?: 0
+                    )
                     if (packet.action == 0 || packet.action == 2) writeVarInt(it.ping)
                     if (packet.action == 0 || packet.action == 3) {
                         writeBoolean(it.displayName != null)

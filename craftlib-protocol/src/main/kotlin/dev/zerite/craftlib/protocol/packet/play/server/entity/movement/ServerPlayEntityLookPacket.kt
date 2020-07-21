@@ -14,7 +14,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-data class ServerPlayEntityLookPacket(
+data class ServerPlayEntityLookPacket @JvmOverloads constructor(
     override var entityId: Int,
     var yaw: Float,
     var pitch: Float,

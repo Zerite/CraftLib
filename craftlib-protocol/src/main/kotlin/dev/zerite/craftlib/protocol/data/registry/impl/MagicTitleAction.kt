@@ -14,10 +14,19 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
 open class MagicTitleAction(name: String) : RegistryEntry(name) {
 
     companion object : IMinecraftRegistry<MagicTitleAction> by LazyRegistryDelegate({ MagicRegistry.titleAction }) {
+        @JvmField
         val TITLE = MagicTitleAction("Title")
+
+        @JvmField
         val SUBTITLE = MagicTitleAction("Subtitle")
+
+        @JvmField
         val TIMES = MagicTitleAction("Times")
+
+        @JvmField
         val CLEAR = MagicTitleAction("Clear")
+
+        @JvmField
         val RESET = MagicTitleAction("Reset")
     }
 

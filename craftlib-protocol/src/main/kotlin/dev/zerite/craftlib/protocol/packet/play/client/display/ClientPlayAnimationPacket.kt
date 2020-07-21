@@ -26,7 +26,8 @@ data class ClientPlayAnimationPacket(
             connection: NettyConnection
         ) = ClientPlayAnimationPacket(
             if (version >= ProtocolVersion.MC1_8) 0 else buffer.readInt(),
-            if (version >= ProtocolVersion.MC1_8) MagicClientAnimation.SWING_ARM else MagicClientAnimation[version, buffer.readByte().toInt()]
+            if (version >= ProtocolVersion.MC1_8) MagicClientAnimation.SWING_ARM else MagicClientAnimation[version, buffer.readByte()
+                .toInt()]
         )
 
         override fun write(
@@ -37,7 +38,7 @@ data class ClientPlayAnimationPacket(
         ) {
             if (version <= ProtocolVersion.MC1_7_6) {
                 buffer.writeInt(packet.entityId)
-                buffer.writeByte(MagicClientAnimation[version, packet.animation, Int::class] ?: 0)
+                buffer.writeByte(MagicClientAnimation[version, packet.animation, Int::class.java] ?: 0)
             }
         }
     }

@@ -16,7 +16,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @author Koding
  * @since  0.1.1-SNAPSHOT
  */
-data class ServerPlayTitlePacket(
+data class ServerPlayTitlePacket @JvmOverloads constructor(
     var action: RegistryEntry,
     var text: BaseChatComponent? = null,
     var fadeIn: Int = 0,
@@ -45,7 +45,7 @@ data class ServerPlayTitlePacket(
             packet: ServerPlayTitlePacket,
             connection: NettyConnection
         ) {
-            buffer.writeVarInt(MagicTitleAction[version, packet.action, Int::class] ?: 0)
+            buffer.writeVarInt(MagicTitleAction[version, packet.action, Int::class.java] ?: 0)
             if (packet.action == MagicTitleAction.TITLE || packet.action == MagicTitleAction.SUBTITLE)
                 buffer.writeChat(packet.text ?: StringChatComponent(""))
             if (packet.action == MagicTitleAction.TIMES) {

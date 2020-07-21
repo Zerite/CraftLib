@@ -24,6 +24,7 @@ data class Chunk(internal var blocks: Array<Block?> = arrayOfNulls(DESIRED_BLOCK
          * @author Koding
          * @since  0.1.0-SNAPSHOT
          */
+        @JvmStatic
         fun index(x: Int, y: Int, z: Int) = (y shl 8) or (z shl 4) or x
     }
 

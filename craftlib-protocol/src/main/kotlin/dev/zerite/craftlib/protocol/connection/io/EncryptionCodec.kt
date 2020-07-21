@@ -91,9 +91,8 @@ class EncryptionCodec(private val connection: NettyConnection, key: Key) :
         val readable = readableBytes
 
         // Resize output buffer if necessary
-        if (heapInput.size < readable) {
+        if (heapInput.size < readable)
             heapInput = ByteArray(readable)
-        }
 
         readBytes(heapInput, 0, readable)
         return heapInput

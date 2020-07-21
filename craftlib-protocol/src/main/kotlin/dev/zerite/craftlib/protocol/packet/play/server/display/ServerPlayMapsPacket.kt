@@ -12,7 +12,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @author Koding
  * @since  0.1.1-SNAPSHOT
  */
-data class ServerPlayMapsPacket(
+data class ServerPlayMapsPacket @JvmOverloads constructor(
     var damage: Int,
     var scale: Int,
     var players: Array<PlayerIcon>,

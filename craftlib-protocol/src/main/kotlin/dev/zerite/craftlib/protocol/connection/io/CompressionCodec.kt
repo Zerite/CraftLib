@@ -23,7 +23,7 @@ class CompressionCodec(private val connection: NettyConnection, var threshold: I
         /**
          * The maximum size of compressed packets that the protocol can support.
          */
-        private const val MAX_COMPRESSED_SIZE = 2097152
+        const val MAX_COMPRESSED_SIZE = 2097152
     }
 
     /**

@@ -12,7 +12,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-data class ServerPlayUpdateScorePacket(
+data class ServerPlayUpdateScorePacket @JvmOverloads constructor(
     var name: String,
     var update: Boolean,
     var score: String? = null,

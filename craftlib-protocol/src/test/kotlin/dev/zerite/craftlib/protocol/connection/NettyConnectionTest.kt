@@ -18,11 +18,11 @@ class NettyConnectionTest {
         val dummy = NettyConnection(PacketDirection.SERVERBOUND)
         val key = "dummy"
 
-        assertNull(dummy[key, String::class])
+        assertNull(dummy[key, String::class.java])
         dummy[key] = "dummy"
-        assertEquals(dummy[key, String::class]!!, "dummy")
+        assertEquals(dummy[key, String::class.java]!!, "dummy")
         dummy -= key
-        assertNull(dummy[key, String::class])
+        assertNull(dummy[key, String::class.java])
     }
 
 }

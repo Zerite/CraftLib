@@ -1,3 +1,4 @@
+@file:JvmName("StringUtil")
 package dev.zerite.craftlib.protocol.util.ext
 
 import java.util.*
@@ -15,6 +16,7 @@ private val dashesRegex = "(.{8})(.{4})(.{4})(.{4})(.{12})".toRegex()
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
+@JvmOverloads
 fun String.toUuid(dashes: Boolean = false): UUID =
     UUID.fromString(
         if (dashes) replace(dashesRegex, "\$1-\$2-\$3-\$4-\$5")

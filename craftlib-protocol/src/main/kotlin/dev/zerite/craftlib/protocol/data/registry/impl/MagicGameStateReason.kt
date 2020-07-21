@@ -17,14 +17,31 @@ open class MagicGameStateReason(name: String) : RegistryEntry(name) {
     @Suppress("UNUSED")
     companion object :
         IMinecraftRegistry<MagicGameStateReason> by LazyRegistryDelegate({ MagicRegistry.gameStateReason }) {
+        @JvmField
         val INVALID_BED = MagicGameStateReason("Invalid Bed Location")
+
+        @JvmField
         val BEGIN_RAINING = MagicGameStateReason("Start Raining")
+
+        @JvmField
         val END_RAINING = MagicGameStateReason("Stop Raining")
+
+        @JvmField
         val CHANGE_GAME_MODE = MagicGameStateReason("Change Gamemode")
+
+        @JvmField
         val ENTER_CREDITS = MagicGameStateReason("Enter Credits")
+
+        @JvmField
         val DEMO_MESSAGES = MagicGameStateReason("Show Demo")
+
+        @JvmField
         val BOW_HIT_SOUND = MagicGameStateReason("Bow Hit Sound")
+
+        @JvmField
         val FADE_VALUE = MagicGameStateReason("Fade Value")
+
+        @JvmField
         val FADE_TIME = MagicGameStateReason("Fade Time")
     }
 }

@@ -16,7 +16,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-data class ServerPlayEntityEffectPacket(
+data class ServerPlayEntityEffectPacket @JvmOverloads constructor(
     override var entityId: Int,
     var effect: RegistryEntry,
     var amplifier: Int,
@@ -44,7 +44,7 @@ data class ServerPlayEntityEffectPacket(
         ) {
             if (version >= ProtocolVersion.MC1_8) buffer.writeVarInt(packet.entityId)
             else buffer.writeInt(packet.entityId)
-            buffer.writeByte(MagicPotionEffect[version, packet.effect, Int::class] ?: 0)
+            buffer.writeByte(MagicPotionEffect[version, packet.effect, Int::class.java] ?: 0)
             buffer.writeByte(packet.amplifier)
             if (version >= ProtocolVersion.MC1_8) buffer.writeVarInt(packet.duration)
             else buffer.writeShort(packet.duration)

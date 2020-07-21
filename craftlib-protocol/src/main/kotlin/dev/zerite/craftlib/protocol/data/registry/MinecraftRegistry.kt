@@ -2,7 +2,6 @@ package dev.zerite.craftlib.protocol.data.registry
 
 import dev.zerite.craftlib.protocol.version.ProtocolState
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
-import kotlin.reflect.KClass
 import kotlin.reflect.safeCast
 
 /**
@@ -111,8 +110,8 @@ class MinecraftRegistry<T : RegistryEntry> : IMinecraftRegistry<T> {
      * @since  0.1.0-SNAPSHOT
      */
     @ExperimentalStdlibApi
-    override fun <T : Any> get(version: ProtocolVersion, magic: RegistryEntry, type: KClass<T>) =
-        type.safeCast(this[version, magic])
+    override fun <T : Any> get(version: ProtocolVersion, magic: RegistryEntry, type: Class<T>) =
+        type.kotlin.safeCast(this[version, magic])
 }
 
 /**
@@ -150,7 +149,7 @@ interface IMinecraftRegistry<T : RegistryEntry> {
     operator fun get(version: ProtocolVersion, key: String): RegistryEntry
     operator fun get(version: ProtocolVersion, key: Int): RegistryEntry
     operator fun get(version: ProtocolVersion, magic: RegistryEntry): Any
-    operator fun <T : Any> get(version: ProtocolVersion, magic: RegistryEntry, type: KClass<T>): T?
+    operator fun <T : Any> get(version: ProtocolVersion, magic: RegistryEntry, type: Class<T>): T?
 }
 
 /**
@@ -168,6 +167,6 @@ class LazyRegistryDelegate<T : RegistryEntry>(get: () -> IMinecraftRegistry<T>) 
     override fun get(version: ProtocolVersion, key: String) = entry[version, key]
     override fun get(version: ProtocolVersion, key: Int) = entry[version, key]
     override fun get(version: ProtocolVersion, magic: RegistryEntry) = entry[version, magic]
-    override fun <T : Any> get(version: ProtocolVersion, magic: RegistryEntry, type: KClass<T>) =
+    override fun <T : Any> get(version: ProtocolVersion, magic: RegistryEntry, type: Class<T>) =
         entry[version, magic, type]
 }

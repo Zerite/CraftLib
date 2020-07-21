@@ -20,7 +20,7 @@ class ProtocolStateTest {
         assertNull(state[PacketDirection.CLIENTBOUND][ProtocolVersion.UNKNOWN, -1])
         assertNull(state[PacketDirection.CLIENTBOUND][ProtocolVersion.UNKNOWN, Any()])
         assertFails {
-            state[PacketDirection.CLIENTBOUND].apply { Any::class.typeParameter }
+            state[PacketDirection.CLIENTBOUND].apply { Any::class.java.typeParameter }
         }
     }
 

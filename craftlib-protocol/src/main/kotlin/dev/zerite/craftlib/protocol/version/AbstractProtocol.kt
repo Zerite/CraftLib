@@ -21,6 +21,7 @@ abstract class AbstractProtocol {
      * @author Koding
      * @since  0.1.0-SNAPSHOT
      */
+    @Throws(IllegalStateException::class)
     operator fun get(id: Int) = mapped[id] ?: error("Unknown connection state $id")
 
     /**

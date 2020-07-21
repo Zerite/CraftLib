@@ -15,9 +15,16 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
 open class MagicDifficulty(name: String) : RegistryEntry(name) {
 
     companion object : IMinecraftRegistry<MagicDifficulty> by LazyRegistryDelegate({ MagicRegistry.difficulty }) {
+        @JvmField
         val PEACEFUL = MagicDifficulty("Peaceful")
+
+        @JvmField
         val EASY = MagicDifficulty("Easy")
+
+        @JvmField
         val NORMAL = MagicDifficulty("Normal")
+
+        @JvmField
         val HARD = MagicDifficulty("Hard")
     }
 

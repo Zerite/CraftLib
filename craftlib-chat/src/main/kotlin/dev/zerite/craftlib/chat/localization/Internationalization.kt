@@ -38,12 +38,22 @@ interface Internationalization {
          * @author Koding
          * @since  0.1.0-SNAPSHOT
          */
+        @JvmStatic
         operator fun invoke(
             set: Boolean = true,
-            format: (key: String, args: Array<out String>) -> String
+            format: I18nFormatter
         ) = object : Internationalization {
             override fun format(key: String, vararg args: String) = format(key, args)
         }.apply { if (set) instance = this }
     }
 
 }
+
+/**
+ * Alias for the formatter which is used to set the
+ * internationalization instance.
+ *
+ * @author Koding
+ * @since  0.1.2
+ */
+typealias I18nFormatter = (key: String, args: Array<out String>) -> String

@@ -48,6 +48,7 @@ enum class ProtocolVersion(val id: Int) {
          * @author Koding
          * @since  0.1.0-SNAPSHOT
          */
+        @JvmStatic
         operator fun get(version: Int) = mapped[version] ?: UNKNOWN
 
         /**

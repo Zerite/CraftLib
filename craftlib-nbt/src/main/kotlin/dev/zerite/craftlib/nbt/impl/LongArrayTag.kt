@@ -14,6 +14,7 @@ import java.io.DataOutput
 @Suppress("UNUSED")
 data class LongArrayTag(var value: LongArray) : NBTTag {
     companion object : TagIO<LongArrayTag> {
+        @JvmStatic
         override fun read(input: DataInput) = LongArrayTag(LongArray(input.readInt()) { input.readLong() })
     }
 

@@ -17,7 +17,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @since  0.1.0-SNAPSHOT
  */
 @Suppress("UNUSED")
-data class ClientPlayClientSettingsPacket(
+data class ClientPlayClientSettingsPacket @JvmOverloads constructor(
     var locale: String,
     var viewDistance: RegistryEntry,
     var chatFlags: Int,
@@ -45,8 +45,10 @@ data class ClientPlayClientSettingsPacket(
             buffer.readString(),
             MagicViewDistance[version, buffer.readByte().toInt()],
             buffer.readByte().toInt().apply { buffer.readBoolean() },
-            if (version >= ProtocolVersion.MC1_8) MagicDifficulty.PEACEFUL else MagicDifficulty[version, buffer.readByte().toInt()],
-            if (version >= ProtocolVersion.MC1_8) buffer.readUnsignedByte().toInt() else if (buffer.readBoolean()) 0x1 else 0x0
+            if (version >= ProtocolVersion.MC1_8) MagicDifficulty.PEACEFUL else MagicDifficulty[version, buffer.readByte()
+                .toInt()],
+            if (version >= ProtocolVersion.MC1_8) buffer.readUnsignedByte()
+                .toInt() else if (buffer.readBoolean()) 0x1 else 0x0
         )
 
         override fun write(
@@ -56,11 +58,11 @@ data class ClientPlayClientSettingsPacket(
             connection: NettyConnection
         ) {
             buffer.writeString(packet.locale)
-            buffer.writeByte(MagicViewDistance[version, packet.viewDistance, Int::class] ?: 0)
+            buffer.writeByte(MagicViewDistance[version, packet.viewDistance, Int::class.java] ?: 0)
             buffer.writeByte(packet.chatFlags)
             buffer.writeBoolean(true)
             if (version <= ProtocolVersion.MC1_7_6) {
-                buffer.writeByte(MagicDifficulty[version, packet.difficulty, Int::class] ?: 0)
+                buffer.writeByte(MagicDifficulty[version, packet.difficulty, Int::class.java] ?: 0)
                 buffer.writeBoolean(packet.cape)
             } else {
                 buffer.writeByte(packet.skinParts)

@@ -32,6 +32,7 @@ data class ChunkColumn(val x: Int, val z: Int, val chunks: Array<Chunk>, private
          * @author Koding
          * @since  0.1.0-SNAPSHOT
          */
+        @JvmStatic
         fun readOneSeven(
             data: ByteArray,
             metadata: ChunkMetadata,
@@ -127,6 +128,7 @@ data class ChunkColumn(val x: Int, val z: Int, val chunks: Array<Chunk>, private
          * @author Koding
          * @since  0.1.1-SNAPSHOT
          */
+        @JvmStatic
         fun readOneEight(
             data: ByteArray,
             metadata: ChunkMetadata,
@@ -188,7 +190,10 @@ data class ChunkColumn(val x: Int, val z: Int, val chunks: Array<Chunk>, private
 
                     Chunk(blockData)
                 }.toTypedArray(),
-                if (readBiomes && metadata.primaryBitmap != 0) data.copyOfRange(marker, marker + 256) else ByteArray(16 * 16)
+                if (readBiomes && metadata.primaryBitmap != 0) data.copyOfRange(
+                    marker,
+                    marker + 256
+                ) else ByteArray(16 * 16)
             )
         }
 
@@ -203,6 +208,7 @@ data class ChunkColumn(val x: Int, val z: Int, val chunks: Array<Chunk>, private
          * @author Koding
          * @since  0.1.0-SNAPSHOT
          */
+        @JvmStatic
         fun writeOneSeven(
             column: ChunkColumn,
             hasSkyLight: Boolean = true,
@@ -299,6 +305,7 @@ data class ChunkColumn(val x: Int, val z: Int, val chunks: Array<Chunk>, private
          * @author Koding
          * @since  0.1.1-SNAPSHOT
          */
+        @JvmStatic
         fun writeOneEight(
             column: ChunkColumn,
             hasSkyLight: Boolean = true,

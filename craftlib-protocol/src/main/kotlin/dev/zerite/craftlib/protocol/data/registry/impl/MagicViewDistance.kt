@@ -13,9 +13,16 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
  */
 open class MagicViewDistance(name: String) : RegistryEntry(name) {
     companion object : IMinecraftRegistry<MagicViewDistance> by LazyRegistryDelegate({ MagicRegistry.viewDistance }) {
+        @JvmField
         val FAR = MagicViewDistance("Far")
+
+        @JvmField
         val NORMAL = MagicViewDistance("Normal")
+
+        @JvmField
         val SHORT = MagicViewDistance("Short")
+
+        @JvmField
         val TINY = MagicViewDistance("Tiny")
     }
 }

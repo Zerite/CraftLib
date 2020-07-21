@@ -9,7 +9,7 @@ import dev.zerite.craftlib.protocol.Vector3
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-data class EntityMetadata(private val values: HashMap<Int, MetadataValue<out Any>> = hashMapOf()) {
+data class EntityMetadata @JvmOverloads constructor(private val values: HashMap<Int, MetadataValue<out Any>> = hashMapOf()) {
     /**
      * Gets a list of the entries in the values map.
      */
@@ -84,6 +84,7 @@ data class MetadataValue<T>(val id: Int, var value: T) {
     /**
      * Returns the integer value of the type.
      */
+    @JvmField
     val type = when (value) {
         is Byte -> 0
         is Short -> 1

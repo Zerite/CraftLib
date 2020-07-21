@@ -1,3 +1,4 @@
+@file:JvmName("NettyConnectionUtil")
 package dev.zerite.craftlib.protocol.connection
 
 import dev.zerite.craftlib.chat.component.BaseChatComponent
@@ -30,6 +31,7 @@ open class NettyConnection(val direction: PacketDirection) : SimpleChannelInboun
         /**
          * The key which references a connection.
          */
+        @JvmStatic
         val attribute: AttributeKey<NettyConnection> = AttributeKey.valueOf("connection")
     }
 
@@ -66,17 +68,20 @@ open class NettyConnection(val direction: PacketDirection) : SimpleChannelInboun
     /**
      * The current protocol state for this connection.
      */
+    @JvmField
     var state = MinecraftProtocol.HANDSHAKE
 
     /**
      * The current protocol version for this connection.
      * Used for encoding and decoding packets.
      */
+    @JvmField
     var version = ProtocolVersion.UNKNOWN
 
     /**
      * If applicable, the server which this connection is associated with.
      */
+    @JvmField
     var server: NettyServer? = null
 
     /**
@@ -105,6 +110,7 @@ open class NettyConnection(val direction: PacketDirection) : SimpleChannelInboun
      * @author Koding
      * @since  0.1.0-SNAPSHOT
      */
+    @JvmOverloads
     fun <T : Packet> send(packet: T, listener: T.() -> Unit = {}) =
         PacketSendingEvent(this, packet).let {
             handler?.sending(this, it)

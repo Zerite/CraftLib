@@ -7,7 +7,7 @@ package dev.zerite.craftlib.protocol.util
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-open class Cancellable(var cancelled: Boolean = false) {
+open class Cancellable @JvmOverloads constructor(var cancelled: Boolean = false) {
 
     /**
      * Cancel this response.

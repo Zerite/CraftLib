@@ -14,8 +14,13 @@ import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
 open class MagicDimension(name: String) : RegistryEntry(name) {
 
     companion object : IMinecraftRegistry<MagicDimension> by LazyRegistryDelegate({ MagicRegistry.dimension }) {
+        @JvmField
         val NETHER = MagicDimension("The Nether")
+
+        @JvmField
         val OVERWORLD = MagicDimension("Overworld")
+
+        @JvmField
         val END = MagicDimension("The End")
     }
 

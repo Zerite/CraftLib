@@ -22,16 +22,19 @@ open class NettyServer : IFlagged {
     /**
      * Reference to the server channel object backing this.
      */
+    @JvmField
     var channel: ServerChannel? = null
 
     /**
      * List of all the current connections to the server.
      */
+    @JvmField
     val connections = arrayListOf<NettyConnection>()
 
     /**
      * The current handler which we are using to pass events through to.
      */
+    @JvmField
     var handler: ServerHandler? = null
 
     /**
@@ -77,6 +80,7 @@ open class NettyServer : IFlagged {
      * @author Koding
      * @since  0.1.0-SNAPSHOT
      */
+    @JvmOverloads
     fun close(wait: Boolean = true) {
         assert(channel != null)
         handler?.closed(this)

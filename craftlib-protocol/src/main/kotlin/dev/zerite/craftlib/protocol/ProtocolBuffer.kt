@@ -1,3 +1,4 @@
+@file:JvmName("ProtocolBufferUtil")
 package dev.zerite.craftlib.protocol
 
 import dev.zerite.craftlib.chat.component.BaseChatComponent
@@ -15,6 +16,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.ByteBufInputStream
 import io.netty.buffer.Unpooled
+import kotlinx.coroutines.runBlocking
 import java.io.ByteArrayOutputStream
 import java.io.DataInput
 import java.io.DataInputStream
@@ -30,7 +32,7 @@ import kotlin.math.roundToInt
  * @since  0.1.0-SNAPSHOT
  */
 @Suppress("UNUSED")
-class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: NettyConnection) {
+class ProtocolBuffer(@Suppress("UNUSED") @JvmField val buf: ByteBuf, @JvmField val connection: NettyConnection) {
 
     /**
      * True if this buffer can be read from.
@@ -167,6 +169,7 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
      * @since  0.1.0-SNAPSHOT
      */
     @Suppress("UNUSED")
+    @JvmOverloads
     fun readByteArray(max: Int? = null, length: ProtocolBuffer.() -> Int = { readVarInt() }) =
         ByteArray(length().takeIf { max == null || it <= max } ?: error("Byte array is too large"))
             .apply { readBytes(this) }
@@ -181,6 +184,7 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
      * @since  0.1.0-SNAPSHOT
      */
     @Suppress("UNUSED")
+    @JvmOverloads
     fun readByteArray(length: Int, max: Int? = null) =
         ByteArray(length.takeIf { max == null || it <= max }
             ?: error("Byte array is too large")).apply { readBytes(this) }
@@ -195,6 +199,7 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
      * @since  0.1.0-SNAPSHOT
      */
     @Suppress("UNUSED")
+    @JvmOverloads
     inline fun writeByteArray(bytes: ByteArray, length: ProtocolBuffer.(Int) -> Unit = { writeVarInt(it) }) {
         length(bytes.size)
         writeBytes(bytes)
@@ -218,6 +223,7 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
      * @author Koding
      * @since  0.1.0-SNAPSHOT
      */
+    @JvmOverloads
     fun readString(max: Int? = null) = readByteArray(max = max).toString(Charsets.UTF_8)
 
     /**
@@ -439,6 +445,7 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
      * @author Koding
      * @since  0.1.0-SNAPSHOT
      */
+    @JvmOverloads
     fun readUUID(mode: UUIDMode = UUIDMode.STRING) = when (mode) {
         UUIDMode.DASHES -> readString().toUuid(dashes = true)
         UUIDMode.STRING -> readString().toUuid()
@@ -454,6 +461,7 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
      * @author Koding
      * @since  0.1.0-SNAPSHOT
      */
+    @JvmOverloads
     fun writeUUID(value: UUID, mode: UUIDMode = UUIDMode.STRING): Any =
         when (mode) {
             UUIDMode.DASHES -> writeString(value.toString().replace("-", ""))
@@ -523,6 +531,7 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
      * @author Koding
      * @since  0.1.0-SNAPSHOT
      */
+    @JvmOverloads
     inline fun <reified T> readArray(
         length: ProtocolBuffer.() -> Int = { readVarInt() },
         process: ProtocolBuffer.() -> T
@@ -538,6 +547,7 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
      * @author Koding
      * @since  0.1.0-SNAPSHOT
      */
+    @JvmOverloads
     inline fun <reified T> writeArray(
         items: Array<T>,
         length: ProtocolBuffer.(Int) -> Unit = { writeVarInt(it) },
@@ -590,6 +600,7 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
      * @author Koding
      * @since  0.1.0-SNAPSHOT
      */
+    @JvmOverloads
     @Suppress("UNUSED")
     fun readNBT(
         compressed: Boolean = connection.version <= ProtocolVersion.MC1_7_6,
@@ -602,8 +613,10 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
         length().let { len ->
             if (len < 0) null
             else ByteBufInputStream(buf).let {
-                if (compressed) NBTIO.readCompressed(it)
-                else NBTIO.read(DataInputStream(it) as DataInput)
+                runBlocking {
+                    if (compressed) NBTIO.readCompressed(it)
+                    else NBTIO.read(DataInputStream(it) as DataInput)
+                }
             }
         }
     }
@@ -618,6 +631,7 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
      * @author Koding
      * @since  0.1.0-SNAPSHOT
      */
+    @JvmOverloads
     @Suppress("UNUSED")
     fun writeNBT(
         tag: CompoundTag?,
@@ -629,8 +643,10 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
     else {
         val out = ByteArrayOutputStream()
         NamedTag("", tag).let {
-            if (compressed) NBTIO.writeCompressed(it, out)
-            else NBTIO.write(it, out)
+            runBlocking {
+                if (compressed) NBTIO.writeCompressed(it, out)
+                else NBTIO.write(it, out)
+            }
         }
         writeByteArray(out.toByteArray()) { length(it) }
     }
@@ -746,6 +762,7 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
      * @author Koding
      * @since  0.1.0-SNAPSHOT
      */
+    @JvmOverloads
     fun readFixedPoint(read: ProtocolBuffer.() -> Double = { readInt().toDouble() }) = read() / 32.0
 
     /**
@@ -755,6 +772,7 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
      * @author Koding
      * @since  0.1.0-SNAPSHOT
      */
+    @JvmOverloads
     fun writeFixedPoint(value: Double, write: ProtocolBuffer.(Int) -> Unit = { writeInt(it) }) =
         write(floor(value * 32.0).roundToInt())
 
@@ -766,6 +784,7 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
      * @author Koding
      * @since  0.1.0-SNAPSHOT
      */
+    @JvmOverloads
     fun readStepRotation(read: ProtocolBuffer.() -> Float = { readByte().toFloat() }) =
         (read() * 360) / 256.0f
 
@@ -778,6 +797,7 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
      * @author Koding
      * @since  0.1.0-SNAPSHOT
      */
+    @JvmOverloads
     fun writeStepRotation(
         value: Float,
         write: ProtocolBuffer.(Int) -> Unit = { writeByte(it) }
@@ -874,7 +894,12 @@ class ProtocolBuffer(@Suppress("UNUSED") val buf: ByteBuf, val connection: Netty
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-data class Slot(var id: Short, var count: Byte = 0, var damage: Short = 0, var data: CompoundTag? = null)
+data class Slot @JvmOverloads constructor(
+    var id: Short,
+    var count: Byte = 0,
+    var damage: Short = 0,
+    var data: CompoundTag? = null
+)
 
 /**
  * Stores data about an object from the buffer.
@@ -882,7 +907,7 @@ data class Slot(var id: Short, var count: Byte = 0, var damage: Short = 0, var d
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-data class ObjectData(
+data class ObjectData @JvmOverloads constructor(
     var value: Int,
     var speedX: Int? = null,
     var speedY: Int? = null,

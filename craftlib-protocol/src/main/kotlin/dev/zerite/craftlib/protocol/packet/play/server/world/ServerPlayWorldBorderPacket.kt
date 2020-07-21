@@ -14,7 +14,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @author Koding
  * @since  0.1.1-SNAPSHOT
  */
-data class ServerPlayWorldBorderPacket(
+data class ServerPlayWorldBorderPacket @JvmOverloads constructor(
     var action: RegistryEntry,
     var x: Double = 0.0,
     var z: Double = 0.0,
@@ -59,7 +59,7 @@ data class ServerPlayWorldBorderPacket(
             packet: ServerPlayWorldBorderPacket,
             connection: NettyConnection
         ) {
-            buffer.writeVarInt(MagicWorldBorderAction[version, packet.action, Int::class] ?: 0)
+            buffer.writeVarInt(MagicWorldBorderAction[version, packet.action, Int::class.java] ?: 0)
 
             if (packet.action == MagicWorldBorderAction.INITIALIZE || packet.action == MagicWorldBorderAction.SET_CENTER) {
                 buffer.writeDouble(packet.x)

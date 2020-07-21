@@ -28,7 +28,6 @@ class LengthCodec(private val connection: NettyConnection) : ByteToMessageCodec<
      */
     override fun encode(ctx: ChannelHandlerContext, msg: ByteBuf, out: ByteBuf) {
         val buffer = out.wrap(connection)
-
         buffer.writeVarInt(msg.readableBytes())
         buffer.writeBytes(msg)
     }

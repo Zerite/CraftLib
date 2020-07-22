@@ -1,0 +1,6 @@
+description = 'Reads the schematic file format'
+
+dependencies {
+    api project(':craftlib-commons')
+    api project(':craftlib-nbt')
+}

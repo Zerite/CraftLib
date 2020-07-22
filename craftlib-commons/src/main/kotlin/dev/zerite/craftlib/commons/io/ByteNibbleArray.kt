@@ -1,23 +1,23 @@
-package dev.zerite.craftlib.protocol.data.world
+package dev.zerite.craftlib.commons.io
 
 /**
  * Stores an array of bytes, with each storing two integer values spanning
  * 4 bits.
  *
  * @author Koding
- * @since  0.1.0-SNAPSHOT
+ * @since  0.1.3
  */
-data class ByteNibbleArray(var data: ByteArray) {
+data class ByteNibbleArray @JvmOverloads constructor(var data: ByteArray, var flipped: Boolean = false) {
 
     /**
      * Gets a nibble byte from the array with the given index.
      *
      * @param  index       The index of the nibble byte.
      * @author Koding
-     * @since  0.1.0-SNAPSHOT
+     * @since  0.1.3
      */
     operator fun get(index: Int) =
-        data[index / 2].toInt() ushr (if (index % 2 == 0) 0 else 4) and 0x0F
+        data[index / 2].toInt() ushr (if (index % 2 == if (flipped) 1 else 0) 0 else 4) and 0x0F
 
     /**
      * Gets a nibble byte from the array, otherwise falling back
@@ -27,7 +27,7 @@ data class ByteNibbleArray(var data: ByteArray) {
      * @param  default     The fallback value if the index is out of bounds.
      *
      * @author Koding
-     * @since  0.1.0-SNAPSHOT
+     * @since  0.1.3
      */
     operator fun get(index: Int, default: Int) =
         if (index < 0 || (index / 2) >= data.size || data.isEmpty()) default else this[index]
@@ -39,11 +39,11 @@ data class ByteNibbleArray(var data: ByteArray) {
      * @param  value       The value which we are setting.
      *
      * @author Koding
-     * @since  0.1.0-SNAPSHOT
+     * @since  0.1.3
      */
     operator fun set(index: Int, value: Int) {
         val i = index shr 1
-        if (index and 1 == 0) data[i] = ((data[i].toInt() and 240) or (value and 15)).toByte()
+        if (index and 1 == if (flipped) 1 else 0) data[i] = ((data[i].toInt() and 240) or (value and 15)).toByte()
         else data[i] = ((data[i].toInt() and 15) or ((value and 15) shl 4)).toByte()
     }
 

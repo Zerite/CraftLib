@@ -1,5 +1,6 @@
 package dev.zerite.craftlib.protocol.data.world
 
+import dev.zerite.craftlib.commons.io.ByteNibbleArray
 import dev.zerite.craftlib.protocol.util.ext.toByteArray
 import dev.zerite.craftlib.protocol.util.ext.toShortArray
 import dev.zerite.craftlib.protocol.util.ext.trim
@@ -11,7 +12,12 @@ import dev.zerite.craftlib.protocol.util.ext.trim
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-data class ChunkColumn(val x: Int, val z: Int, val chunks: Array<Chunk>, private var biomes: ByteArray) {
+data class ChunkColumn @JvmOverloads constructor(
+    val x: Int,
+    val z: Int,
+    val chunks: Array<Chunk> = Array(16) { Chunk() },
+    var biomes: ByteArray = ByteArray(16 * 16) { 0 }
+) {
 
     companion object {
         /**
@@ -400,6 +406,22 @@ data class ChunkColumn(val x: Int, val z: Int, val chunks: Array<Chunk>, private
     operator fun get(x: Int, y: Int, z: Int): Block? {
         val chunkY = y / 16
         return this[chunkY][x, y - chunkY * 16, z]
+    }
+
+    /**
+     * Gets a block in this chunk column and return it.
+     *
+     * @param  x              The x coordinate in this chunk. Max 16.
+     * @param  y              The y coordinate in this chunk. Max 256.
+     * @param  z              The z coordinate in this chunk. Max 16.
+     * @param  block          The new block at this coordinate.
+     *
+     * @author Koding
+     * @since  0.1.0-SNAPSHOT
+     */
+    operator fun set(x: Int, y: Int, z: Int, block: Block) {
+        val chunkY = y / 16
+        this[chunkY][x, y - chunkY * 16, z] = block
     }
 
     /**

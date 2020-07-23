@@ -1,7 +1,6 @@
 package dev.zerite.craftlib.protocol.version
 
 import dev.zerite.craftlib.protocol.PacketIO
-import kotlin.reflect.jvm.javaType
 
 /**
  * Stores details about packet mappings for a specific connection state.
@@ -138,29 +137,14 @@ data class ProtocolState(val name: String, val id: Any) {
          * @since  0.1.0-SNAPSHOT
          */
         @ProtocolStateDSL
-        operator fun PacketIO<*>.invoke(block: IdListBuilder.() -> Unit) =
+        operator fun PacketIO<*>.invoke(block: IdListBuilder.() -> Unit) {
+            val packetType = type
             runForAllProtocols(IdListBuilder().apply(block).ids.toTypedArray()) { version, id ->
                 val data = PacketData(id, this)
-                val type = javaClass.typeParameter ?: return@runForAllProtocols
-
-                classToData.getOrPut(version) { hashMapOf() }[type] = data
+                classToData.getOrPut(version) { hashMapOf() }[packetType] = data
                 idToData.getOrPut(version) { hashMapOf() }[id] = data
             }
-
-        /**
-         * Finds the first type parameter for a class.
-         */
-        val Class<*>.typeParameter: Class<*>?
-            get() = try {
-                kotlin.supertypes.firstOrNull()
-                    ?.arguments?.firstOrNull()
-                    ?.type?.javaType?.typeName
-                    ?.let {
-                        Class.forName(it)
-                    } ?: error("Failed to get packet class!")
-            } catch (e: Throwable) {
-                error("Failed to get packet class!")
-            }
+        }
 
 
         /**

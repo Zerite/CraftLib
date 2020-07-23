@@ -1,5 +1,6 @@
 package dev.zerite.craftlib.protocol
 
+import com.google.gson.reflect.TypeToken
 import dev.zerite.craftlib.protocol.connection.NettyConnection
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
@@ -12,6 +13,12 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  */
 @Suppress("UNUSED")
 interface PacketIO<T : Packet> {
+
+    /**
+     * Retrieves the class for the packet generic.
+     */
+    val type: Class<in T>
+        get() = (object : TypeToken<T>() {}).rawType
 
     /**
      * Reads a packet from the provided protocol buffer into an object.

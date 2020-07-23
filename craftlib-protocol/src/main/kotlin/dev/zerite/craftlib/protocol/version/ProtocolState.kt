@@ -1,5 +1,6 @@
 package dev.zerite.craftlib.protocol.version
 
+import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
 
 /**
@@ -92,8 +93,8 @@ data class ProtocolState(val name: String, val id: Any) {
         /**
          * Contains mappings to convert from and to the packet IO handler.
          */
-        private val classToData = hashMapOf<ProtocolVersion, MutableMap<Class<*>, PacketData>>()
-        private val idToData = hashMapOf<ProtocolVersion, MutableMap<Int, PacketData>>()
+        val classToData = hashMapOf<ProtocolVersion, MutableMap<Class<*>, PacketData>>()
+        val idToData = hashMapOf<ProtocolVersion, MutableMap<Int, PacketData>>()
 
         /**
          * Get packet data from the ID specified.
@@ -137,11 +138,11 @@ data class ProtocolState(val name: String, val id: Any) {
          * @since  0.1.0-SNAPSHOT
          */
         @ProtocolStateDSL
-        operator fun PacketIO<*>.invoke(block: IdListBuilder.() -> Unit) {
-            val packetType = type
+        inline operator fun <reified T : Packet> PacketIO<T>.invoke(block: IdListBuilder.() -> Unit) {
+            val type = T::class.java
             runForAllProtocols(IdListBuilder().apply(block).ids.toTypedArray()) { version, id ->
                 val data = PacketData(id, this)
-                classToData.getOrPut(version) { hashMapOf() }[packetType] = data
+                classToData.getOrPut(version) { hashMapOf() }[type] = data
                 idToData.getOrPut(version) { hashMapOf() }[id] = data
             }
         }

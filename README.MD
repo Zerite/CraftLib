@@ -1,7 +1,7 @@
 ![Header](https://repository-images.githubusercontent.com/269539676/88c5b100-c869-11ea-80a5-85c6002d5ca2)
 
 ## CraftLib
-The entire Minecraft codebase as a library, with protocol, NBT and chat support.
+The entire Minecraft codebase as a library, with protocol, NBT, chat and schematic file support.
 
 [![Issues](https://img.shields.io/github/issues/Zerite/CraftLib?style=flat-square&label=Issues&logo=github&logoColor=white)](https://github.com/Zerite/CraftLib/issues)
 [![License](https://img.shields.io/github/license/Zerite/CraftLib?style=flat-square&label=License&logo=read-the-docs&logoColor=white)](https://github.com/Zerite/CraftLib/blob/master/LICENSE)
@@ -16,7 +16,7 @@ The entire Minecraft codebase as a library, with protocol, NBT and chat support.
 #### 1. What IS CraftLib?
 CraftLib is a simple Kotlin library which aims to *completely recreate* many of
 the essential concepts of Minecraft.
-This includes **protocol, NBT, chat, localization** and more to come!
+This includes **protocol, NBT, chat, localization, schematics** and more to come!
 
 This library includes full support for Kotlin's features out of the box with
 additional functions being introduced to ensure Java interoperability is simple
@@ -34,20 +34,20 @@ sufficiently complete.
 <dependency>
     <groupId>dev.zerite.craftlib</groupId>
     <artifactId>craftlib-protocol</artifactId>
-    <version>0.1.1</version>
+    <version>0.1.3</version>
 </dependency>
 ```
 
 **Gradle**
 ```groovy
-implementation 'dev.zerite.craftlib:craftlib-protocol:0.1.1'
+implementation 'dev.zerite.craftlib:craftlib-protocol:0.1.3'
 ```
 
 #### 3. Special Thanks
 ##### MCDevs
 [![Wiki.vg](https://wiki.vg/images/c/cf/120px-Logotemp.png)](https://wiki.vg/Main_Page)
 
-A **HUGE** thank you to the team at [#mcdevs](ircs://chat.freenode.net:6697/mcdevs) and their [wiki](https://wiki.vg/Main_Page).
+A **HUGE** thank you to the team at #mcdevs (Freenode IRC) and their [wiki](https://wiki.vg/Main_Page).
 Without their work documenting the Minecraft codebase, this project wouldn't be possible.
 Some comments from their wiki pages (particularly [protocol](https://wiki.vg/Protocol)) have been used 
 throughout the codebase and all rights to those texts belong to their team.

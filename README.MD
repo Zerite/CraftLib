@@ -34,13 +34,13 @@ sufficiently complete.
 <dependency>
     <groupId>dev.zerite.craftlib</groupId>
     <artifactId>craftlib-protocol</artifactId>
-    <version>0.1.3</version>
+    <version>0.1.4</version>
 </dependency>
 ```
 
 **Gradle**
 ```groovy
-implementation 'dev.zerite.craftlib:craftlib-protocol:0.1.3'
+implementation 'dev.zerite.craftlib:craftlib-protocol:0.1.4'
 ```
 
 #### 3. Special Thanks

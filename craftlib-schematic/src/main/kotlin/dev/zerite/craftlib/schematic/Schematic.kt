@@ -1,4 +1,7 @@
-package dev.zerite.craftlib.schematic.data
+package dev.zerite.craftlib.schematic
+
+import dev.zerite.craftlib.commons.world.Block
+import dev.zerite.craftlib.nbt.impl.CompoundTag
 
 /**
  * Houses all the valid schematic values which have either been parsed from a
@@ -7,12 +10,20 @@ package dev.zerite.craftlib.schematic.data
  * @author Koding
  * @since  0.1.3
  */
-data class Schematic(
+data class Schematic @JvmOverloads constructor(
     var width: Short,
     var height: Short,
     var length: Short,
     var materials: SchematicMaterials,
-    var blocks: Array<SchematicBlock>
+    var blocks: Array<Block> = Array(width * height * length) { Block.AIR },
+    var entities: List<CompoundTag> = arrayListOf(),
+    var tileEntities: List<CompoundTag> = arrayListOf(),
+    var originX: Int = 0,
+    var originY: Int = 0,
+    var originZ: Int = 0,
+    var offsetX: Int = 0,
+    var offsetY: Int = 0,
+    var offsetZ: Int = 0
 ) {
 
     companion object {
@@ -44,7 +55,8 @@ data class Schematic(
      * @since  0.1.3
      */
     @Suppress("UNUSED")
-    fun index(x: Int, y: Int, z: Int) = index(x, y, z, length, width)
+    fun index(x: Int, y: Int, z: Int) =
+        index(x, y, z, length, width)
 
     /**
      * Retrieves a block at the given coordinate, otherwise returning
@@ -58,7 +70,7 @@ data class Schematic(
      * @author Koding
      * @since  0.1.3
      */
-    operator fun get(x: Int, y: Int, z: Int) = blocks.getOrElse(index(x, y, z)) { SchematicBlock.AIR }
+    operator fun get(x: Int, y: Int, z: Int) = blocks.getOrElse(index(x, y, z)) { Block.AIR }
 
     /**
      * Sets a block at the given coordinate. All positions are relative
@@ -72,7 +84,7 @@ data class Schematic(
      * @author Koding
      * @since  0.1.3
      */
-    operator fun set(x: Int, y: Int, z: Int, value: SchematicBlock) {
+    operator fun set(x: Int, y: Int, z: Int, value: Block) {
         blocks[index(x, y, z)] = value
     }
 
@@ -98,22 +110,6 @@ data class Schematic(
         result = 31 * result + materials.hashCode()
         result = 31 * result + blocks.contentHashCode()
         return result
-    }
-}
-
-/**
- * Stores a pair of a block ID and metadata value.
- *
- * @author Koding
- * @since  0.1.3
- */
-data class SchematicBlock(
-    var id: Int,
-    var metadata: Byte
-) {
-    companion object {
-        @JvmField
-        val AIR = SchematicBlock(0, 0)
     }
 }
 

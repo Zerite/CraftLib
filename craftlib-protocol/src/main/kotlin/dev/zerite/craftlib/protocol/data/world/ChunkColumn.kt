@@ -1,6 +1,8 @@
 package dev.zerite.craftlib.protocol.data.world
 
 import dev.zerite.craftlib.commons.io.ByteNibbleArray
+import dev.zerite.craftlib.commons.world.Block
+import dev.zerite.craftlib.commons.world.BlockLocation
 import dev.zerite.craftlib.protocol.util.ext.toByteArray
 import dev.zerite.craftlib.protocol.util.ext.toShortArray
 import dev.zerite.craftlib.protocol.util.ext.trim

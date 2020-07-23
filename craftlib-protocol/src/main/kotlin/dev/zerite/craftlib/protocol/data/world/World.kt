@@ -1,5 +1,7 @@
 package dev.zerite.craftlib.protocol.data.world
 
+import dev.zerite.craftlib.commons.world.Block
+
 /**
  * Simple utility class which allows you to set any coordinate in a world with
  * a block and automatically update the chunks map.

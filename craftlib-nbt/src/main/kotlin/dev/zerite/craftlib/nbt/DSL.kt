@@ -3,6 +3,8 @@
 package dev.zerite.craftlib.nbt
 
 import dev.zerite.craftlib.nbt.impl.*
+import java.io.InputStream
+import java.io.OutputStream
 
 /**
  * Builds a compound tag.
@@ -151,3 +153,35 @@ val Any?.asTag: NBTTag
         is LongArray -> LongArrayTag(this)
         else -> error("Don't know how to convert $this into a NBT tag")
     }
+
+/**
+ * Writes a NBT tag to the provided output stream.
+ *
+ * @param  stream       The stream to write to.
+ * @param  compressed   Whether the tag we are writing should be compressed.
+ *
+ * @author Koding
+ * @since  0.1.3
+ */
+suspend fun NBTTag.write(stream: OutputStream, compressed: Boolean = false) =
+    if (compressed) NBTIO.writeCompressed(this, stream)
+    else NBTIO.write(this, stream)
+
+/**
+ * Reads a NBT tag from this input stream.
+ *
+ * @param  compressed     Whether this tag we are reading is compressed.
+ * @author Koding
+ * @since  0.1.3
+ */
+suspend fun InputStream.readTag(compressed: Boolean = false) =
+    if (compressed) NBTIO.readCompressed(this)
+    else NBTIO.read(this)
+
+/**
+ * Converts a NBT tag into a named NBT tag.
+ *
+ * @author Koding
+ * @since  0.1.3
+ */
+fun <T : NBTTag> T.named(name: String) = named(name, this)

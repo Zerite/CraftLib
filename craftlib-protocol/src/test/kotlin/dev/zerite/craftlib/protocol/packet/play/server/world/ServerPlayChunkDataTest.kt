@@ -1,6 +1,6 @@
 package dev.zerite.craftlib.protocol.packet.play.server.world
 
-import dev.zerite.craftlib.protocol.data.world.Block
+import dev.zerite.craftlib.commons.world.Block
 import dev.zerite.craftlib.protocol.data.world.Chunk
 import dev.zerite.craftlib.protocol.data.world.ChunkColumn
 import dev.zerite.craftlib.protocol.packet.PacketTest

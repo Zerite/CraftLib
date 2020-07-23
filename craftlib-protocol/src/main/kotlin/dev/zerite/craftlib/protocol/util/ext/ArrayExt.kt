@@ -1,4 +1,5 @@
 @file:JvmName("ArrayUtil")
+
 package dev.zerite.craftlib.protocol.util.ext
 
 import io.netty.buffer.Unpooled

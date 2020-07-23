@@ -1,5 +1,8 @@
 package dev.zerite.craftlib.protocol.data.world
 
+import dev.zerite.craftlib.commons.world.Block
+import dev.zerite.craftlib.commons.world.BlockLocation
+
 /**
  * Stores a chunk's full data, including the block information and
  * lighting data.
@@ -68,36 +71,6 @@ data class Chunk(internal var blocks: Array<Block?> = arrayOfNulls(DESIRED_BLOCK
 
     override fun hashCode() = blocks.contentHashCode()
 }
-
-/**
- * Stores information about a single block in the world
- *
- * @author Koding
- * @since  0.1.0-SNAPSHOT
- */
-data class Block(
-    val id: Int,
-    val metadata: Int,
-    val blockLight: Int,
-    val skyLight: Int
-) {
-    /**
-     * The location of this block.
-     */
-    lateinit var location: BlockLocation
-}
-
-/**
- * Vector for storing a 3D block location.
- *
- * @author Koding
- * @since  0.1.0-SNAPSHOT
- */
-data class BlockLocation(
-    val x: Int,
-    val y: Int,
-    val z: Int
-)
 
 /**
  * Stores information about a chunk.

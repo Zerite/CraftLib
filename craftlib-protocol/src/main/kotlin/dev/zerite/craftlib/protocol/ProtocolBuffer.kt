@@ -1,4 +1,5 @@
 @file:JvmName("ProtocolBufferUtil")
+
 package dev.zerite.craftlib.protocol
 
 import dev.zerite.craftlib.chat.component.BaseChatComponent

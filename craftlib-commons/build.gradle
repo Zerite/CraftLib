@@ -1,1 +1,5 @@
 description = 'Miscellaneous utilities which are shared between modules'
+
+dependencies {
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$coroutinesVersion"
+}

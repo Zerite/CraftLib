@@ -1,5 +1,5 @@
 description = 'Reads and writes the NBT format'
 
 dependencies {
-    api "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$coroutinesVersion"
+    api project(':craftlib-commons')
 }

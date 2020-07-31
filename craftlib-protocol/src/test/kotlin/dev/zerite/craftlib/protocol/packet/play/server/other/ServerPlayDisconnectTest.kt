@@ -1,5 +1,6 @@
 package dev.zerite.craftlib.protocol.packet.play.server.other
 
+import dev.zerite.craftlib.chat.component.StringChatComponent
 import dev.zerite.craftlib.protocol.packet.PacketTest
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
@@ -13,14 +14,14 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
 class ServerPlayDisconnectTest : PacketTest<ServerPlayDisconnectPacket>(ServerPlayDisconnectPacket) {
 
     init {
-        example(ServerPlayDisconnectPacket("Example")) {
+        example(ServerPlayDisconnectPacket(StringChatComponent("Example"))) {
             ProtocolVersion.MC1_7_2 {
-                writeString("Example")
+                writeString("{\"text\":\"Example\"}")
             }
         }
-        example(ServerPlayDisconnectPacket("Quitting")) {
+        example(ServerPlayDisconnectPacket(StringChatComponent("Quitting"))) {
             ProtocolVersion.MC1_7_2 {
-                writeString("Quitting")
+                writeString("{\"text\":\"Quitting\"}")
             }
         }
     }

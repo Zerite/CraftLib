@@ -1,5 +1,6 @@
 package dev.zerite.craftlib.protocol.packet.play.server.other
 
+import dev.zerite.craftlib.chat.component.BaseChatComponent
 import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
@@ -13,15 +14,13 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  * @author Koding
  * @since  0.1.0-SNAPSHOT
  */
-data class ServerPlayDisconnectPacket(
-    var reason: String
-) : Packet() {
+data class ServerPlayDisconnectPacket(var reason: BaseChatComponent) : Packet() {
     companion object : PacketIO<ServerPlayDisconnectPacket> {
         override fun read(
             buffer: ProtocolBuffer,
             version: ProtocolVersion,
             connection: NettyConnection
-        ) = ServerPlayDisconnectPacket(buffer.readString())
+        ) = ServerPlayDisconnectPacket(buffer.readChat())
 
         override fun write(
             buffer: ProtocolBuffer,
@@ -29,7 +28,7 @@ data class ServerPlayDisconnectPacket(
             packet: ServerPlayDisconnectPacket,
             connection: NettyConnection
         ) {
-            buffer.writeString(packet.reason)
+            buffer.writeChat(packet.reason)
         }
     }
 }

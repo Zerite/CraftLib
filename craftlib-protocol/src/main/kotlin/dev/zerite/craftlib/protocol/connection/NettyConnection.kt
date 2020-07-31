@@ -6,6 +6,8 @@ import dev.zerite.craftlib.chat.component.StringChatComponent
 import dev.zerite.craftlib.protocol.Packet
 import dev.zerite.craftlib.protocol.connection.io.CompressionCodec
 import dev.zerite.craftlib.protocol.connection.io.EncryptionCodec
+import dev.zerite.craftlib.protocol.packet.login.server.ServerLoginDisconnectPacket
+import dev.zerite.craftlib.protocol.packet.play.server.other.ServerPlayDisconnectPacket
 import dev.zerite.craftlib.protocol.util.IFlagged
 import dev.zerite.craftlib.protocol.version.MinecraftProtocol
 import dev.zerite.craftlib.protocol.version.PacketDirection
@@ -140,14 +142,24 @@ open class NettyConnection(val direction: PacketDirection) : SimpleChannelInboun
      * Closes the connection and disconnects from the host.
      *
      * @param  reason     The reason for closing this connection.
+     * @param  packets    If true, we will send packets to indicate the connection is closing.
+     *
      * @author Koding
      * @since  0.1.0-SNAPSHOT
      */
     @Suppress("UNUSED")
-    fun close(reason: BaseChatComponent) =
+    fun close(reason: BaseChatComponent, packets: Boolean = true) =
         channel
             .takeIf { !disconnected }
-            ?.apply { disconnected = true }
+            ?.apply {
+                disconnected = true
+
+                if (packets)
+                    when (state) {
+                        MinecraftProtocol.PLAY -> send(ServerPlayDisconnectPacket(reason))
+                        MinecraftProtocol.LOGIN -> send(ServerLoginDisconnectPacket(reason))
+                    }
+            }
             ?.close()
             ?.addListener { handler?.disconnected(this, reason) }
 
@@ -172,7 +184,7 @@ open class NettyConnection(val direction: PacketDirection) : SimpleChannelInboun
      */
     override fun channelInactive(ctx: ChannelHandlerContext) {
         // Run the handler
-        close(StringChatComponent("Disconnected"))
+        close(StringChatComponent("Disconnected"), packets = false)
         server?.disconnected(this)
     }
 

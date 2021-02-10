@@ -116,11 +116,13 @@ class PacketCodec(private val connection: NettyConnection) : ByteToMessageCodec<
                             it.read++
 
                             if (it.read == it.parts) {
-                                val protocol = ForgeProtocol[packet.channel] ?: return@let run { forgeMultipartData = null }
+                                val protocol = ForgeProtocol[packet.channel]
+                                    ?: return@let run { forgeMultipartData = null }
 
                                 val wrapped = it.buffer.wrap(connection)
                                 val forgeId = wrapped.readByte().toInt()
-                                val forge = protocol[decodeDirection][connection.version, forgeId]?.io ?: return@let
+                                val forge = protocol[decodeDirection][connection.version, forgeId]?.io
+                                    ?: return@let run {}
                                 out.add(forge.read(data, connection.version, connection))
 
                                 forgeMultipartData = null

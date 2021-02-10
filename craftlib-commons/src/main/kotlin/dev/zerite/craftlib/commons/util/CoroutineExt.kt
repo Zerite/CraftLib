@@ -11,7 +11,7 @@ import kotlinx.coroutines.future.future
  *
  * @param  block       The block to convert into a future.
  * @author Koding
- * @since  0.1.5
+ * @since  0.2.0
  */
 @Suppress("UNUSED")
 fun <T : Any> asFuture(block: suspend () -> T) =

@@ -17,7 +17,36 @@ import java.util.*
 class ServerPlaySpawnPlayerTest : PacketTest<ServerPlaySpawnPlayerPacket>(ServerPlaySpawnPlayerPacket) {
 
     init {
-        example(ServerPlaySpawnPlayerPacket(0, UUID(0L, 0L), "Player", hashMapOf(), 0.0, 0.0, 0.0, 90f, 0f, 2, EntityMetadata()))
+        example(
+            ServerPlaySpawnPlayerPacket(
+                0,
+                UUID(0L, 0L),
+                "Player",
+                hashMapOf(),
+                0.0,
+                0.0,
+                0.0,
+                90f,
+                0f,
+                0,
+                EntityMetadata()
+            )
+        )
+        example(
+            ServerPlaySpawnPlayerPacket(
+                0,
+                UUID(0L, 0L),
+                "Player",
+                hashMapOf(),
+                0.0,
+                0.0,
+                0.0,
+                90f,
+                0f,
+                2,
+                EntityMetadata()
+            ), maximumVersion = ProtocolVersion.MC1_8
+        )
         example(
             ServerPlaySpawnPlayerPacket(
                 200,
@@ -100,6 +129,16 @@ class ServerPlaySpawnPlayerTest : PacketTest<ServerPlaySpawnPlayerPacket>(Server
                 writeByte(32)
                 writeByte(64)
                 writeShort(0)
+                writeByte(127)
+            }
+            ProtocolVersion.MC1_9 {
+                writeVarInt(100)
+                writeUUID(UUID(20L, 30L), mode = ProtocolBuffer.UUIDMode.RAW)
+                writeDouble(40.0)
+                writeDouble(40.0)
+                writeDouble(40.0)
+                writeByte(32)
+                writeByte(64)
                 writeByte(127)
             }
         }

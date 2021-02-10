@@ -1,9 +1,11 @@
 package dev.zerite.craftlib.protocol.packet.play.server.entity
 
+import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.data.entity.EntityMetadata
 import dev.zerite.craftlib.protocol.data.entity.MetadataValue
 import dev.zerite.craftlib.protocol.data.registry.impl.MagicMobType
 import dev.zerite.craftlib.protocol.packet.PacketTest
+import dev.zerite.craftlib.protocol.util.ext.toLegacyUUID
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
 /**
@@ -19,6 +21,7 @@ class ServerPlaySpawnMobTest : PacketTest<ServerPlaySpawnMobPacket>(ServerPlaySp
         example(
             ServerPlaySpawnMobPacket(
                 0,
+                0.toLegacyUUID(),
                 MagicMobType.BAT,
                 0.0,
                 0.0,
@@ -35,6 +38,7 @@ class ServerPlaySpawnMobTest : PacketTest<ServerPlaySpawnMobPacket>(ServerPlaySp
         example(
             ServerPlaySpawnMobPacket(
                 127,
+                127.toLegacyUUID(),
                 MagicMobType.MOOSHROOM,
                 100.0,
                 100.0,
@@ -51,6 +55,7 @@ class ServerPlaySpawnMobTest : PacketTest<ServerPlaySpawnMobPacket>(ServerPlaySp
         example(
             ServerPlaySpawnMobPacket(
                 127,
+                127.toLegacyUUID(),
                 MagicMobType.COW,
                 100.0,
                 100.0,
@@ -72,6 +77,29 @@ class ServerPlaySpawnMobTest : PacketTest<ServerPlaySpawnMobPacket>(ServerPlaySp
                 writeInt(3200)
                 writeInt(3200)
                 writeInt(3200)
+
+                // Rotation
+                writeByte(64)
+                writeByte(64)
+                writeByte(64)
+
+                // Velocity
+                writeShort(8000)
+                writeShort(8000)
+                writeShort(8000)
+
+                // Meta
+                writeByte(127)
+            }
+            ProtocolVersion.MC1_9 {
+                writeVarInt(127)
+                writeUUID(127L.toLegacyUUID(), mode = ProtocolBuffer.UUIDMode.RAW)
+                writeByte(92)
+
+                // Fixed point
+                writeDouble(100.0)
+                writeDouble(100.0)
+                writeDouble(100.0)
 
                 // Rotation
                 writeByte(64)

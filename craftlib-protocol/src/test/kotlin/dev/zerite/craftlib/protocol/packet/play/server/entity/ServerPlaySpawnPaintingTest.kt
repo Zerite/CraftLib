@@ -1,7 +1,9 @@
 package dev.zerite.craftlib.protocol.packet.play.server.entity
 
+import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.Vector3
 import dev.zerite.craftlib.protocol.packet.PacketTest
+import dev.zerite.craftlib.protocol.util.ext.toLegacyUUID
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 
 /**
@@ -18,6 +20,7 @@ class ServerPlaySpawnPaintingTest : PacketTest<ServerPlaySpawnPaintingPacket>(Se
         example(
             ServerPlaySpawnPaintingPacket(
                 0,
+                0.toLegacyUUID(),
                 "Example",
                 10,
                 20,
@@ -39,10 +42,18 @@ class ServerPlaySpawnPaintingTest : PacketTest<ServerPlaySpawnPaintingPacket>(Se
                 writePosition(Vector3(10, 20, 30))
                 writeByte(3)
             }
+            ProtocolVersion.MC1_9 {
+                writeVarInt(0)
+                writeUUID(0.toLegacyUUID(), mode = ProtocolBuffer.UUIDMode.RAW)
+                writeString("Example")
+                writePosition(Vector3(10, 20, 30))
+                writeByte(3)
+            }
         }
         example(
             ServerPlaySpawnPaintingPacket(
                 100,
+                100.toLegacyUUID(),
                 "Painting",
                 20,
                 24,
@@ -60,6 +71,13 @@ class ServerPlaySpawnPaintingTest : PacketTest<ServerPlaySpawnPaintingPacket>(Se
             }
             ProtocolVersion.MC1_8 {
                 writeVarInt(100)
+                writeString("Painting")
+                writePosition(Vector3(20, 24, 28))
+                writeByte(1)
+            }
+            ProtocolVersion.MC1_9 {
+                writeVarInt(100)
+                writeUUID(100.toLegacyUUID(), mode = ProtocolBuffer.UUIDMode.RAW)
                 writeString("Painting")
                 writePosition(Vector3(20, 24, 28))
                 writeByte(1)

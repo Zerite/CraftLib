@@ -23,6 +23,13 @@ class ServerPlaySpawnGlobalEntityTest :
                 writeInt((74.0 * 32).roundToInt())
                 writeInt((625.0 * 32).roundToInt())
             }
+            ProtocolVersion.MC1_9 {
+                writeVarInt(400)
+                writeByte(123)
+                writeDouble(53.0)
+                writeDouble(74.0)
+                writeDouble(625.0)
+            }
         }
         example(ServerPlaySpawnGlobalEntityPacket(1, 1, 1.0, 1.0, 1.0)) {
             ProtocolVersion.MC1_7_2 {
@@ -31,6 +38,13 @@ class ServerPlaySpawnGlobalEntityTest :
                 writeInt(32)
                 writeInt(32)
                 writeInt(32)
+            }
+            ProtocolVersion.MC1_9 {
+                writeVarInt(1)
+                writeByte(1)
+                writeDouble(1.0)
+                writeDouble(1.0)
+                writeDouble(1.0)
             }
         }
     }

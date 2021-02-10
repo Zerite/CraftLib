@@ -46,12 +46,12 @@ data class ServerPlaySpawnPlayerPacket(
             ),
             if (version >= ProtocolVersion.MC1_8) "Player" else buffer.readString(),
             if (version >= ProtocolVersion.MC1_8) mutableMapOf() else buffer.readData(),
-            buffer.readFixedPoint(),
-            buffer.readFixedPoint(),
-            buffer.readFixedPoint(),
+            if (version >= ProtocolVersion.MC1_9) buffer.readDouble() else buffer.readFixedPoint(),
+            if (version >= ProtocolVersion.MC1_9) buffer.readDouble() else buffer.readFixedPoint(),
+            if (version >= ProtocolVersion.MC1_9) buffer.readDouble() else buffer.readFixedPoint(),
             buffer.readStepRotation(),
             buffer.readStepRotation(),
-            buffer.readShort().toInt(),
+            if (version >= ProtocolVersion.MC1_9) 0 else buffer.readShort().toInt(),
             buffer.readMetadata()
         )
 
@@ -70,8 +70,10 @@ data class ServerPlaySpawnPlayerPacket(
                     else -> ProtocolBuffer.UUIDMode.RAW
                 }
             )
+
             if (version <= ProtocolVersion.MC1_7_6)
                 buffer.writeString(packet.name)
+
             if (version == ProtocolVersion.MC1_7_6) {
                 buffer.writeVarInt(packet.data.size)
                 packet.data.forEach { (name, entry) ->
@@ -80,12 +82,20 @@ data class ServerPlaySpawnPlayerPacket(
                     buffer.writeString(entry.signature)
                 }
             }
-            buffer.writeFixedPoint(packet.x)
-            buffer.writeFixedPoint(packet.y)
-            buffer.writeFixedPoint(packet.z)
+
+            if (version >= ProtocolVersion.MC1_9) {
+                buffer.writeDouble(packet.x)
+                buffer.writeDouble(packet.y)
+                buffer.writeDouble(packet.z)
+            } else {
+                buffer.writeFixedPoint(packet.x)
+                buffer.writeFixedPoint(packet.y)
+                buffer.writeFixedPoint(packet.z)
+            }
+
             buffer.writeStepRotation(packet.yaw)
             buffer.writeStepRotation(packet.pitch)
-            buffer.writeShort(packet.currentItem)
+            if (version <= ProtocolVersion.MC1_8) buffer.writeShort(packet.currentItem)
             buffer.writeMetadata(packet.metadata)
         }
 

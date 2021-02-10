@@ -30,9 +30,9 @@ abstract class PacketTest<T : Packet>(private val io: PacketIO<T>) {
     companion object {
         /**
          * The maximum supported protocol version which we should use to
-         * write all the packets withs.
+         * write packets with.
          */
-        private val maxSupported = ProtocolVersion.MC1_8
+        private val maxSupported = ProtocolVersion.MC1_9
     }
 
     /**

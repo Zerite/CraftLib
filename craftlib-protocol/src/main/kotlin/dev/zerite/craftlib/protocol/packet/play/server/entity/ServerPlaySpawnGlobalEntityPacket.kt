@@ -30,9 +30,9 @@ data class ServerPlaySpawnGlobalEntityPacket(
         ) = ServerPlaySpawnGlobalEntityPacket(
             buffer.readVarInt(),
             buffer.readByte().toInt(),
-            buffer.readFixedPoint(),
-            buffer.readFixedPoint(),
-            buffer.readFixedPoint()
+            if (version >= ProtocolVersion.MC1_9) buffer.readDouble() else buffer.readFixedPoint(),
+            if (version >= ProtocolVersion.MC1_9) buffer.readDouble() else buffer.readFixedPoint(),
+            if (version >= ProtocolVersion.MC1_9) buffer.readDouble() else buffer.readFixedPoint()
         )
 
         override fun write(
@@ -43,9 +43,16 @@ data class ServerPlaySpawnGlobalEntityPacket(
         ) {
             buffer.writeVarInt(packet.entityId)
             buffer.writeByte(packet.type)
-            buffer.writeFixedPoint(packet.x)
-            buffer.writeFixedPoint(packet.y)
-            buffer.writeFixedPoint(packet.z)
+
+            if (version >= ProtocolVersion.MC1_9) {
+                buffer.writeDouble(packet.x)
+                buffer.writeDouble(packet.y)
+                buffer.writeDouble(packet.z)
+            } else {
+                buffer.writeFixedPoint(packet.x)
+                buffer.writeFixedPoint(packet.y)
+                buffer.writeFixedPoint(packet.z)
+            }
         }
     }
 }

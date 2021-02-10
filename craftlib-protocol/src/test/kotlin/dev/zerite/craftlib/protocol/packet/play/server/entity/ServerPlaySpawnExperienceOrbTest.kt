@@ -20,6 +20,13 @@ class ServerPlaySpawnExperienceOrbTest : PacketTest<ServerPlaySpawnExperienceOrb
                 writeInt(40 * 32)
                 writeShort(60)
             }
+            ProtocolVersion.MC1_9 {
+                writeVarInt(120)
+                writeDouble(0.0)
+                writeDouble(20.0)
+                writeDouble(40.0)
+                writeShort(60)
+            }
         }
         example(ServerPlaySpawnExperienceOrbPacket(80, 10.0, 30.0, 50.0, 42)) {
             ProtocolVersion.MC1_7_2 {
@@ -27,6 +34,13 @@ class ServerPlaySpawnExperienceOrbTest : PacketTest<ServerPlaySpawnExperienceOrb
                 writeInt(10 * 32)
                 writeInt(30 * 32)
                 writeInt(50 * 32)
+                writeShort(42)
+            }
+            ProtocolVersion.MC1_9 {
+                writeVarInt(80)
+                writeDouble(10.0)
+                writeDouble(30.0)
+                writeDouble(50.0)
                 writeShort(42)
             }
         }

@@ -855,11 +855,12 @@ class ProtocolBuffer(@Suppress("UNUSED") @JvmField val buf: ByteBuf, @JvmField v
      * @since  0.1.0-SNAPSHOT
      */
     fun readObjectData() = readInt().let {
+        val legacy = it != 0 || connection.version >= ProtocolVersion.MC1_9
         ObjectData(
             it,
-            if (it != 0) readShort().toInt() else null,
-            if (it != 0) readShort().toInt() else null,
-            if (it != 0) readShort().toInt() else null
+            if (legacy) readShort().toInt() else 0,
+            if (legacy) readShort().toInt() else 0,
+            if (legacy) readShort().toInt() else 0
         )
     }
 
@@ -872,7 +873,7 @@ class ProtocolBuffer(@Suppress("UNUSED") @JvmField val buf: ByteBuf, @JvmField v
      */
     fun writeObjectData(data: ObjectData) {
         writeInt(data.value)
-        if (data.value != 0) {
+        if (data.value != 0 || connection.version >= ProtocolVersion.MC1_9) {
             writeShort(data.speedX ?: 0)
             writeShort(data.speedY ?: 0)
             writeShort(data.speedZ ?: 0)
@@ -937,9 +938,9 @@ data class Slot @JvmOverloads constructor(
  */
 data class ObjectData @JvmOverloads constructor(
     var value: Int,
-    var speedX: Int? = null,
-    var speedY: Int? = null,
-    var speedZ: Int? = null
+    var speedX: Int = 0,
+    var speedY: Int = 0,
+    var speedZ: Int = 0
 )
 
 /**

@@ -149,6 +149,7 @@ object MinecraftProtocol : AbstractProtocol() {
             }
             ClientPlayTabCompletePacket {
                 ProtocolVersion.MC1_7_2 to 0x14
+                ProtocolVersion.MC1_9 to 0x0E
             }
             ClientPlayClientSettingsPacket {
                 ProtocolVersion.MC1_7_2 to 0x15
@@ -202,24 +203,30 @@ object MinecraftProtocol : AbstractProtocol() {
             }
             ServerPlayAnimationPacket {
                 ProtocolVersion.MC1_7_2 to 0x0B
+                ProtocolVersion.MC1_9 to 0x06
             }
             ServerPlaySpawnPlayerPacket {
                 ProtocolVersion.MC1_7_2 to 0x0C
+                ProtocolVersion.MC1_9 to 0x05
             }
             ServerPlayCollectItemPacket {
                 ProtocolVersion.MC1_7_2 to 0x0D
             }
             ServerPlaySpawnObjectPacket {
                 ProtocolVersion.MC1_7_2 to 0x0E
+                ProtocolVersion.MC1_9 to 0x00
             }
             ServerPlaySpawnMobPacket {
                 ProtocolVersion.MC1_7_2 to 0x0F
+                ProtocolVersion.MC1_9 to 0x03
             }
             ServerPlaySpawnPaintingPacket {
                 ProtocolVersion.MC1_7_2 to 0x10
+                ProtocolVersion.MC1_9 to 0x04
             }
             ServerPlaySpawnExperienceOrbPacket {
                 ProtocolVersion.MC1_7_2 to 0x11
+                ProtocolVersion.MC1_9 to 0x01
             }
             ServerPlayEntityVelocityPacket {
                 ProtocolVersion.MC1_7_2 to 0x12
@@ -274,12 +281,15 @@ object MinecraftProtocol : AbstractProtocol() {
             }
             ServerPlayBlockChangePacket {
                 ProtocolVersion.MC1_7_2 to 0x23
+                ProtocolVersion.MC1_9 to 0x0B
             }
             ServerPlayBlockActionPacket {
                 ProtocolVersion.MC1_7_2 to 0x24
+                ProtocolVersion.MC1_9 to 0x0A
             }
             ServerPlayBlockBreakAnimationPacket {
                 ProtocolVersion.MC1_7_2 to 0x25
+                ProtocolVersion.MC1_9 to 0x08
             }
             ServerPlayMapChunkBulkPacket {
                 ProtocolVersion.MC1_7_2 to 0x26
@@ -301,6 +311,7 @@ object MinecraftProtocol : AbstractProtocol() {
             }
             ServerPlaySpawnGlobalEntityPacket {
                 ProtocolVersion.MC1_7_2 to 0x2C
+                ProtocolVersion.MC1_9 to 0x02
             }
             ServerPlayOpenWindowPacket {
                 ProtocolVersion.MC1_7_2 to 0x2D
@@ -328,12 +339,14 @@ object MinecraftProtocol : AbstractProtocol() {
             }
             ServerPlayUpdateBlockEntityPacket {
                 ProtocolVersion.MC1_7_2 to 0x35
+                ProtocolVersion.MC1_9 to 0x09
             }
             ServerPlaySignEditorOpenPacket {
                 ProtocolVersion.MC1_7_2 to 0x36
             }
             ServerPlayStatisticsPacket {
                 ProtocolVersion.MC1_7_2 to 0x37
+                ProtocolVersion.MC1_9 to 0x07
             }
             ServerPlayPlayerListItemPacket {
                 ProtocolVersion.MC1_7_2 to 0x38
@@ -364,6 +377,7 @@ object MinecraftProtocol : AbstractProtocol() {
             }
             ServerPlayServerDifficultyPacket {
                 ProtocolVersion.MC1_8 to 0x41
+                ProtocolVersion.MC1_9 to 0x0D
             }
             ServerPlayCombatEventPacket {
                 ProtocolVersion.MC1_8 to 0x42
@@ -388,6 +402,9 @@ object MinecraftProtocol : AbstractProtocol() {
             }
             ServerPlayUpdateEntityNBTPacket {
                 ProtocolVersion.MC1_8 to 0x49
+            }
+            ServerPlayBossBarPacket {
+                ProtocolVersion.MC1_9 to 0x0C
             }
         }
     }

@@ -585,6 +585,48 @@ object MagicRegistry {
     }
 
     /**
+     * Determines how the boss bar packet will be interpreted.
+     */
+    val bossBarAction = create<MagicBossBarAction> {
+        ProtocolVersion.MC1_9 {
+            MagicBossBarAction.ADD to 0
+            MagicBossBarAction.REMOVE to 1
+            MagicBossBarAction.UPDATE_HEALTH to 2
+            MagicBossBarAction.UPDATE_TITLE to 3
+            MagicBossBarAction.UPDATE_STYLE to 4
+            MagicBossBarAction.UPDATE_FLAGS to 5
+        }
+    }
+
+    /**
+     * Determines the color of the boss bar.
+     */
+    val bossBarColor = create<MagicBossBarColor> {
+        ProtocolVersion.MC1_9 {
+            MagicBossBarColor.PINK to 0
+            MagicBossBarColor.BLUE to 1
+            MagicBossBarColor.RED to 2
+            MagicBossBarColor.GREEN to 3
+            MagicBossBarColor.YELLOW to 4
+            MagicBossBarColor.PURPLE to 5
+            MagicBossBarColor.WHITE to 6
+        }
+    }
+
+    /**
+     * Determines the amount of notches in the boss bar.
+     */
+    val bossBarDivision = create<MagicBossBarDivision> {
+        ProtocolVersion.MC1_9 {
+            MagicBossBarDivision.NO_DIVISION to 0
+            MagicBossBarDivision.SIX_NOTCHES to 1
+            MagicBossBarDivision.TEN_NOTCHES to 2
+            MagicBossBarDivision.TWELVE_NOTCHES to 3
+            MagicBossBarDivision.TWENTY_NOTCHES to 4
+        }
+    }
+
+    /**
      * Creates a new Minecraft enum and provides a builder function
      * to initialize it.
      *

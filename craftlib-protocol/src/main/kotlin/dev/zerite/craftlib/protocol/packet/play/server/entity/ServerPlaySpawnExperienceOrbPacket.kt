@@ -27,9 +27,9 @@ data class ServerPlaySpawnExperienceOrbPacket(
             connection: NettyConnection
         ) = ServerPlaySpawnExperienceOrbPacket(
             buffer.readVarInt(),
-            buffer.readFixedPoint(),
-            buffer.readFixedPoint(),
-            buffer.readFixedPoint(),
+            if (version >= ProtocolVersion.MC1_9) buffer.readDouble() else buffer.readFixedPoint(),
+            if (version >= ProtocolVersion.MC1_9) buffer.readDouble() else buffer.readFixedPoint(),
+            if (version >= ProtocolVersion.MC1_9) buffer.readDouble() else buffer.readFixedPoint(),
             buffer.readShort().toInt()
         )
 
@@ -40,9 +40,17 @@ data class ServerPlaySpawnExperienceOrbPacket(
             connection: NettyConnection
         ) {
             buffer.writeVarInt(packet.entityId)
-            buffer.writeFixedPoint(packet.x)
-            buffer.writeFixedPoint(packet.y)
-            buffer.writeFixedPoint(packet.z)
+
+            if (version >= ProtocolVersion.MC1_9) {
+                buffer.writeDouble(packet.x)
+                buffer.writeDouble(packet.y)
+                buffer.writeDouble(packet.z)
+            } else {
+                buffer.writeFixedPoint(packet.x)
+                buffer.writeFixedPoint(packet.y)
+                buffer.writeFixedPoint(packet.z)
+            }
+
             buffer.writeShort(packet.count)
         }
     }

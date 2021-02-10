@@ -8,7 +8,9 @@ import dev.zerite.craftlib.protocol.data.entity.EntityMetadata
 import dev.zerite.craftlib.protocol.data.registry.RegistryEntry
 import dev.zerite.craftlib.protocol.data.registry.impl.MagicMobType
 import dev.zerite.craftlib.protocol.packet.base.EntityIdPacket
+import dev.zerite.craftlib.protocol.util.ext.toLegacyUUID
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
+import java.util.*
 
 /**
  * Sent by the server to indicate that a mob has been spawned at
@@ -19,6 +21,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  */
 data class ServerPlaySpawnMobPacket(
     override var entityId: Int,
+    var uuid: UUID,
     var type: RegistryEntry,
     var x: Double,
     var y: Double,
@@ -36,20 +39,24 @@ data class ServerPlaySpawnMobPacket(
             buffer: ProtocolBuffer,
             version: ProtocolVersion,
             connection: NettyConnection
-        ) = ServerPlaySpawnMobPacket(
-            buffer.readVarInt(),
-            MagicMobType[version, buffer.readUnsignedByte().toInt()],
-            buffer.readFixedPoint(),
-            buffer.readFixedPoint(),
-            buffer.readFixedPoint(),
-            buffer.readStepRotation(),
-            buffer.readStepRotation(),
-            buffer.readStepRotation(),
-            buffer.readVelocity(),
-            buffer.readVelocity(),
-            buffer.readVelocity(),
-            buffer.readMetadata()
-        )
+        ): ServerPlaySpawnMobPacket {
+            val entityId = buffer.readVarInt()
+            return ServerPlaySpawnMobPacket(
+                entityId,
+                if (version >= ProtocolVersion.MC1_9) buffer.readUUID(mode = ProtocolBuffer.UUIDMode.RAW) else entityId.toLegacyUUID(),
+                MagicMobType[version, buffer.readUnsignedByte().toInt()],
+                if (version >= ProtocolVersion.MC1_9) buffer.readDouble() else buffer.readFixedPoint(),
+                if (version >= ProtocolVersion.MC1_9) buffer.readDouble() else buffer.readFixedPoint(),
+                if (version >= ProtocolVersion.MC1_9) buffer.readDouble() else buffer.readFixedPoint(),
+                buffer.readStepRotation(),
+                buffer.readStepRotation(),
+                buffer.readStepRotation(),
+                buffer.readVelocity(),
+                buffer.readVelocity(),
+                buffer.readVelocity(),
+                buffer.readMetadata()
+            )
+        }
 
         override fun write(
             buffer: ProtocolBuffer,
@@ -58,10 +65,19 @@ data class ServerPlaySpawnMobPacket(
             connection: NettyConnection
         ) {
             buffer.writeVarInt(packet.entityId)
+            if (version >= ProtocolVersion.MC1_9) buffer.writeUUID(packet.uuid, mode = ProtocolBuffer.UUIDMode.RAW)
             buffer.writeByte(MagicMobType[version, packet.type, Int::class.java] ?: 0)
-            buffer.writeFixedPoint(packet.x)
-            buffer.writeFixedPoint(packet.y)
-            buffer.writeFixedPoint(packet.z)
+
+            if (version >= ProtocolVersion.MC1_9) {
+                buffer.writeDouble(packet.x)
+                buffer.writeDouble(packet.y)
+                buffer.writeDouble(packet.z)
+            } else {
+                buffer.writeFixedPoint(packet.x)
+                buffer.writeFixedPoint(packet.y)
+                buffer.writeFixedPoint(packet.z)
+            }
+
             buffer.writeStepRotation(packet.pitch)
             buffer.writeStepRotation(packet.headPitch)
             buffer.writeStepRotation(packet.yaw)

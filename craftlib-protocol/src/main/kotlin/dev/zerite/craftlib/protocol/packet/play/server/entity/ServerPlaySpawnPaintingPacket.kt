@@ -6,7 +6,9 @@ import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.Vector3
 import dev.zerite.craftlib.protocol.connection.NettyConnection
 import dev.zerite.craftlib.protocol.packet.base.EntityIdPacket
+import dev.zerite.craftlib.protocol.util.ext.toLegacyUUID
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
+import java.util.*
 
 /**
  * This packet shows location, name, and type of painting.
@@ -19,6 +21,7 @@ import dev.zerite.craftlib.protocol.version.ProtocolVersion
  */
 data class ServerPlaySpawnPaintingPacket(
     override var entityId: Int,
+    var uuid: UUID,
     var title: String,
     var x: Int,
     var y: Int,
@@ -33,19 +36,24 @@ data class ServerPlaySpawnPaintingPacket(
             connection: NettyConnection
         ) = if (version >= ProtocolVersion.MC1_8) {
             val id = buffer.readVarInt()
+            val uuid = if (version >= ProtocolVersion.MC1_9) buffer.readUUID(mode = ProtocolBuffer.UUIDMode.RAW) else id.toLegacyUUID()
             val title = buffer.readString(13)
             val position = buffer.readPosition()
+
             ServerPlaySpawnPaintingPacket(
                 id,
+                uuid,
                 title,
                 position.x,
                 position.y,
                 position.z,
-                Direction.values()[buffer.readUnsignedByte().toInt()]
+                Direction.values()[(if (version >= ProtocolVersion.MC1_9) buffer.readByte() else buffer.readUnsignedByte()).toInt()]
             )
         } else {
+            val id = buffer.readVarInt()
             ServerPlaySpawnPaintingPacket(
-                buffer.readVarInt(),
+                id,
+                id.toLegacyUUID(),
                 buffer.readString(13),
                 buffer.readInt(),
                 buffer.readInt(),
@@ -61,13 +69,16 @@ data class ServerPlaySpawnPaintingPacket(
             connection: NettyConnection
         ) {
             buffer.writeVarInt(packet.entityId)
+            if (version >= ProtocolVersion.MC1_9) buffer.writeUUID(packet.uuid, mode = ProtocolBuffer.UUIDMode.RAW)
             buffer.writeString(packet.title)
+
             if (version >= ProtocolVersion.MC1_8) buffer.writePosition(Vector3(packet.x, packet.y, packet.z))
             else {
                 buffer.writeInt(packet.x)
                 buffer.writeInt(packet.y)
                 buffer.writeInt(packet.z)
             }
+
             if (version >= ProtocolVersion.MC1_8) buffer.writeByte(packet.direction.ordinal)
             else buffer.writeInt(packet.direction.ordinal)
         }

@@ -159,6 +159,13 @@ object MagicRegistry {
             MagicEntityStatus.CONVERT_ZOMBIE_VILLAGER to 16
             MagicEntityStatus.FIREWORK_EXPLODE to 17
         }
+        ProtocolVersion.MC1_9 {
+            MagicEntityStatus.OP_PERMISSION_LEVEL_0 to 24
+            MagicEntityStatus.OP_PERMISSION_LEVEL_1 to 25
+            MagicEntityStatus.OP_PERMISSION_LEVEL_2 to 26
+            MagicEntityStatus.OP_PERMISSION_LEVEL_3 to 27
+            MagicEntityStatus.OP_PERMISSION_LEVEL_4 to 28
+        }
     }
 
     /**
@@ -623,6 +630,25 @@ object MagicRegistry {
             MagicBossBarDivision.TEN_NOTCHES to 2
             MagicBossBarDivision.TWELVE_NOTCHES to 3
             MagicBossBarDivision.TWENTY_NOTCHES to 4
+        }
+    }
+
+    /**
+     * Used in the named sound packet to allow the client to lower the
+     * volumes of specific sounds.
+     */
+    val soundCategory = create<MagicSoundCategory> {
+        ProtocolVersion.MC1_9 {
+            MagicSoundCategory.MASTER to 0
+            MagicSoundCategory.MUSIC to 1
+            MagicSoundCategory.RECORDS to 2
+            MagicSoundCategory.WEATHER to 3
+            MagicSoundCategory.BLOCKS to 4
+            MagicSoundCategory.HOSTILE to 5
+            MagicSoundCategory.NEUTRAL to 6
+            MagicSoundCategory.PLAYERS to 7
+            MagicSoundCategory.AMBIENT to 8
+            MagicSoundCategory.VOICE to 9
         }
     }
 

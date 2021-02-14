@@ -56,6 +56,21 @@ open class MagicEntityStatus(name: String) : RegistryEntry(name) {
 
         @JvmField
         val FIREWORK_EXPLODE = MagicEntityStatus("Explode Firework")
+
+        @JvmField
+        val OP_PERMISSION_LEVEL_0 = MagicEntityStatus("OP Permission Level 0")
+
+        @JvmField
+        val OP_PERMISSION_LEVEL_1 = MagicEntityStatus("OP Permission Level 1")
+
+        @JvmField
+        val OP_PERMISSION_LEVEL_2 = MagicEntityStatus("OP Permission Level 2")
+
+        @JvmField
+        val OP_PERMISSION_LEVEL_3 = MagicEntityStatus("OP Permission Level 3")
+
+        @JvmField
+        val OP_PERMISSION_LEVEL_4 = MagicEntityStatus("OP Permission Level 4")
     }
 
 }

@@ -5,7 +5,6 @@ import dev.zerite.craftlib.protocol.PacketIO
 import dev.zerite.craftlib.protocol.ProtocolBuffer
 import dev.zerite.craftlib.protocol.connection.NettyConnection
 import dev.zerite.craftlib.protocol.version.PacketDirection
-import dev.zerite.craftlib.protocol.version.ProtocolState
 import dev.zerite.craftlib.protocol.version.ProtocolVersion
 import dev.zerite.craftlib.protocol.wrap
 import io.netty.buffer.Unpooled
@@ -144,17 +143,14 @@ abstract class PacketTest<T : Packet>(private val io: PacketIO<T>) {
      */
     protected fun example(
         packet: T,
-        minimumVersion: ProtocolVersion = ProtocolVersion.values().filter { it <= maxSupported }.minBy { it.id }
+        minimumVersion: ProtocolVersion = ProtocolVersion.values().filter { it <= maxSupported }.minByOrNull { it.id }
             ?: error("No compatible versions"),
         maximumVersion: ProtocolVersion? = null,
         builder: ExampleListBuilder.() -> Unit = {}
-    ) =
-        ProtocolState.SideData.runForAllProtocols(
-            ExampleListBuilder().apply(builder).examples.toTypedArray()
-        ) { version, bytes ->
-            if (version < minimumVersion || version > maxSupported || (maximumVersion != null && version > maximumVersion)) return@runForAllProtocols
-            examples.computeIfAbsent(packet) { EnumMap(ProtocolVersion::class.java) }[version] = bytes
-        }
+    ) = ExampleListBuilder().apply(builder).examples.toTypedArray().forEach { (version, bytes) ->
+        if (version < minimumVersion || version > maxSupported || (maximumVersion != null && version > maximumVersion)) return@forEach
+        examples.computeIfAbsent(packet) { EnumMap(ProtocolVersion::class.java) }[version] = bytes
+    }
 
     /**
      * Adds an example to be tested in this class.

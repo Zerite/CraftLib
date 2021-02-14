@@ -8,6 +8,16 @@ The entire Minecraft codebase as a library, with protocol, NBT, chat and schemat
 ![Latest Version](https://img.shields.io/maven-central/v/dev.zerite.craftlib/craftlib-protocol?color=%2342a5f5&label=Latest%20Version&logo=gradle&style=flat-square&logoColor=white)
 ![Support](https://img.shields.io/badge/Support-1.7.x%20--%201.8.x-yellow?style=flat-square&logo=minetest&logoColor=white)
 
+> ### Notice
+> CraftLib is **not ready** for production use. As more protocol versions are supported,
+> internal and external APIs are undergoing substantial changes.
+> The core functionality is **working as intended**, however future updates may cause issues
+> in your codebase due to the API's instability.
+>
+> Contributions are **very much** appreciated, accelerating the project into a fully
+> usable state. Feel free to use CraftLib in its current state - any bugs should be reported
+> [here](https://github.com/Zerite/CraftLib/issues).
+
 #### Contents
 1. [What IS CraftLib?](#1-what-is-craftlib)
 2. [Using it](#2-using-it)

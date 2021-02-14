@@ -16,7 +16,7 @@ import java.util.*
  * @author Koding
  * @since  0.2.0
  */
-class ServerPlayBossBarPacketTest : PacketTest<ServerPlayBossBarPacket>(ServerPlayBossBarPacket) {
+class ServerPlayBossBarTest : PacketTest<ServerPlayBossBarPacket>(ServerPlayBossBarPacket) {
 
     init {
         example(

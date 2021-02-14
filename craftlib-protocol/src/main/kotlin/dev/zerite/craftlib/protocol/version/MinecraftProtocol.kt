@@ -149,7 +149,6 @@ object MinecraftProtocol : AbstractProtocol() {
             }
             ClientPlayTabCompletePacket {
                 ProtocolVersion.MC1_7_2 to 0x14
-                ProtocolVersion.MC1_9 to 0x0E
             }
             ClientPlayClientSettingsPacket {
                 ProtocolVersion.MC1_7_2 to 0x15
@@ -176,6 +175,7 @@ object MinecraftProtocol : AbstractProtocol() {
             }
             ServerPlayChatMessagePacket {
                 ProtocolVersion.MC1_7_2 to 0x02
+                ProtocolVersion.MC1_9 to 0x0F
             }
             ServerPlayTimeUpdatePacket {
                 ProtocolVersion.MC1_7_2 to 0x03
@@ -254,6 +254,7 @@ object MinecraftProtocol : AbstractProtocol() {
             }
             ServerPlayEntityStatusPacket {
                 ProtocolVersion.MC1_7_2 to 0x1A
+                ProtocolVersion.MC1_9 to 0x1B
             }
             ServerPlayAttachEntityPacket {
                 ProtocolVersion.MC1_7_2 to 0x1B
@@ -278,6 +279,7 @@ object MinecraftProtocol : AbstractProtocol() {
             }
             ServerPlayMultiBlockChangePacket {
                 ProtocolVersion.MC1_7_2 to 0x22
+                ProtocolVersion.MC1_9 to 0x10
             }
             ServerPlayBlockChangePacket {
                 ProtocolVersion.MC1_7_2 to 0x23
@@ -296,12 +298,14 @@ object MinecraftProtocol : AbstractProtocol() {
             }
             ServerPlayExplosionPacket {
                 ProtocolVersion.MC1_7_2 to 0x27
+                ProtocolVersion.MC1_9 to 0x1C
             }
             ServerPlayEffectPacket {
                 ProtocolVersion.MC1_7_2 to 0x28
             }
-            ServerPlaySoundEffectPacket {
+            ServerPlayNamedSoundEffectPacket {
                 ProtocolVersion.MC1_7_2 to 0x29
+                ProtocolVersion.MC1_9 to 0x19
             }
             ServerPlayParticlePacket {
                 ProtocolVersion.MC1_7_2 to 0x2A
@@ -315,21 +319,27 @@ object MinecraftProtocol : AbstractProtocol() {
             }
             ServerPlayOpenWindowPacket {
                 ProtocolVersion.MC1_7_2 to 0x2D
+                ProtocolVersion.MC1_9 to 0x13
             }
             ServerPlayCloseWindowPacket {
                 ProtocolVersion.MC1_7_2 to 0x2E
+                ProtocolVersion.MC1_9 to 0x12
             }
             ServerPlaySetSlotPacket {
                 ProtocolVersion.MC1_7_2 to 0x2F
+                ProtocolVersion.MC1_9 to 0x16
             }
             ServerPlayWindowItemsPacket {
                 ProtocolVersion.MC1_7_2 to 0x30
+                ProtocolVersion.MC1_9 to 0x14
             }
             ServerPlayWindowPropertyPacket {
                 ProtocolVersion.MC1_7_2 to 0x31
+                ProtocolVersion.MC1_9 to 0x15
             }
             ServerPlayConfirmTransactionPacket {
                 ProtocolVersion.MC1_7_2 to 0x32
+                ProtocolVersion.MC1_9 to 0x11
             }
             ServerPlayUpdateSignPacket {
                 ProtocolVersion.MC1_7_2 to 0x33
@@ -356,6 +366,7 @@ object MinecraftProtocol : AbstractProtocol() {
             }
             ServerPlayTabCompletePacket {
                 ProtocolVersion.MC1_7_2 to 0x3A
+                ProtocolVersion.MC1_9 to 0x0E
             }
             ServerPlayScoreboardObjectivePacket {
                 ProtocolVersion.MC1_7_2 to 0x3B
@@ -371,9 +382,11 @@ object MinecraftProtocol : AbstractProtocol() {
             }
             ServerPlayPluginMessagePacket {
                 ProtocolVersion.MC1_7_2 to 0x3F
+                ProtocolVersion.MC1_9 to 0x18
             }
             ServerPlayDisconnectPacket {
                 ProtocolVersion.MC1_7_2 to 0x40
+                ProtocolVersion.MC1_9 to 0x1A
             }
             ServerPlayServerDifficultyPacket {
                 ProtocolVersion.MC1_8 to 0x41
@@ -405,6 +418,12 @@ object MinecraftProtocol : AbstractProtocol() {
             }
             ServerPlayBossBarPacket {
                 ProtocolVersion.MC1_9 to 0x0C
+            }
+            ServerPlaySetCooldownPacket {
+                ProtocolVersion.MC1_9 to 0x17
+            }
+            ServerPlayUnloadChunkPacket {
+                ProtocolVersion.MC1_9 to 0x1D
             }
         }
     }

@@ -6,7 +6,7 @@ plugins {
 
 ext {
     kotlinVersion = '1.4.30'
-    coroutinesVersion = '1.4.2'
+    coroutinesVersion = '1.5.1'
     junitVersion = '5.7.1'
     junitRunnerVersion = '1.7.1'
 }

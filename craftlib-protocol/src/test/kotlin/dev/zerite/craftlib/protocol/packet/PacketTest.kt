@@ -144,7 +144,7 @@ abstract class PacketTest<T : Packet>(private val io: PacketIO<T>) {
      */
     protected fun example(
         packet: T,
-        minimumVersion: ProtocolVersion = ProtocolVersion.values().filter { it <= maxSupported }.minBy { it.id }
+        minimumVersion: ProtocolVersion = ProtocolVersion.values().filter { it <= maxSupported }.minByOrNull { it.id }
             ?: error("No compatible versions"),
         maximumVersion: ProtocolVersion? = null,
         builder: ExampleListBuilder.() -> Unit = {}

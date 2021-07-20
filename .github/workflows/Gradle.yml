@@ -1,0 +1,13 @@
+name: "Validate Gradle"
+on: [push, pull_request]
+
+jobs:
+  validation:
+    name: "Validation"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: gradle/wrapper-validation-action@v1
+      - uses: eskatos/gradle-command-action@v1.3.3
+        with:
+          arguments: build

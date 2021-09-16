@@ -8,7 +8,7 @@ ext {
     kotlinVersion = '1.5.30'
     coroutinesVersion = '1.5.1'
     junitVersion = '5.8.0'
-    junitRunnerVersion = '1.7.2'
+    junitRunnerVersion = '1.8.0'
 }
 
 group 'dev.zerite.craftlib'

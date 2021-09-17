@@ -1,14 +1,14 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.4.30' apply false
-    id "io.codearte.nexus-staging" version "0.21.2"
+    id 'org.jetbrains.kotlin.jvm' version '1.5.30' apply false
+    id "io.codearte.nexus-staging" version "0.30.0"
     id "com.bmuschko.nexus" version "2.3.1" apply false
 }
 
 ext {
-    kotlinVersion = '1.4.30'
-    coroutinesVersion = '1.4.2'
-    junitVersion = '5.7.1'
-    junitRunnerVersion = '1.7.1'
+    kotlinVersion = '1.5.30'
+    coroutinesVersion = '1.5.2'
+    junitVersion = '5.8.0'
+    junitRunnerVersion = '1.8.0'
 }
 
 group 'dev.zerite.craftlib'

@@ -25,7 +25,7 @@ data class ServerForgeHandshakeHelloPacket(
             val protocolVersion = buffer.readByte().toInt()
             return ServerForgeHandshakeHelloPacket(
                 protocolVersion,
-                if (protocolVersion >= 1) buffer.readInt() else 0
+                if (protocolVersion > 1) buffer.readInt() else 0
             )
         }
 
